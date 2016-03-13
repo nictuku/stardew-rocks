@@ -27,7 +27,7 @@ This will allow mod developers to see whenever your save file changes. Hopefully
 
 # For Developers
 
-The ampq URL is: amqp://guest:guest@amqp.stardew.rocks:5672/
+The ampq URL is: `amqp://guest:guest@amqp.stardew.rocks:5672/`
 
 We currently publish the following exchanges:
 
