@@ -3,7 +3,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -14,6 +13,10 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/marcsauter/single"
 	"github.com/streadway/amqp"
+)
+
+const (
+	verbose = false
 )
 
 func stardewFolder() string {
@@ -68,21 +71,20 @@ func watchAndPublish(topic *amqp.Channel) {
 			select {
 			case event := <-watcher.Events:
 				if event.Op&fsnotify.Write == fsnotify.Write {
-					log.Println("Found modified file:", event.Name)
+					if verbose {
+						log.Println("Found modified file:", event.Name)
+					}
 					switch {
 					case isDir(event.Name):
 						if !watched[event.Name] {
 							watcher.Add(event.Name)
 							watched[event.Name] = true
+							log.Printf("Watching %v", event.Name)
 						}
 						// The game is saved in a temporary file first (Directory/SaveGameInfo_STARDEWVALLEYTMP)
 					case strings.Contains(path.Base(event.Name), "SaveGameInfo"):
-						content, err := ioutil.ReadFile(event.Name)
-						if err != nil {
-							log.Printf("Could not read file %v: %v", event.Name, err)
-							continue
-						}
-						if err := publishSavedGame(topic, content); err != nil {
+
+						if err := publishSavedGame(topic, event.Name); err != nil {
 							log.Print("could not publish new save game content:", err)
 							continue
 						}

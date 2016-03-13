@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
 	"log"
 
 	"github.com/streadway/amqp"
@@ -23,15 +25,21 @@ func rabbitStart() (ch *amqp.Channel, close func(), err error) {
 
 }
 
-func publishSavedGame(ch *amqp.Channel, save []byte) error {
+func publishSavedGame(ch *amqp.Channel, fileName string) error {
+	content, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return fmt.Errorf("Could not read file %v: %v", fileName, err)
+	}
+
 	return ch.Publish(
-		"logs", // exchange
-		"",     // routing key
-		false,  // mandatory
-		false,  // immediate
+		"SaveGameInfo-1", // exchange
+		"",               // routing key
+		false,            // mandatory
+		false,            // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        save,
+			ContentType:     "application/xml",
+			ContentEncoding: "gzip",
+			Body:            content,
 		})
 
 }
