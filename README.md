@@ -1,6 +1,6 @@
 # stardew-rocks
 
-This provides a client for Windows sends Stardew Valley saved games to a fanout queue. 
+Stardew Rocks is a tool for Stardew Valley that sends saved games to a distributed queue of mod developers! 
 
 Developers can watch that queue and do cool things with the saved files.
 
@@ -9,24 +9,37 @@ For example:
 - analyze the most efficient players
 - host a Stardew Valley tourney: see who get a certain amount of resources faster without cheating!
 
-To give it a try, see the pre-compiled Windows amd64 binary in the Releases section. Download the .exe file and run it.
+# For Farmers
 
-It looks a bit like this:
+You can install the Stardew Rocks client and help the community! Download links:
 
-`screenshot here soon`
+ - [Windows 64-bit](https://github.com/nictuku/stardew-rocks/releases/download/v0.1/stardew_rocks.exe)
+ - Windows 32-bit - coming soon.
 
-Please leave this window open in the background while you're playing Stardew Valley. If that's working well then mod
-developers can see whenever your save file changes and they can build very cool stuff with everyone's information!
+Just download the .exe file and run it. Once running it will look a bit like this:
+
+![Screenshot](client/screenshot.jpg)
+
+Please leave this window open in the background while you're playing Stardew Valley. You can minimize it, but don't close it. 
+This will allow mod developers to see whenever your save file changes. Hopefully they will build very cool stuff with that!
+
+There are also pre-compiled binaries for older releases in the Releases section.
 
 # For Developers
 
-We currently publish the following topics:
+The ampq URL is: amqp://guest:guest@amqp.stardew.rocks:5672/
 
- - topic "SaveGameInfo-1" receives raw uncompressed XML files with contributors' SaveGameInfo.
+We currently publish the following exchanges:
+
+ - "SaveGameInfo-1" receives raw uncompressed XML files with contributors' SaveGameInfo.
+ 
+ Soon: sample ampq code!
 
 # Known limitations
 
 For now we only publish the raw XML file of the SaveGameInfo file. 
 
-# Future versions
+# Planned features
 
+- Complete game information dumps (allows full game backup, server-side screenshots and more!)
+- Authentication of some fashion
