@@ -11,10 +11,9 @@ For example:
 
 # For Farmers
 
-You can install the Stardew Rocks client and help the community! Download links:
+You can install the Stardew Rocks client and help the community!
 
- - [Windows 64-bit](https://github.com/nictuku/stardew-rocks/releases/download/v0.1/stardew_rocks.exe)
- - Windows 32-bit - coming soon.
+ - [Download Stardew Rocks!](https://github.com/nictuku/stardew-rocks/releases/download/v0.2/stardew_rocks.exe)
 
 Just download the .exe file and run it. Once running it will look a bit like this:
 
