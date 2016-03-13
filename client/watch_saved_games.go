@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/marcsauter/single"
 	"github.com/streadway/amqp"
 )
 
@@ -97,6 +98,10 @@ func watchAndPublish(topic *amqp.Channel) {
 }
 
 func main() {
+
+	s := single.New("stardew-rocks-client") // Will exit if already running.
+	s.Lock()
+	defer s.Unlock()
 
 	topic, close, err := rabbitStart()
 	if err != nil {
