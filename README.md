@@ -40,3 +40,7 @@ For now it only shows wild plants vs planted ones. It will look prettier, eventu
 - Authentication of some fashion
 - Prettier farm maps
 - A slick website showing people's farms!
+
+# Thanks to our testers!
+
+freaky-m0, Beener
