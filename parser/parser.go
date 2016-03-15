@@ -112,7 +112,6 @@ func Parse(r io.Reader) (*FarmMap, error) {
 	dec := xml.NewDecoder(r)
 	v := Document{}
 	if err := dec.Decode(&v); err != nil {
-
 		return nil, fmt.Errorf("error: %v", err)
 	}
 	var farm GameLocation
@@ -143,10 +142,9 @@ func Parse(r io.Reader) (*FarmMap, error) {
 
 	}
 	return &farmMap, nil
+}
 
-	// XXX remove:
-
-	// Y0, X0 start top left
+func ASCIIImage(farmMap *FarmMap) {
 	for _, j := range farmMap.Loc {
 		stuff := []string{}
 		for _, what := range j {
@@ -167,5 +165,4 @@ func Parse(r io.Reader) (*FarmMap, error) {
 		fmt.Print(p)
 		fmt.Println()
 	}
-	panic("no")
 }
