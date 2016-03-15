@@ -1,9 +1,9 @@
-package main
+package parser
 
 import (
 	"encoding/xml"
 	"fmt"
-	"os"
+	"io"
 	"strconv"
 	"strings"
 )
@@ -103,24 +103,20 @@ type Vector struct {
 	Y int
 }
 
-type farmMap struct {
-	loc [80][80]string
+type FarmMap struct {
+	Loc [80][80]string
 }
 
-func main() {
-	f, err := os.Open("save.xml")
-	if err != nil {
-		fmt.Printf("error: %v", err)
-		return
-	}
-	dec := xml.NewDecoder(f)
+func Parse(r io.Reader) (*FarmMap, error) {
+
+	dec := xml.NewDecoder(r)
 	v := Document{}
 	if err := dec.Decode(&v); err != nil {
-		fmt.Printf("error: %v", err)
-		return
+
+		return nil, fmt.Errorf("error: %v", err)
 	}
 	var farm GameLocation
-	var farmMap farmMap
+	var farmMap FarmMap
 	for _, loc := range v.Locations {
 		for _, gameloc := range loc.GameLocations {
 			if gameloc.Name == "Farm" {
@@ -138,12 +134,15 @@ func main() {
 	}
 	for _, object := range allObjects {
 
-		farmMap.loc[object.Y()][object.X()] = object.ItemName()
+		farmMap.Loc[object.Y()][object.X()] = object.ItemName()
 
 	}
+	return &farmMap, nil
+
+	// XXX remove:
 
 	// Y0, X0 start top left
-	for _, j := range farmMap.loc {
+	for _, j := range farmMap.Loc {
 		stuff := []string{}
 		for _, what := range j {
 			if strings.HasPrefix(what, "tree") {
@@ -163,4 +162,5 @@ func main() {
 		fmt.Print(p)
 		fmt.Println()
 	}
+	panic("no")
 }

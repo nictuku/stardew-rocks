@@ -7,6 +7,8 @@ import (
 	"image/png"
 	"io"
 	"strings"
+
+	"github.com/nictuku/stardew-rocks/parser"
 )
 
 const (
@@ -18,7 +20,7 @@ var (
 	weed  = color.RGBA{0x0F, 0x4D, 0x04, 255}
 )
 
-func Image(farmMap farmMap, w io.Writer) {
+func WriteImage(farmMap *parser.FarmMap, w io.Writer) {
 
 	dirt := &image.Uniform{color.RGBA{0xEE, 0xAC, 0x24, 0xFF}}
 	m := image.NewNRGBA(image.Rect(0, 0, dx*10, dy*10))
@@ -28,9 +30,9 @@ func Image(farmMap farmMap, w io.Writer) {
 	for y := 0; y < dy; y++ {
 		for x := 0; x < dx; x++ {
 			var v *image.Uniform
-			if strings.HasPrefix(farmMap.loc[y][x], "tree") {
+			if strings.HasPrefix(farmMap.Loc[y][x], "tree") {
 				v = &image.Uniform{plant}
-			} else if farmMap.loc[y][x] != "" {
+			} else if farmMap.Loc[y][x] != "" {
 				v = &image.Uniform{weed}
 			} else {
 				v = dirt
