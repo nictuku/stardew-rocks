@@ -82,6 +82,9 @@ func main() {
 				f.Close()
 				return
 			}
+			lastSaveMu.Lock()
+			lastSave = d.Body
+			lastSaveMu.Unlock()
 			WriteImage(p, f)
 			f.Close()
 			log.Printf("Wrote map file %v", mapFile)
@@ -90,5 +93,5 @@ func main() {
 	}()
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
-	select {}
+	RunHTTPServer()
 }
