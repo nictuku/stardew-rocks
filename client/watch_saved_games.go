@@ -24,7 +24,7 @@ func stardewFolder() string {
 }
 
 func allSaveGameInfos() ([]string, error) {
-	return filepath.Glob(stardewFolder() + "/*/SaveGameInfo")
+	return filepath.Glob(stardewFolder() + "/*/*")
 }
 
 func isDir(path string) bool {
@@ -87,31 +87,45 @@ func watchAndPublish(topic *amqp.Channel) {
 			// remove the file watch, a crash may happen.
 
 			case event := <-watcher.Events:
-				switch {
-				case event.Op&fsnotify.Remove == fsnotify.Remove:
+				if verbose {
+					log.Println("file watch:", relPath(event.Name), event.String())
+				}
+				if event.Op&fsnotify.Remove == fsnotify.Remove {
 					watcher.Remove(event.Name)
 					delete(watched, event.Name)
 					if verbose {
 						log.Println("Deleted file watch:", relPath(event.Name))
 					}
-				case event.Op&fsnotify.Write == fsnotify.Write:
+				} else if !watched[event.Name] {
+					watcher.Add(event.Name)
+					watched[event.Name] = true
+					log.Printf("Watching %v", relPath(event.Name))
+				}
+				if event.Op&fsnotify.Create == fsnotify.Create || event.Op&fsnotify.Rename == fsnotify.Rename || event.Op&fsnotify.Write == fsnotify.Write {
 					if verbose {
 						log.Println("Found modified file:", relPath(event.Name))
 					}
 					switch {
 					case isDir(event.Name):
-						if !watched[event.Name] {
-							watcher.Add(event.Name)
-							watched[event.Name] = true
-							log.Printf("Watching folder %v", relPath(event.Name))
-						}
+						continue
 					case strings.Contains(path.Base(event.Name), "SaveGameInfo"):
-
 						if err := publishSavedGame(topic, event.Name); err != nil {
-							log.Print("could not publish new save game content:", err)
+							// This is normal. We tried to open the file after it's been renamed.
+							if verbose {
+								log.Print("could not publish new save game content:", err)
+							}
 							continue
 						}
-						log.Print("New save game published")
+						log.Print("[x] New save game published")
+					default:
+						if err := publishOtherFiles(topic, event.Name); err != nil {
+							// This is normal. We tried to open the file after it's been renamed.
+							if verbose {
+								log.Printf("could not publish content: %v", relPath(event.Name), err)
+							}
+							continue
+						}
+						log.Printf("[x] New detailed game file published: %v", relPath(event.Name))
 					}
 				}
 			case err := <-watcher.Errors:

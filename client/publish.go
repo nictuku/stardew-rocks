@@ -25,10 +25,33 @@ func rabbitStart() (ch *amqp.Channel, close func(), err error) {
 
 }
 
+func publishOtherFiles(ch *amqp.Channel, fileName string) error {
+	content, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return fmt.Errorf("Could not read file %v: %v", fileName, err)
+	}
+
+	return ch.Publish(
+		"OtherFiles-1", // exchange
+		"",             // routing key
+		false,          // mandatory
+		false,          // immediate
+		amqp.Publishing{
+			ContentType: "application/xml",
+			//ContentEncoding: "gzip",
+			Body: content,
+		})
+
+}
+
 func publishSavedGame(ch *amqp.Channel, fileName string) error {
 	content, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		return fmt.Errorf("Could not read file %v: %v", fileName, err)
+	}
+	if len(content) == 0 {
+		// Recently created file
+		return fmt.Errorf("zero-length file")
 	}
 
 	return ch.Publish(
@@ -37,9 +60,9 @@ func publishSavedGame(ch *amqp.Channel, fileName string) error {
 		false,            // mandatory
 		false,            // immediate
 		amqp.Publishing{
-			ContentType:     "application/xml",
-			ContentEncoding: "gzip",
-			Body:            content,
+			ContentType: "application/xml",
+			//ContentEncoding: "gzip",
+			Body: content,
 		})
 
 }
