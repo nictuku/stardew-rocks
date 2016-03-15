@@ -78,7 +78,9 @@ func main() {
 			}
 			p, err := parser.Parse(bytes.NewReader(d.Body))
 			if err != nil {
-				panic(err)
+				log.Print(err)
+				f.Close()
+				return
 			}
 			WriteImage(p, f)
 			f.Close()

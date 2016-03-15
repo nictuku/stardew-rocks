@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	dx, dy = 80, 80
+	dx, dy = 100, 100
 )
 
 var (

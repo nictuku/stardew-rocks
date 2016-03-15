@@ -104,7 +104,7 @@ type Vector struct {
 }
 
 type FarmMap struct {
-	Loc [80][80]string
+	Loc [100][100]string
 }
 
 func Parse(r io.Reader) (*FarmMap, error) {
@@ -124,6 +124,9 @@ func Parse(r io.Reader) (*FarmMap, error) {
 			}
 		}
 	}
+	if farm.Name == "" {
+		return nil, fmt.Errorf("Could not find farm in game save")
+	}
 
 	var allObjects []Item
 	for _, i := range farm.TerrainFeatures.Items {
@@ -133,7 +136,9 @@ func Parse(r io.Reader) (*FarmMap, error) {
 		allObjects = append(allObjects, i)
 	}
 	for _, object := range allObjects {
-
+		if object.Y() > 100 || object.X() > 100 {
+			return nil, fmt.Errorf("Found object vector location outside normal bounds: X=%d, Y=%d", object.Y(), object.X())
+		}
 		farmMap.Loc[object.Y()][object.X()] = object.ItemName()
 
 	}
