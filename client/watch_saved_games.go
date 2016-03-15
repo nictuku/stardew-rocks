@@ -3,10 +3,13 @@
 package main
 
 import (
+	"crypto/rand"
 	"log"
+	"math/big"
 	"os"
 	"path"
 	"strings"
+	"time"
 
 	"path/filepath"
 
@@ -43,7 +46,7 @@ func relPath(p string) string {
 	return rel
 }
 
-func watchAndPublish(topic *amqp.Channel) {
+func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -72,11 +75,14 @@ func watchAndPublish(topic *amqp.Channel) {
 		log.Printf("Watching %v", relPath(save))
 		watched[save] = true
 	}
+	stop := make(chan bool, 1)
 
-	done := make(chan bool)
 	go func() {
+
 		for {
 			select {
+			case <-stop:
+				return
 			// The game is saved in a temporary file first (Directory/SaveGameInfo_STARDEWVALLEYTMP).
 			// If the write works, it renames it to replace the older file.
 			// Our job here is to watch for new files being created and written to, and stop watching the ones that get deleted.
@@ -108,6 +114,9 @@ func watchAndPublish(topic *amqp.Channel) {
 					switch {
 					case isDir(event.Name):
 						continue
+					case strings.Contains(path.Base(event.Name), "SAVETMP"):
+						// Ignore the TMP file, only read after it's renamed. This avoid crashes.
+						continue
 					case strings.Contains(path.Base(event.Name), "SaveGameInfo"):
 						if err := publishSavedGame(topic, event.Name); err != nil {
 							// This is normal. We tried to open the file after it's been renamed.
@@ -125,7 +134,7 @@ func watchAndPublish(topic *amqp.Channel) {
 							}
 							continue
 						}
-						log.Printf("[x] New detailed game file published: %v", relPath(event.Name))
+						log.Printf("[x] New detailed game file published")
 					}
 				}
 			case err := <-watcher.Errors:
@@ -133,7 +142,10 @@ func watchAndPublish(topic *amqp.Channel) {
 			}
 		}
 	}()
-	<-done
+	err = <-cancel
+	log.Printf("Channel Error: %v", err)
+	stop <- true
+	return
 }
 
 func main() {
@@ -141,12 +153,26 @@ func main() {
 	s := single.New("stardew-rocks-client") // Will exit if already running.
 	s.Lock()
 	defer s.Unlock()
+	for {
 
-	topic, close, err := rabbitStart()
-	if err != nil {
-		log.Fatal(err)
+		topic, close, err := rabbitStart()
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer close()
+
+		// Find when we need to reconnect.
+		cc := make(chan *amqp.Error)
+		topic.NotifyClose(cc)
+
+		watchAndPublish(topic, cc)
+
+		// Don't retry too fast.
+		time.Sleep(randSleep())
 	}
-	defer close()
+}
 
-	watchAndPublish(topic)
+func randSleep() time.Duration {
+	n, _ := rand.Int(rand.Reader, big.NewInt(60))
+	return time.Duration(n.Int64()) * time.Second
 }
