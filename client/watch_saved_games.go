@@ -46,6 +46,13 @@ func relPath(p string) string {
 	return rel
 }
 
+func ignoreFile(p string) bool {
+	if filepath.Ext(p) != "" {
+		return true
+	}
+	return false
+}
+
 func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 
 	watcher, err := fsnotify.NewWatcher()
@@ -68,6 +75,9 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 	watched := map[string]bool{}
 
 	for _, save := range gameSaves {
+		if ignoreFile(save) {
+			continue
+		}
 		err = watcher.Add(save)
 		if err != nil {
 			log.Fatal(err)
@@ -93,32 +103,37 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 			// remove the file watch, a crash may happen.
 
 			case event := <-watcher.Events:
+				filename := event.Name
+				// Ignore files with extensions
+				if ignoreFile(filename) {
+					continue
+				}
 				if verbose {
-					log.Println("file watch:", relPath(event.Name), event.String())
+					log.Println("file watch:", relPath(filename), event.String())
 				}
 				if event.Op&fsnotify.Remove == fsnotify.Remove {
-					watcher.Remove(event.Name)
-					delete(watched, event.Name)
+					watcher.Remove(filename)
+					delete(watched, filename)
 					if verbose {
-						log.Println("Deleted file watch:", relPath(event.Name))
+						log.Println("Deleted file watch:", relPath(filename))
 					}
-				} else if !watched[event.Name] {
-					watcher.Add(event.Name)
-					watched[event.Name] = true
-					log.Printf("Watching %v", relPath(event.Name))
+				} else if !watched[filename] {
+					watcher.Add(filename)
+					watched[filename] = true
+					log.Printf("Watching %v", relPath(filename))
 				}
 				if event.Op&fsnotify.Create == fsnotify.Create || event.Op&fsnotify.Rename == fsnotify.Rename || event.Op&fsnotify.Write == fsnotify.Write {
 					if verbose {
-						log.Println("Found modified file:", relPath(event.Name))
+						log.Println("Found modified file:", relPath(filename))
 					}
 					switch {
-					case isDir(event.Name):
+					case isDir(filename):
 						continue
-					case strings.Contains(path.Base(event.Name), "SAVETMP"):
+					case strings.Contains(path.Base(filename), "SAVETMP"):
 						// Ignore the TMP file, only read after it's renamed. This avoid crashes.
 						continue
-					case strings.Contains(path.Base(event.Name), "SaveGameInfo"):
-						if err := publishSavedGame(topic, event.Name); err != nil {
+					case strings.Contains(path.Base(filename), "SaveGameInfo"):
+						if err := publishSavedGame(topic, filename); err != nil {
 							// This is normal. We tried to open the file after it's been renamed.
 							if verbose {
 								log.Print("could not publish new save game content:", err)
@@ -127,10 +142,10 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 						}
 						log.Print("[x] New save game published")
 					default:
-						if err := publishOtherFiles(topic, event.Name); err != nil {
+						if err := publishOtherFiles(topic, filename); err != nil {
 							// This is normal. We tried to open the file after it's been renamed.
 							if verbose {
-								log.Printf("could not publish content: %v", relPath(event.Name), err)
+								log.Printf("could not publish content: %v", relPath(filename), err)
 							}
 							continue
 						}
