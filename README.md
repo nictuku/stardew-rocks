@@ -32,14 +32,16 @@ The ampq URL is: `amqp://guest:guest@amqp.stardew.rocks:5672/`
 We currently publish the following exchanges:
 
  - "SaveGameInfo-1" receives raw uncompressed XML files with contributors' SaveGameInfo.
+ - "OtherFiles-1" receives raw uncompressed XML files with the super-large file saves.
  
- Soon: sample ampq code!
+To show off what we can do, I've built a simple farm map generator that creates simple images whenever someone pushes a new game save. For example:
 
-# Known limitations
+![Farm Map](subscriber/map-000000001.png)
 
-For now we only publish the raw XML file of the SaveGameInfo file. 
-
+For now it only shows wild plants vs planted ones. It will look prettier, eventually, I promise :-).
+ 
 # Planned features
 
-- Complete game information dumps (allows full game backup, server-side screenshots and more!)
 - Authentication of some fashion
+- Prettier farm maps
+- A slick website showing people's farms!
