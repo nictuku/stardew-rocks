@@ -1,13 +1,8 @@
 # stardew-rocks
 
-Stardew Rocks is a tool for Stardew Valley that sends saved games to a distributed queue of mod developers! 
+Stardew Rocks is a tool for Stardew Valley that collects saved games and shares them with mod developers! 
 
-Developers can watch that queue and do cool things with the saved files.
-
-For example:
-- write cool web apps showing what people are doing
-- analyze the most efficient players
-- host a Stardew Valley tourney: see who get a certain amount of resources faster without cheating!
+We'll build some cool features based on the saved games, watch this space :-D.
 
 # For Farmers
 
