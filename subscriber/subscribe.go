@@ -7,6 +7,8 @@ import (
 	"os"
 
 	"github.com/nictuku/stardew-rocks/parser"
+	"github.com/nictuku/stardew-rocks/view"
+
 	"github.com/streadway/amqp"
 )
 
@@ -68,6 +70,8 @@ func main() {
 
 	count := 0
 
+	farmMap := parser.LoadFarmMap()
+
 	go func() {
 		for d := range msgs {
 			count++
@@ -76,7 +80,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			p, err := parser.Parse(bytes.NewReader(d.Body))
+			saveGame, err := parser.ParseSaveGame(bytes.NewReader(d.Body))
 			if err != nil {
 				log.Print(err)
 				f.Close()
@@ -85,7 +89,7 @@ func main() {
 			lastSaveMu.Lock()
 			lastSave = d.Body
 			lastSaveMu.Unlock()
-			WriteImage(p, f)
+			view.WriteImage(farmMap, saveGame, f)
 			f.Close()
 			log.Printf("Wrote map file %v", mapFile)
 			log.Printf("Total messages so far: %d", count)
