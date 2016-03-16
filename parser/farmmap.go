@@ -135,7 +135,7 @@ func Parse(r io.Reader) (*FarmMap, error) {
 		allObjects = append(allObjects, i)
 	}
 	for _, object := range allObjects {
-		if object.Y() > 100 || object.X() > 100 {
+		if object.Y() >= len(farmMap.Loc) || object.X() >= len(farmMap.Loc[object.Y()]) {
 			return nil, fmt.Errorf("Found object vector location outside normal bounds: X=%d, Y=%d", object.Y(), object.X())
 		}
 		farmMap.Loc[object.Y()][object.X()] = object.ItemName()
