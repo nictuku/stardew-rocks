@@ -12,15 +12,6 @@ import (
 	"github.com/nictuku/stardew-rocks/parser"
 )
 
-const (
-	dx, dy = 100, 100
-)
-
-var (
-	plant = color.RGBA{0x3B, 0x92, 0x10, 255} // 3B9210
-	weed  = color.RGBA{0x0F, 0x4D, 0x04, 255}
-)
-
 func tileCoordinates(id int, tileWidth, tileHeight, tilemapWidth int) (x0, y0 int) {
 	numColumns := tilemapWidth / tileWidth
 	y0 = id / numColumns * tileHeight
@@ -38,27 +29,54 @@ func WriteImage(pm *parser.Map, sg *parser.GameLocation, w io.Writer) {
 
 	draw.Draw(img, img.Bounds(), dirt, image.ZP, draw.Src)
 
-	for y := 0; y < m.Height; y++ {
-		for x := 0; x < m.Width; x++ {
-			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
-				if tile := layer.DecodedTiles[y*m.Width+x]; !tile.IsNil() {
-					// Fetch tile from tileset. XXX move to a func
-					src, err := pm.FetchSource(tile.Tileset.Image.Source)
-					if err != nil {
-						log.Printf("error fetchin %v: %v", tile.Tileset.Image.Source, err)
-						continue
+	if true {
+		for y := 0; y < m.Height; y++ {
+			for x := 0; x < m.Width; x++ {
+				for _, layer := range m.Layers { // Layers are apparently ordered correctly.
+					if layer.Name == "Paths" {
+						continue // Looks ugly. Need some work to look pretty.
 					}
-					srcBounds := src.Bounds()
-					x0, y0 := tileCoordinates(int(tile.ID), m.TileWidth, m.TileHeight, srcBounds.Dx())
-					sr := image.Rect(x0, y0, x0+m.TileHeight, y0+m.TileWidth)
-					r := sr.Sub(sr.Min).Add(image.Point{x * m.TileWidth, y * m.TileHeight})
-					// DrawMask with draw.Over and an alpha channel ensure the background is transparent.
-					// Anyway, it works.
-					draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+					if tile := layer.DecodedTiles[y*m.Width+x]; !tile.IsNil() {
+						// Fetch tile from tileset.
+						src, err := pm.FetchSource(tile.Tileset.Image.Source)
+						if err != nil {
+							log.Printf("Error fetching image asset %v: %v", tile.Tileset.Image.Source, err)
+							continue
+						}
+						srcBounds := src.Bounds()
+						x0, y0 := tileCoordinates(int(tile.ID), m.TileWidth, m.TileHeight, srcBounds.Dx())
+						sr := image.Rect(x0, y0, x0+m.TileHeight, y0+m.TileWidth)
+						r := sr.Sub(sr.Min).Add(image.Point{x * m.TileWidth, y * m.TileHeight})
+						// DrawMask with draw.Over and an alpha channel ensure the background is transparent.
+						// Anyway, it works.
+						draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+					}
 				}
 			}
 		}
 	}
+	// path: ../TerrainFeatures/tree1_spring
+	// sg.TerrainFeatures.Items[0].Value.TerrainFeature.TreeType
+
+	// objects are in Maps/springobjects.png
+	p := "../Maps/springobjects.png"
+	src, err := pm.FetchSource(p)
+	if err != nil {
+		log.Printf("Error fetching terrain asset %v: %v", p, err)
+		panic(err)
+	}
+	srcBounds := src.Bounds()
+
+	for _, item := range sg.Objects.Items {
+		//fmt.Printf("yayyyy")
+		x0, y0 := tileCoordinates(item.Value.Object.ParentSheetIndex, 16, 16, srcBounds.Dx())
+		sr := image.Rect(x0, y0, x0+16, y0+16)
+		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * 16, item.Key.Vector2.Y * 16})
+		// DrawMask with draw.Over and an alpha channel ensure the background is transparent.
+		// Anyway, it works.
+		draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+	}
+
 	if err := png.Encode(w, img); err != nil {
 		panic(err)
 	}

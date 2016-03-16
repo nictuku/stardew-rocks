@@ -89,8 +89,9 @@ type ItemValue struct {
 }
 
 type Object struct {
-	Name         string `xml:"name"`
-	TileLocation Vector `xml:"tileLocation"`
+	Name             string `xml:"name"`
+	TileLocation     Vector `xml:"tileLocation"`
+	ParentSheetIndex int    `xml:"parentSheetIndex"`
 }
 
 type ItemKey struct {
@@ -113,12 +114,11 @@ func ParseSaveGame(r io.Reader) (farm *GameLocation, err error) {
 		for _, gameloc := range loc.GameLocations {
 			if gameloc.Name == "Farm" {
 				farm = &gameloc
+				break
 			}
 		}
 	}
-	if farm.Name == "" {
-		return nil, fmt.Errorf("Could not find farm in game save")
-	}
+
 	return farm, nil
 	/*
 
