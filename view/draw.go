@@ -58,23 +58,43 @@ func WriteImage(pm *parser.Map, sg *parser.GameLocation, w io.Writer) {
 	// path: ../TerrainFeatures/tree1_spring
 	// sg.TerrainFeatures.Items[0].Value.TerrainFeature.TreeType
 
-	// objects are in Maps/springobjects.png
-	p := "../Maps/springobjects.png"
-	src, err := pm.FetchSource(p)
-	if err != nil {
-		log.Printf("Error fetching terrain asset %v: %v", p, err)
-		panic(err)
+	{
+		p := "../Buildings/houses.png"
+		src, err := pm.FetchSource(p)
+		if err != nil {
+			log.Printf("Error fetching terrain asset %v: %v", p, err)
+			panic(err)
+		}
+		{
+			// house
+			sr := image.Rect(0, 0, 160, 144)
+			r := sr.Sub(sr.Min).Add(image.Point{930, 130})
+			draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+		}
+		{
+			// greenHouse
+			sr := image.Rect(160, 0, 272, 160)
+			r := sr.Sub(sr.Min).Add(image.Point{400, 96})
+			draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+		}
 	}
-	srcBounds := src.Bounds()
 
-	for _, item := range sg.Objects.Items {
-		//fmt.Printf("yayyyy")
-		x0, y0 := tileCoordinates(item.Value.Object.ParentSheetIndex, 16, 16, srcBounds.Dx())
-		sr := image.Rect(x0, y0, x0+16, y0+16)
-		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * 16, item.Key.Vector2.Y * 16})
-		// DrawMask with draw.Over and an alpha channel ensure the background is transparent.
-		// Anyway, it works.
-		draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+	// objects are in Maps/springobjects.png
+	{
+		p := "../Maps/springobjects.png"
+		src, err := pm.FetchSource(p)
+		if err != nil {
+			log.Printf("Error fetching terrain asset %v: %v", p, err)
+			panic(err)
+		}
+		srcBounds := src.Bounds()
+
+		for _, item := range sg.Objects.Items {
+			x0, y0 := tileCoordinates(item.Value.Object.ParentSheetIndex, 16, 16, srcBounds.Dx())
+			sr := image.Rect(x0, y0, x0+16, y0+16)
+			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * 16, item.Key.Vector2.Y * 16})
+			draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+		}
 	}
 
 	if err := png.Encode(w, img); err != nil {
