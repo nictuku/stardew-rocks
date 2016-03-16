@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"strings"
 )
 
 type Document struct {
@@ -103,47 +102,45 @@ type Vector struct {
 	Y int
 }
 
-type FarmMap struct {
-	Loc [100][100]string
-}
-
-func Parse(r io.Reader) (*FarmMap, error) {
+func ParseSaveGame(r io.Reader) (farm *GameLocation, err error) {
 
 	dec := xml.NewDecoder(r)
 	v := Document{}
 	if err := dec.Decode(&v); err != nil {
 		return nil, fmt.Errorf("error: %v", err)
 	}
-	var farm GameLocation
-	var farmMap FarmMap
 	for _, loc := range v.Locations {
 		for _, gameloc := range loc.GameLocations {
 			if gameloc.Name == "Farm" {
-				farm = gameloc
+				farm = &gameloc
 			}
 		}
 	}
 	if farm.Name == "" {
 		return nil, fmt.Errorf("Could not find farm in game save")
 	}
+	return farm, nil
+	/*
 
-	var allObjects []Item
-	for _, i := range farm.TerrainFeatures.Items {
-		allObjects = append(allObjects, i)
-	}
-	for _, i := range farm.Objects.Items {
-		allObjects = append(allObjects, i)
-	}
-	for _, object := range allObjects {
-		if object.Y() >= len(farmMap.Loc) || object.X() >= len(farmMap.Loc[object.Y()]) {
-			return nil, fmt.Errorf("Found object vector location outside normal bounds: X=%d, Y=%d", object.Y(), object.X())
+		var allObjects []Item
+		for _, i := range farm.TerrainFeatures.Items {
+			allObjects = append(allObjects, i)
 		}
-		farmMap.Loc[object.Y()][object.X()] = object.ItemName()
+		for _, i := range farm.Objects.Items {
+			allObjects = append(allObjects, i)
+		}
+		for _, object := range allObjects {
+			if object.Y() >= len(farmMap.Loc) || object.X() >= len(farmMap.Loc[object.Y()]) {
+				return nil, fmt.Errorf("Found object vector location outside normal bounds: X=%d, Y=%d", object.Y(), object.X())
+			}
+			farmMap.Loc[object.Y()][object.X()] = object.ItemName()
 
-	}
-	return &farmMap, nil
+		}
+		return &farmMap, nil
+	*/
 }
 
+/*
 func ASCIIImage(farmMap *FarmMap) {
 	for _, j := range farmMap.Loc {
 		stuff := []string{}
@@ -166,3 +163,4 @@ func ASCIIImage(farmMap *FarmMap) {
 		fmt.Println()
 	}
 }
+*/
