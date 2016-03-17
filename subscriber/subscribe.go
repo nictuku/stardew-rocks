@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 
 	"github.com/nictuku/stardew-rocks/parser"
 	"github.com/nictuku/stardew-rocks/view"
@@ -84,7 +85,7 @@ func main() {
 				log.Printf("blank player name")
 				break
 			}
-			mapFile := fmt.Sprintf("map-%v.png", saveGame.Player.Name)
+			mapFile := path.Join(wwwDir(), fmt.Sprintf("map-%v.png", saveGame.Player.Name))
 			f, err := os.OpenFile(mapFile, os.O_CREATE|os.O_WRONLY, 0666)
 			if err != nil {
 				log.Fatal(err)

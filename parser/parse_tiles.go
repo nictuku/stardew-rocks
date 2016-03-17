@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 	"sync"
 
 	"github.com/salviati/go-tmx/tmx"
@@ -29,6 +30,7 @@ type Map struct {
 }
 
 func (m *Map) FetchSource(s string) (image.Image, error) {
+	s = strings.Replace(s, `\`, "/", -1)
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	img, ok := m.imageSources[s]

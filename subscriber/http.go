@@ -22,7 +22,7 @@ func Log(handler http.Handler) http.Handler {
 	})
 }
 
-func homeDir() string {
+func wwwDir() string {
 	home := os.Getenv("HOME")
 	if home == "" {
 		home = string(filepath.Separator)
@@ -59,7 +59,7 @@ func RunHTTPServer() {
 }
 
 func init() {
-	dir := homeDir()
+	dir := wwwDir()
 	log.Printf("Serving files from %v", dir)
 	http.Handle("/", Log(gziphandler.GzipHandler(http.FileServer(http.Dir(dir)))))
 	http.Handle("/lastsave", Log(gziphandler.GzipHandler(http.HandlerFunc(LastSave))))
