@@ -81,7 +81,9 @@ type TerrainItemValue struct {
 }
 
 type TerrainFeature struct {
-	TreeType int `xml:"treeType"`
+	Type        string `xml:"type,attr"`
+	TreeType    int    `xml:"treeType"`
+	GrowthStage int    `xml:"growthStage"`
 }
 
 type ItemValue struct {
