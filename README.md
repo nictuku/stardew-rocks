@@ -31,9 +31,9 @@ We currently publish the following exchanges:
  
 To show off what we can do, I've built a simple farm map generator that creates simple images whenever someone pushes a new game save. For example:
 
-![Farm Map](subscriber/map-000000001.png)
+![Farm Map](view/map-test.png)
 
-For now it only shows wild plants vs planted ones. It will look prettier, eventually, I promise :-).
+For now it only shows a few items. It will be more complete, eventually :-).
  
 # Planned features
 

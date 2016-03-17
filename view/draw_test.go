@@ -1,7 +1,6 @@
 package view
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -29,9 +28,7 @@ func TestLoadTile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Printf("%v\n", farm.TMX.Height)
-	mapFile := fmt.Sprintf("map-%09d.png", 2131232132)
-	f, err := os.OpenFile(mapFile, os.O_CREATE|os.O_WRONLY, 0666)
+	f, err := os.OpenFile("map-test.png", os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		panic(err)
 	}
