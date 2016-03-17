@@ -38,7 +38,20 @@ func treeAsset(treeType int) string {
 	return fmt.Sprintf("../TerrainFeatures/tree%d_spring.png", treeType) // TODO: other seasons
 }
 
-func WriteImage(pm *parser.Map, sg *parser.GameLocation, w io.Writer) {
+func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
+	//fmt.Println("sg game locations", sg.Locations.GameLocations)
+	var farm *parser.GameLocation
+	for _, gameloc := range sg.Locations.GameLocations {
+		if gameloc.Name == "Farm" {
+			farm = &gameloc
+			break
+		}
+	}
+
+	if farm == nil {
+		log.Printf("farm not found for %v", sg.Player.Name)
+		return
+	}
 
 	// TODO: do not trust the user input. Don't hit files or slice indexes based on data.
 	m := pm.TMX
@@ -105,7 +118,7 @@ func WriteImage(pm *parser.Map, sg *parser.GameLocation, w io.Writer) {
 		}
 		srcBounds := src.Bounds()
 
-		for _, item := range sg.Objects.Items {
+		for _, item := range farm.Objects.Items {
 			x0, y0 := tileCoordinates(item.Value.Object.ParentSheetIndex, 16, 16, srcBounds.Dx())
 			sr := image.Rect(x0, y0, x0+16, y0+16)
 			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * 16, item.Key.Vector2.Y * 16})
@@ -116,8 +129,8 @@ func WriteImage(pm *parser.Map, sg *parser.GameLocation, w io.Writer) {
 	{
 		// Order items to be displayed based on their Y order. Items with a higher Y should be drawn last.
 		items := make([][]*parser.TerrainItem, m.Height)
-		for i := range sg.TerrainFeatures.Items {
-			item := sg.TerrainFeatures.Items[i] // separate pointer for each item
+		for i := range farm.TerrainFeatures.Items {
+			item := farm.TerrainFeatures.Items[i] // separate pointer for each item
 			items[item.Y()] = append(items[item.Y()], &item)
 		}
 
@@ -138,7 +151,6 @@ func WriteImage(pm *parser.Map, sg *parser.GameLocation, w io.Writer) {
 							log.Printf("Unknown tree rect for %v", item.Value.TerrainFeature.GrowthStage)
 							continue
 						}
-						fmt.Println("drawing tree", item.Key.Vector2.X*m.TileWidth, item.Key.Vector2.Y*m.TileHeight, stage)
 						r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight})
 						draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
 					} else {
@@ -150,7 +162,6 @@ func WriteImage(pm *parser.Map, sg *parser.GameLocation, w io.Writer) {
 								continue
 							}
 							sr := xnaRect(663, 1011, 41, 30)
-							fmt.Println("drawing stump", item.Key.Vector2.X*m.TileWidth, item.Key.Vector2.Y*m.TileHeight, stage)
 							r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth - m.TileWidth, // centralize
 								item.Key.Vector2.Y*m.TileHeight - 0, // vertical centralize
 							})
@@ -159,7 +170,6 @@ func WriteImage(pm *parser.Map, sg *parser.GameLocation, w io.Writer) {
 						{
 							// stump
 							sr := xnaRect(32, 96, 16, 32)
-							fmt.Println("drawing stump", item.Key.Vector2.X*m.TileWidth, item.Key.Vector2.Y*m.TileHeight, stage)
 							r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth,
 								item.Key.Vector2.Y*m.TileHeight - m.TileHeight, // stump offset
 							})
@@ -168,7 +178,6 @@ func WriteImage(pm *parser.Map, sg *parser.GameLocation, w io.Writer) {
 						{
 							// tree
 							sr := image.Rect(0, 0, 48, 96)
-							fmt.Println("drawing tree", item.Key.Vector2.X*m.TileWidth, item.Key.Vector2.Y*m.TileHeight, stage)
 							r := sr.Sub(sr.Min).Add(image.Point{
 								item.Key.Vector2.X*m.TileWidth - m.TileWidth, // centralize
 								item.Key.Vector2.Y*m.TileHeight - 80,         // stump offset

@@ -12,10 +12,15 @@ type Document struct {
 }
 
 type SaveGame struct {
-	Locations []Location `xml:"locations"`
+	Player    Player    `xml:"player"`
+	Locations Locations `xml:"locations"`
 }
 
-type Location struct {
+type Player struct {
+	Name string `xml:"name"`
+}
+
+type Locations struct {
 	GameLocations []GameLocation `xml:"GameLocation"`
 	XML           string         `xml:",innerxml"`
 }
@@ -105,23 +110,15 @@ type Vector struct {
 	Y int
 }
 
-func ParseSaveGame(r io.Reader) (farm *GameLocation, err error) {
+func ParseSaveGame(r io.Reader) (saveGame *SaveGame, err error) {
 
 	dec := xml.NewDecoder(r)
 	v := Document{}
 	if err := dec.Decode(&v); err != nil {
 		return nil, fmt.Errorf("error: %v", err)
 	}
-	for _, loc := range v.Locations {
-		for _, gameloc := range loc.GameLocations {
-			if gameloc.Name == "Farm" {
-				farm = &gameloc
-				break
-			}
-		}
-	}
 
-	return farm, nil
+	return &v.SaveGame, nil
 	/*
 
 		var allObjects []Item

@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"image"
 	"log"
 	"os"
@@ -16,7 +15,7 @@ var (
 	farmCacheOnce sync.Once
 )
 
-const farmFileMap = "C:/Users/Yves/Downloads/XNBNode/Content/TMX/Farm.tmx"
+var farmFileMap = path.Clean(path.Join(os.Getenv("HOME"), "Content/TMX/Farm.tmx"))
 
 // Map represents a tile map loaded from disk and cached in memory.
 type Map struct {
@@ -59,27 +58,8 @@ func LoadFarmMap() *Map {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("MAP HEIGHT: %v\n", m.Height)
-		fmt.Printf("MAP WIDTH: %v\n", m.Width)
-		fmt.Printf("TILE HEIGHT, WIDTH: %v, %v\n", m.TileHeight, m.TileWidth)
+
 		farmCache = &Map{TMX: m, source: farmFileMap, imageSources: map[string]image.Image{}}
 	})
 	return farmCache
-	/*
-		    for _, layer := range m.Layers {
-				fmt.Printf("Layer: %v", layer.Name)
-				if layer.Name != "Front" {
-					continue
-				}
-
-				for pos, tiles := range layer.DecodedTiles {
-					fmt.Printf("==\nPos %v, Tile ID %+v\n", pos, tiles.ID)
-					fmt.Printf("Tiles: %#v\n", tiles)
-					if tiles.Tileset != nil {
-						fmt.Printf(" tileset: %+v\n", tiles.Tileset)
-					}
-				}
-
-			}
-	*/
 }

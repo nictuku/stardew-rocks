@@ -15,7 +15,6 @@ import (
 func failOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
-		panic(fmt.Sprintf("%s: %s", msg, err))
 	}
 }
 
@@ -75,16 +74,20 @@ func main() {
 	go func() {
 		for d := range msgs {
 			count++
-			mapFile := fmt.Sprintf("map-%09d.png", count)
-			f, err := os.OpenFile(mapFile, os.O_CREATE|os.O_WRONLY, 0666)
-			if err != nil {
-				panic(err)
-			}
+
 			saveGame, err := parser.ParseSaveGame(bytes.NewReader(d.Body))
 			if err != nil {
 				log.Print(err)
-				f.Close()
 				return
+			}
+			if saveGame.Player.Name == "" {
+				log.Printf("blank player name")
+				break
+			}
+			mapFile := fmt.Sprintf("map-%v.png", saveGame.Player.Name)
+			f, err := os.OpenFile(mapFile, os.O_CREATE|os.O_WRONLY, 0666)
+			if err != nil {
+				log.Fatal(err)
 			}
 			lastSaveMu.Lock()
 			lastSave = d.Body
