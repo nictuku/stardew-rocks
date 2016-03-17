@@ -8,7 +8,7 @@ We'll build some cool features based on the saved games, watch this space :-D.
 
 You can install the Stardew Rocks client and help the community!
 
- - [Download Stardew Rocks!](https://github.com/nictuku/stardew-rocks/releases/download/v0.3/stardew_rocks.exe)
+ - [Download Stardew Rocks!](https://github.com/nictuku/stardew-rocks/releases/download/v0.4/stardew_rocks.exe)
 
 Just download the .exe file and run it. Once running it will look a bit like this:
 
