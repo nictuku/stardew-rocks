@@ -176,10 +176,18 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 		tileHeight int // Width is 32 even for big craftables.
 		sourcePath string
 	)
-	switch item.Value.Object.Type {
+	obj := item.Value.Object
+	switch obj.Type {
 	case "Crafting":
-		tileHeight = 32
-		sourcePath = "../TileSheets/Craftables.png"
+		switch {
+		case obj.BigCraftable == true:
+			tileHeight = 32
+			sourcePath = "../TileSheets/Craftables.png"
+		default:
+			fmt.Printf("do not yet understand this: %v\n", obj.XML)
+			return
+		}
+
 	default: // e.g: "Basic"
 		tileHeight = 16
 		sourcePath = "../Maps/springobjects.png"
@@ -191,7 +199,7 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 	}
 	srcBounds := src.Bounds()
 
-	x0, y0 := tileCoordinates(item.Value.Object.ParentSheetIndex, 16, tileHeight, srcBounds.Dx())
+	x0, y0 := tileCoordinates(obj.ParentSheetIndex, 16, tileHeight, srcBounds.Dx())
 	sr := image.Rect(x0, y0, x0+16, y0+tileHeight)
 	r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * 16, item.Key.Vector2.Y * 16})
 	draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
