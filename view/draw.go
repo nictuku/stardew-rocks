@@ -171,6 +171,32 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 
 }
 
+func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
+	var (
+		tileHeight int // Width is 32 even for big craftables.
+		sourcePath string
+	)
+	switch item.Value.Object.Type {
+	case "Crafting":
+		tileHeight = 32
+		sourcePath = "../TileSheets/Craftables.png"
+	default: // e.g: "Basic"
+		tileHeight = 16
+		sourcePath = "../Maps/springobjects.png"
+	}
+	src, err := pm.FetchSource(sourcePath)
+	if err != nil {
+		log.Printf("Error fetching terrain asset %v: %v", sourcePath, err)
+		panic(err)
+	}
+	srcBounds := src.Bounds()
+
+	x0, y0 := tileCoordinates(item.Value.Object.ParentSheetIndex, 16, tileHeight, srcBounds.Dx())
+	sr := image.Rect(x0, y0, x0+16, y0+tileHeight)
+	r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * 16, item.Key.Vector2.Y * 16})
+	draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+}
+
 func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Image, x, y int) {
 	if tile.IsNil() {
 		return
@@ -248,22 +274,20 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 		}
 	}
 
-	// objects are in Maps/springobjects.png
 	{
-		p := "../Maps/springobjects.png"
-		src, err := pm.FetchSource(p)
-		if err != nil {
-			log.Printf("Error fetching terrain asset %v: %v", p, err)
-			panic(err)
-		}
-		srcBounds := src.Bounds()
 
-		for _, item := range farm.Objects.Items {
-			x0, y0 := tileCoordinates(item.Value.Object.ParentSheetIndex, 16, 16, srcBounds.Dx())
-			sr := image.Rect(x0, y0, x0+16, y0+16)
-			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * 16, item.Key.Vector2.Y * 16})
-			draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+		objects := make([][]*parser.ObjectItem, m.Height)
+		for i := range farm.Objects.Items {
+			object := farm.Objects.Items[i] // separate pointer for each item
+			objects[object.Y()] = append(objects[object.Y()], &object)
 		}
+
+		for _, row := range objects {
+			for _, item := range row {
+				drawObject(pm, item, img)
+			}
+		}
+
 	}
 
 	{

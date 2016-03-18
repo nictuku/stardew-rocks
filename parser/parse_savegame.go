@@ -104,6 +104,7 @@ type ItemValue struct {
 
 type Object struct {
 	Name             string `xml:"name"`
+	Type             string `xml:"type"`
 	TileLocation     Vector `xml:"tileLocation"`
 	ParentSheetIndex int    `xml:"parentSheetIndex"`
 }
