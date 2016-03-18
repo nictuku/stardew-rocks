@@ -1,0 +1,42 @@
+Document/SaveGame/player/
+	shirt
+	hair
+	accessory
+	facialHair
+	hairstyleColor
+	pantsColor
+	newEyeColor
+	hat
+
+	fishCaught
+
+Document/SaveGame/player/Position/
+	X
+	Y
+
+Document/SaveGame/locations/GameLocation(...)
+	name=Farm
+	objects=..
+
+Document/SaveGame/locations/GameLocation(...)
+	name=FarmHouse
+	objects=..
+
+	objects
+		key=X, Y
+		value=Object
+			name=?
+
+
+type Document struct {
+	SaveGame
+}
+
+type SaveGame struct {
+	[]Location `xml:"locations"`
+}
+
+type Location struct {
+	XML `xml:",innerxml"
+}
+	

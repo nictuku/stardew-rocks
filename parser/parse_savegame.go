@@ -126,47 +126,4 @@ func ParseSaveGame(r io.Reader) (saveGame *SaveGame, err error) {
 	}
 
 	return &v.SaveGame, nil
-	/*
-
-		var allObjects []Item
-		for _, i := range farm.TerrainFeatures.Items {
-			allObjects = append(allObjects, i)
-		}
-		for _, i := range farm.Objects.Items {
-			allObjects = append(allObjects, i)
-		}
-		for _, object := range allObjects {
-			if object.Y() >= len(farmMap.Loc) || object.X() >= len(farmMap.Loc[object.Y()]) {
-				return nil, fmt.Errorf("Found object vector location outside normal bounds: X=%d, Y=%d", object.Y(), object.X())
-			}
-			farmMap.Loc[object.Y()][object.X()] = object.ItemName()
-
-		}
-		return &farmMap, nil
-	*/
 }
-
-/*
-func ASCIIImage(farmMap *FarmMap) {
-	for _, j := range farmMap.Loc {
-		stuff := []string{}
-		for _, what := range j {
-			if strings.HasPrefix(what, "tree") {
-				fmt.Print("T")
-				stuff = append(stuff, what)
-			} else if what != "" {
-				fmt.Print("x")
-				stuff = append(stuff, what)
-			} else {
-				fmt.Print(".")
-			}
-		}
-		p := fmt.Sprint(stuff)
-		if len(p) > 80 {
-			p = p[0:79]
-		}
-		fmt.Print(p)
-		fmt.Println()
-	}
-}
-*/
