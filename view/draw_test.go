@@ -19,7 +19,7 @@ func TestTileCoordinate(t *testing.T) {
 func TestLoadTile(t *testing.T) {
 	farm := parser.LoadFarmMap()
 
-	sg, err := os.Open("../assets/saves/Jake_117702234")
+	sg, err := os.Open("../assets/saves/Aerlia-1458278945")
 	if err != nil {
 		t.Fatal(err)
 	}
