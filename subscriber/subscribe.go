@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"time"
 
 	"github.com/nictuku/stardew-rocks/parser"
 	"github.com/nictuku/stardew-rocks/view"
@@ -86,7 +87,24 @@ func main() {
 				break
 			}
 			_, name := path.Split(path.Clean(saveGame.Player.Name)) // please don't hacko me mister
-			mapFile := path.Join(wwwDir(), fmt.Sprintf("map-%v.png", name))
+
+			ts := time.Now().Unix()
+
+			// Write the save game, then write the screenshot.
+			// TODO: deal with races and conflicts.
+			saveFile := path.Join(wwwDir(), "saveGames", fmt.Sprintf("%v-%d.xml", name, ts))
+			sf, err := os.OpenFile(saveFile, os.O_CREATE|os.O_WRONLY, 0666)
+			if err != nil {
+				log.Fatal(err)
+			}
+			if _, err := sf.Write(d.Body); err != nil {
+				log.Printf("failed to write save file at %v: %v", saveFile, err)
+			} else {
+				log.Printf("Wrote saveGame file %v", saveFile)
+			}
+			sf.Close()
+
+			mapFile := path.Join(wwwDir(), fmt.Sprintf("map-%v-%d.png", name, ts))
 			f, err := os.OpenFile(mapFile, os.O_CREATE|os.O_WRONLY, 0666)
 			if err != nil {
 				log.Fatal(err)
