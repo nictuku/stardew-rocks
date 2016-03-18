@@ -87,8 +87,14 @@ type TerrainItemValue struct {
 
 type TerrainFeature struct {
 	Type        string `xml:"type,attr"`
-	TreeType    int    `xml:"treeType"`
 	GrowthStage int    `xml:"growthStage"`
+
+	TreeType int `xml:"treeType"`
+
+	GrassType     int `xml:"grassType"`
+	NumberOfWeeds int `xml:"numberOfWeeds"`
+	// Always 0 in the save game.
+	// GrassSourceOffset int `xml:"grassSourceOffset"`
 }
 
 type ItemValue struct {

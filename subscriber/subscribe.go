@@ -85,7 +85,8 @@ func main() {
 				log.Printf("blank player name")
 				break
 			}
-			mapFile := path.Join(wwwDir(), fmt.Sprintf("map-%v.png", saveGame.Player.Name))
+			_, name := path.Split(path.Clean(saveGame.Player.Name)) // please don't hacko me mister
+			mapFile := path.Join(wwwDir(), fmt.Sprintf("map-%v.png", name))
 			f, err := os.OpenFile(mapFile, os.O_CREATE|os.O_WRONLY, 0666)
 			if err != nil {
 				log.Fatal(err)
