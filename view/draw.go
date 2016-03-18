@@ -183,8 +183,15 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 		case obj.BigCraftable == true:
 			tileHeight = 32
 			sourcePath = "../TileSheets/Craftables.png"
+		case obj.XSIType == "Fence":
+			if obj.WhichType == 4 {
+				return
+			}
+			sourcePath = fmt.Sprintf("../LooseSprites/Fence%d.png", obj.WhichType)
+			tileHeight = 32
+			obj.ParentSheetIndex = 5 // This is a pole with no neighbors.
 		default:
-			fmt.Printf("do not yet understand this: %v\n", obj.XML)
+			//fmt.Printf("do not yet understand this: %v\n", obj.XML)
 			return
 		}
 
@@ -194,6 +201,8 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 	}
 	src, err := pm.FetchSource(sourcePath)
 	if err != nil {
+		// TODO: don't panic, but make sure that we only lookup safe locations.
+		// Also cache the failure result so we don't have to check again.
 		log.Printf("Error fetching terrain asset %v: %v", sourcePath, err)
 		panic(err)
 	}

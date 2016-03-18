@@ -103,13 +103,16 @@ type ItemValue struct {
 }
 
 type Object struct {
-	Name             string  `xml:"name"`
-	Type             string  `xml:"type"`
-	XSIType          string  `xml:"type,attr"` // the xsi:type is used by e.g: Fences
+	Name string `xml:"name"`
+	Type string `xml:"type"`
+
 	TileLocation     Vector  `xml:"tileLocation"`
 	ParentSheetIndex int     `xml:"parentSheetIndex"`
 	Health           float32 `xml:"health"`
 	BigCraftable     bool    `xml:"bigCraftable"`
+
+	XSIType   string `xml:"type,attr"` // the xsi:type is used by e.g: Fences
+	WhichType int    `xml:"whichType"` // used by Fences
 
 	XML string `xml:",innerxml"`
 }
