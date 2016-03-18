@@ -217,13 +217,15 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 
 	draw.Draw(img, img.Bounds(), dirt, image.ZP, draw.Src)
 
+	// Draw ordering should be:
+	// Back Layer; Buildings Layer; Houses; Objects; TerrainFeatures; Front Layer; AlwaysFront Layer
+
 	for y := 0; y < m.Height; y++ {
 		for x := 0; x < m.Width; x++ {
 			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
-				if layer.Name == "Paths" {
-					continue // Looks ugly. Need some work to look pretty.
+				if layer.Name == "Back" || layer.Name == "Buildings" {
+					drawTile(pm, layer.DecodedTiles[y*m.Width+x], img, x, y)
 				}
-				drawTile(pm, layer.DecodedTiles[y*m.Width+x], img, x, y)
 			}
 		}
 	}
@@ -286,6 +288,17 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 		}
 
 	}
+
+	for y := 0; y < m.Height; y++ {
+		for x := 0; x < m.Width; x++ {
+			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
+				if layer.Name == "Front" || layer.Name == "AlwaysFront" {
+					drawTile(pm, layer.DecodedTiles[y*m.Width+x], img, x, y)
+				}
+			}
+		}
+	}
+
 	if err := png.Encode(w, img); err != nil {
 		panic(err)
 	}
