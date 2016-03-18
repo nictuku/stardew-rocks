@@ -93,15 +93,11 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 			select {
 			case <-stop:
 				return
-			// The game is saved in a temporary file first (Directory/SaveGameInfo_STARDEWVALLEYTMP).
+			// The game metadata is saved in a temporary file first (Directory/SaveGameInfo_STARDEWVALLEYTMP).
 			// If the write works, it renames it to replace the older file.
 			// Our job here is to watch for new files being created and written to, and stop watching the ones that get deleted.
-			//
-			// Sometimes game crashes happen if we get things wrong. My theory is that happens if we don't stop
-			// watching the files and then they get written to again - or so.
-			// If that's true, then this is all very racy :-(. If the game manages to open the new file before we
-			// remove the file watch, a crash may happen.
-
+			// To avoid crashing the game while it's renaming stuff, we ignore the temp
+			// file and watch for when the game finished doing the rename.
 			case event := <-watcher.Events:
 				filename := event.Name
 				// Ignore files with extensions
