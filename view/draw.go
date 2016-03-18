@@ -171,14 +171,14 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 
 }
 
-func drawTile(pm *parser.Map, tile *tmx.DecodedTile, img draw.Image, x, y int) {
+func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Image, x, y int) {
 	if tile.IsNil() {
 		return
 	}
 	m := pm.TMX
 
 	// Fetch tile from tileset.
-	src, err := pm.FetchSource(tile.Tileset.Image.Source)
+	src, err := pm.FetchSeasonSource(tile.Tileset.Image.Source, season)
 	if err != nil {
 		log.Printf("Error fetching image asset %v: %v", tile.Tileset.Image.Source, err)
 		return
@@ -221,7 +221,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 		for x := 0; x < m.Width; x++ {
 			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
 				if layer.Name == "Back" || layer.Name == "Buildings" {
-					drawTile(pm, layer.DecodedTiles[y*m.Width+x], img, x, y)
+					drawTile(pm, sg.CurrentSeason, layer.DecodedTiles[y*m.Width+x], img, x, y)
 				}
 			}
 		}
@@ -290,7 +290,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 		for x := 0; x < m.Width; x++ {
 			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
 				if layer.Name == "Front" || layer.Name == "AlwaysFront" {
-					drawTile(pm, layer.DecodedTiles[y*m.Width+x], img, x, y)
+					drawTile(pm, sg.CurrentSeason, layer.DecodedTiles[y*m.Width+x], img, x, y)
 				}
 			}
 		}

@@ -29,6 +29,14 @@ type Map struct {
 	imageSources map[string]image.Image
 }
 
+// FetchSeasonSource obtains the source image specified in source, but also replaces the
+// source string to match the current season.
+func (m *Map) FetchSeasonSource(source, season string) (image.Image, error) {
+	// Expect the _ suffix because there's a "seasonobjects.png" that we should not replace.
+	return m.FetchSource(strings.Replace(source, "spring_", season+"_", 1))
+}
+
+// FetchSource obtains the source image specified in source.
 func (m *Map) FetchSource(s string) (image.Image, error) {
 	s = strings.Replace(s, `\`, "/", -1)
 	m.mu.Lock()
@@ -50,6 +58,8 @@ func (m *Map) FetchSource(s string) (image.Image, error) {
 	return img, err
 }
 
+// LoadFarmMap loads the TMX farm map. Calling this function multiple times
+// always returns the same content.
 func LoadFarmMap() *Map {
 	farmCacheOnce.Do(func() {
 		f, err := os.Open(farmFileMap)
