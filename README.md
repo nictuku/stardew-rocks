@@ -42,4 +42,4 @@ For now it only shows a few items. It will be more complete, eventually :-).
 
 # Thanks to our testers!
 
-freaky-m0, Beener
+freaky-m0, Beener, Kylindra, Dristan
