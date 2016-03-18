@@ -154,13 +154,11 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 		log.Fatalf("Error fetching image asset %v", err)
 	}
 	for i, weed := range whichWeed[0:item.Value.TerrainFeature.NumberOfWeeds] {
-		fmt.Println("c", i, flipWeed[i])
 		idx := 0
 		if weed < len(whichWeed) {
 			idx = whichWeed[weed] * 15
 		}
 		sr := grassRect(idx, item.Value.TerrainFeature.GrassType)
-		fmt.Printf("%#v\n", item.Value.TerrainFeature)
 		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth + (i%2*m.TileWidth/2 + offsetWeeds[2][i]) + 7,
 			item.Key.Vector2.Y*m.TileHeight + i%2*m.TileHeight/2 + offsetWeeds[3][i] + 10,
 		})
@@ -195,7 +193,6 @@ func drawTile(pm *parser.Map, tile *tmx.DecodedTile, img draw.Image, x, y int) {
 }
 
 func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
-	//fmt.Println("sg game locations", sg.Locations.GameLocations)
 	var farm *parser.GameLocation
 	for _, gameloc := range sg.Locations.GameLocations {
 		if gameloc.Name == "Farm" {
