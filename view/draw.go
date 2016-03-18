@@ -42,8 +42,8 @@ var treeRects = map[int]image.Rectangle{
 	4: xnaRect(0, 96, 16, 32),
 }
 
-func treeAsset(treeType int) string {
-	return fmt.Sprintf("../TerrainFeatures/tree%d_spring.png", treeType) // TODO: other seasons
+func treeAsset(treeType int, season string) string {
+	return fmt.Sprintf("../TerrainFeatures/tree%d_%v.png", treeType, season) // TODO: other seasons
 }
 
 func grassOffset(grassType int) int {
@@ -73,13 +73,13 @@ func maybeFlip(flip bool, img image.Image, r image.Rectangle) image.Image {
 	return img
 }
 
-func drawTree(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
+func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
 	m := pm.TMX
 
 	if item.Value.TerrainFeature.Type != "Tree" {
 		return
 	}
-	p := treeAsset(item.Value.TerrainFeature.TreeType)
+	p := treeAsset(item.Value.TerrainFeature.TreeType, season)
 	src, err := pm.FetchSource(p)
 	if err != nil {
 		log.Printf("Error fetching terrain asset %v: %v", p, err)
@@ -278,7 +278,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 
 			for _, row := range items {
 				for _, item := range row {
-					drawTree(pm, item, img)
+					drawTree(pm, sg.CurrentSeason, item, img)
 					drawGrass(pm, item, img) //
 				}
 			}

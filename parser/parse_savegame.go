@@ -12,8 +12,9 @@ type Document struct {
 }
 
 type SaveGame struct {
-	Player    Player    `xml:"player"`
-	Locations Locations `xml:"locations"`
+	Player        Player    `xml:"player"`
+	Locations     Locations `xml:"locations"`
+	CurrentSeason string    `xml:"currentSeason"`
 }
 
 type Player struct {
