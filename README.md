@@ -8,13 +8,13 @@ We'll build some cool features based on the saved games, watch this space :-D.
 
 You can install the Stardew Rocks client and share your farm state with the rest of the community! Farm screenshots will eventually appear here: http://stardew.rocks (website is work in progress, hehe).
 
- - [Download Stardew Rocks!](https://github.com/nictuku/stardew-rocks/releases/download/v0.4/stardew_rocks.exe)
+ - [Download Stardew Rocks!](https://github.com/nictuku/stardew-rocks/releases/download/v0.5/stardew_rocks.exe)
+
+WARNING: 64-bit executable only for now. Sorry. See issue #2 for details.
 
 Just download the .exe file and run it. It stays on your system tray and looks like this:
 
 ![Screenshot](assets/img/systray.png)
-
-
 
 You can right click on that icon to close it.
 
