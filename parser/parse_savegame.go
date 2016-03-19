@@ -94,6 +94,8 @@ type TerrainFeature struct {
 
 	GrassType     int `xml:"grassType"`
 	NumberOfWeeds int `xml:"numberOfWeeds"`
+
+	WhichFloor int `xml:"whichFloor"`
 	// Always 0 in the save game.
 	// GrassSourceOffset int `xml:"grassSourceOffset"`
 }

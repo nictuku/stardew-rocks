@@ -73,6 +73,30 @@ func maybeFlip(flip bool, img image.Image, r image.Rectangle) image.Image {
 	return img
 }
 
+func flooringRect(whichFloor int) image.Rectangle {
+	return xnaRect(
+		whichFloor%4*64,
+		whichFloor/4*64,
+		16, 16)
+}
+
+func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
+	m := pm.TMX
+	if item.Value.TerrainFeature.Type != "Flooring" {
+		return
+	}
+	src, err := pm.FetchSource("../TerrainFeatures/Flooring.png")
+	if err != nil {
+		log.Fatalf("Error fetching image asset %v", err)
+	}
+	sr := flooringRect(item.Value.TerrainFeature.WhichFloor)
+	r := sr.Sub(sr.Min).Add(image.Point{
+		// TODO: support for neighbor connections (also missing for fences).
+		item.Key.Vector2.X * m.TileWidth,
+		item.Key.Vector2.Y * m.TileHeight,
+	})
+	draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+}
 func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
 	m := pm.TMX
 
@@ -206,7 +230,7 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 	if err != nil {
 		// TODO: don't panic, but make sure that we only lookup safe locations.
 		// Also cache the failure result so we don't have to check again.
-		log.Printf("Error fetching terrain asset %v: %v", sourcePath, err)
+		log.Printf("Error fetching asset %v: %v", sourcePath, err)
 		panic(err)
 	}
 	srcBounds := src.Bounds()
@@ -258,6 +282,18 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	// TODO: do not trust the user input. Don't hit files or slice indexes based on data.
 	m := pm.TMX
 
+	// Order items and objects to be displayed based on their Y order. Items with a higher Y should be drawn last.
+	items := make([][]*parser.TerrainItem, m.Height)
+	for i := range farm.TerrainFeatures.Items {
+		item := farm.TerrainFeatures.Items[i] // separate pointer for each item
+		items[item.Y()] = append(items[item.Y()], &item)
+	}
+	objects := make([][]*parser.ObjectItem, m.Height)
+	for i := range farm.Objects.Items {
+		object := farm.Objects.Items[i] // separate pointer for each item
+		objects[object.Y()] = append(objects[object.Y()], &object)
+	}
+
 	dirt := &image.Uniform{color.RGBA{0xEE, 0xAC, 0x24, 0xFF}}
 	img := image.NewRGBA(image.Rect(0, 0, m.Width*m.TileWidth, m.Height*m.TileHeight))
 
@@ -296,41 +332,23 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 			draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
 		}
 	}
-
-	{
-
-		objects := make([][]*parser.ObjectItem, m.Height)
-		for i := range farm.Objects.Items {
-			object := farm.Objects.Items[i] // separate pointer for each item
-			objects[object.Y()] = append(objects[object.Y()], &object)
+	// Draw flooring first.
+	for _, row := range items {
+		for _, item := range row {
+			drawFlooring(pm, item, img)
 		}
-
-		for _, row := range objects {
-			for _, item := range row {
-				drawObject(pm, item, img)
-			}
+	}
+	for _, row := range objects {
+		for _, item := range row {
+			drawObject(pm, item, img)
 		}
-
 	}
 
-	{
-		// Order items to be displayed based on their Y order. Items with a higher Y should be drawn last.
-		items := make([][]*parser.TerrainItem, m.Height)
-		for i := range farm.TerrainFeatures.Items {
-			item := farm.TerrainFeatures.Items[i] // separate pointer for each item
-			items[item.Y()] = append(items[item.Y()], &item)
+	for _, row := range items {
+		for _, item := range row {
+			drawTree(pm, sg.CurrentSeason, item, img)
+			drawGrass(pm, item, img) //
 		}
-
-		{
-
-			for _, row := range items {
-				for _, item := range row {
-					drawTree(pm, sg.CurrentSeason, item, img)
-					drawGrass(pm, item, img) //
-				}
-			}
-		}
-
 	}
 
 	for y := 0; y < m.Height; y++ {
