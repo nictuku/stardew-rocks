@@ -173,12 +173,14 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 
 func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 	var (
-		tileHeight int // Width is 32 even for big craftables.
-		sourcePath string
+		tileHeight            int // Width is 32 even for big craftables.
+		sourcePath            string
+		placementCompensation = 0 // craftables are anchored at the top tile
 	)
 	obj := item.Value.Object
 	switch obj.Type {
 	case "Crafting":
+		placementCompensation = -16
 		switch {
 		case obj.BigCraftable == true:
 			tileHeight = 32
@@ -190,8 +192,9 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 			sourcePath = fmt.Sprintf("../LooseSprites/Fence%d.png", obj.WhichType)
 			tileHeight = 32
 			obj.ParentSheetIndex = 5 // This is a pole with no neighbors.
+
 		default:
-			//fmt.Printf("do not yet understand this: %v\n", obj.XML)
+			fmt.Printf("do not yet understand this: %v\n", obj.XML)
 			return
 		}
 
@@ -210,7 +213,10 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 
 	x0, y0 := tileCoordinates(obj.ParentSheetIndex, 16, tileHeight, srcBounds.Dx())
 	sr := image.Rect(x0, y0, x0+16, y0+tileHeight)
-	r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * 16, item.Key.Vector2.Y * 16})
+	r := sr.Sub(sr.Min).Add(image.Point{
+		item.Key.Vector2.X * 16,
+		item.Key.Vector2.Y*16 + placementCompensation,
+	})
 	draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
 }
 
