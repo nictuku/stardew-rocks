@@ -4,15 +4,18 @@ package main
 
 import (
 	"crypto/rand"
+	"fmt"
 	"log"
 	"math/big"
 	"os"
 	"path"
+	"runtime"
 	"strings"
 	"time"
 
 	"path/filepath"
 
+	"github.com/cratonica/trayhost"
 	"github.com/fsnotify/fsnotify"
 	"github.com/marcsauter/single"
 	"github.com/streadway/amqp"
@@ -164,23 +167,41 @@ func main() {
 	s := single.New("stardew-rocks-client") // Will exit if already running.
 	s.Lock()
 	defer s.Unlock()
-	for {
 
-		topic, close, err := rabbitStart()
-		if err != nil {
-			log.Fatal(err)
+	// Windows tray.
+	// EnterLoop must be called on the OS's main thread
+	runtime.LockOSThread()
+
+	go func() {
+		// TODO: Local page with debug information.
+		trayhost.SetUrl("http://stardew.rocks")
+	}()
+	go func() {
+
+		for {
+
+			topic, close, err := rabbitStart()
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer close()
+
+			// Find when we need to reconnect.
+			cc := make(chan *amqp.Error)
+			topic.NotifyClose(cc)
+
+			watchAndPublish(topic, cc)
+
+			// Don't retry too fast.
+			time.Sleep(randSleep())
 		}
-		defer close()
 
-		// Find when we need to reconnect.
-		cc := make(chan *amqp.Error)
-		topic.NotifyClose(cc)
+	}()
+	// Enter the host system's event loop
+	trayhost.EnterLoop("Stardew Rocks", iconData)
 
-		watchAndPublish(topic, cc)
-
-		// Don't retry too fast.
-		time.Sleep(randSleep())
-	}
+	// This is only reached once the user chooses the Exit menu item
+	fmt.Println("Exiting")
 }
 
 func randSleep() time.Duration {
