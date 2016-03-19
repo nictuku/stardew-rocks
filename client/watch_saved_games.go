@@ -21,10 +21,6 @@ import (
 	"github.com/streadway/amqp"
 )
 
-const (
-	verbose = false
-)
-
 func stardewFolder() string {
 	return path.Join(os.Getenv("AppData"), "StardewValley/Saves")
 }
@@ -107,24 +103,18 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 				if ignoreFile(filename) {
 					continue
 				}
-				if verbose {
-					log.Info("file watch:", relPath(filename), event.String())
-				}
+				log.Debug("file watch:", relPath(filename), event.String())
 				if event.Op&fsnotify.Remove == fsnotify.Remove {
 					watcher.Remove(filename)
 					delete(watched, filename)
-					if verbose {
-						log.Info("Deleted file watch:", relPath(filename))
-					}
+					log.Debug("Deleted file watch:", relPath(filename))
 				} else if !watched[filename] {
 					watcher.Add(filename)
 					watched[filename] = true
-					log.Infof("Watching %v", relPath(filename))
+					log.Debug("Watching %v", relPath(filename))
 				}
 				if event.Op&fsnotify.Create == fsnotify.Create || event.Op&fsnotify.Rename == fsnotify.Rename || event.Op&fsnotify.Write == fsnotify.Write {
-					if verbose {
-						log.Info("Found modified file:", relPath(filename))
-					}
+					log.Debug("Found modified file:", relPath(filename))
 					switch {
 					case isDir(filename):
 						continue
@@ -134,16 +124,14 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 					case strings.Contains(path.Base(filename), "SaveGameInfo"):
 						if err := publishSavedGame(topic, filename); err != nil {
 							// This is normal. We tried to open the file after it's been renamed.
-							log.Infof("could not publish new save game content: %v", err)
+							log.Debugf("could not publish new save game content: %v", err)
 							continue
 						}
 						log.Info("[x] New save game published")
 					default:
 						if err := publishOtherFiles(topic, filename); err != nil {
 							// This is normal. We tried to open the file after it's been renamed.
-							if verbose {
-								log.Infof("could not publish content: %v", relPath(filename), err)
-							}
+							log.Debugf("could not publish content: %v", relPath(filename), err)
 							continue
 						}
 						log.Infof("[x] New detailed game file published")

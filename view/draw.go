@@ -221,7 +221,6 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 
 		draw.DrawMask(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, mask, sr.Min, draw.Over)
 	}
-
 }
 
 func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
