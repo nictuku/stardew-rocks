@@ -18,7 +18,9 @@ type SaveGame struct {
 }
 
 type Player struct {
-	Name string `xml:"name"`
+	Name              string   `xml:"name"`
+	HouseUpgradeLevel int      `xml:"houseUpgradeLevel"`
+	MailReceived      []string `xml:"mailReceived>string"`
 }
 
 type Locations struct {
