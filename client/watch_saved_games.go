@@ -5,8 +5,8 @@ package main
 import (
 	"crypto/rand"
 	"fmt"
-	"log"
 	"math/big"
+	"net/http"
 	"os"
 	"path"
 	"runtime"
@@ -85,7 +85,7 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("Watching %v", relPath(save))
+		log.Infof("Watching %v", relPath(save))
 		watched[save] = true
 	}
 	stop := make(chan bool, 1)
@@ -108,22 +108,22 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 					continue
 				}
 				if verbose {
-					log.Println("file watch:", relPath(filename), event.String())
+					log.Info("file watch:", relPath(filename), event.String())
 				}
 				if event.Op&fsnotify.Remove == fsnotify.Remove {
 					watcher.Remove(filename)
 					delete(watched, filename)
 					if verbose {
-						log.Println("Deleted file watch:", relPath(filename))
+						log.Info("Deleted file watch:", relPath(filename))
 					}
 				} else if !watched[filename] {
 					watcher.Add(filename)
 					watched[filename] = true
-					log.Printf("Watching %v", relPath(filename))
+					log.Infof("Watching %v", relPath(filename))
 				}
 				if event.Op&fsnotify.Create == fsnotify.Create || event.Op&fsnotify.Rename == fsnotify.Rename || event.Op&fsnotify.Write == fsnotify.Write {
 					if verbose {
-						log.Println("Found modified file:", relPath(filename))
+						log.Info("Found modified file:", relPath(filename))
 					}
 					switch {
 					case isDir(filename):
@@ -134,30 +134,28 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 					case strings.Contains(path.Base(filename), "SaveGameInfo"):
 						if err := publishSavedGame(topic, filename); err != nil {
 							// This is normal. We tried to open the file after it's been renamed.
-							if verbose {
-								log.Print("could not publish new save game content:", err)
-							}
+							log.Infof("could not publish new save game content: %v", err)
 							continue
 						}
-						log.Print("[x] New save game published")
+						log.Info("[x] New save game published")
 					default:
 						if err := publishOtherFiles(topic, filename); err != nil {
 							// This is normal. We tried to open the file after it's been renamed.
 							if verbose {
-								log.Printf("could not publish content: %v", relPath(filename), err)
+								log.Infof("could not publish content: %v", relPath(filename), err)
 							}
 							continue
 						}
-						log.Printf("[x] New detailed game file published")
+						log.Infof("[x] New detailed game file published")
 					}
 				}
 			case err := <-watcher.Errors:
-				log.Println("error:", err)
+				log.Error("error:", err)
 			}
 		}
 	}()
 	err = <-cancel
-	log.Printf("Channel Error: %v", err)
+	log.Errorf("Channel Error: %v", err)
 	stop <- true
 	return
 }
@@ -174,7 +172,8 @@ func main() {
 
 	go func() {
 		// TODO: Local page with debug information.
-		trayhost.SetUrl("http://stardew.rocks")
+		go http.Serve(localAddr, nil)
+		trayhost.SetUrl(fmt.Sprintf("http://%s", localAddr.Addr()))
 	}()
 	go func() {
 
@@ -199,9 +198,7 @@ func main() {
 	}()
 	// Enter the host system's event loop
 	trayhost.EnterLoop("Stardew Rocks", iconData)
-
-	// This is only reached once the user chooses the Exit menu item
-	fmt.Println("Exiting")
+	log.Warningf("Exiting..")
 }
 
 func randSleep() time.Duration {

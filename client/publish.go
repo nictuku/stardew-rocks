@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 
 	"github.com/streadway/amqp"
 )
@@ -17,7 +16,7 @@ func rabbitStart() (ch *amqp.Channel, close func(), err error) {
 	if ch, err = conn.Channel(); err != nil {
 		return nil, nil, err
 	}
-	log.Print("Connected to the stardew.rocks amqp server")
+	log.Infof("Connected to the stardew.rocks amqp server")
 	return ch, func() {
 		conn.Close()
 		ch.Close()
