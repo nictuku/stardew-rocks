@@ -6,16 +6,19 @@ We'll build some cool features based on the saved games, watch this space :-D.
 
 # For Farmers
 
-You can install the Stardew Rocks client and help the community!
+You can install the Stardew Rocks client and share your farm state with the rest of the community! Farm screenshots will eventually appear here: http://stardew.rocks (website is work in progress, hehe).
 
  - [Download Stardew Rocks!](https://github.com/nictuku/stardew-rocks/releases/download/v0.4/stardew_rocks.exe)
 
-Just download the .exe file and run it. Once running it will look a bit like this:
+Just download the .exe file and run it. It stays on your system tray and looks like this:
 
-![Screenshot](client/screenshot.jpg)
+![Screenshot](assets/img/systray.png)
 
-Please leave this window open in the background while you're playing Stardew Valley. You can minimize it, but don't close it. 
-When your character goes to sleep and the game is saved, we'll grab your game file and send it to our servers.
+
+
+You can right click on that icon to close it.
+
+The app is configured to run on startup for you. If you don't want that, just rename the *stardew_rocks.exe* executable to something else and it won't start automatically anymore.
 
 *WARNING*: _Stardew Rocks_ doesn't ever write to files on your computer, but there may be a risk of crashing StardewValley when it tries to save a game. That can make you lose a day of your SDV work. If that happens, please notify the _Stardew Rocks_ developers. We don't want it to happen to anybody else!
 

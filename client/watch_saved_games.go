@@ -154,6 +154,10 @@ func main() {
 	s.Lock()
 	defer s.Unlock()
 
+	// Run on startup. If this fails, aborts.
+	// Make sure the user fixes this.
+	setupRunOnStartup()
+
 	// Windows tray.
 	// EnterLoop must be called on the OS's main thread
 	runtime.LockOSThread()
@@ -163,6 +167,7 @@ func main() {
 		go http.Serve(localAddr, nil)
 		trayhost.SetUrl(fmt.Sprintf("http://%s", localAddr.Addr()))
 	}()
+
 	go func() {
 
 		for {
