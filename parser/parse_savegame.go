@@ -92,7 +92,8 @@ type TerrainFeature struct {
 	Type        string `xml:"type,attr"`
 	GrowthStage int    `xml:"growthStage"`
 
-	TreeType int `xml:"treeType"`
+	TreeType int  `xml:"treeType"`
+	Flipped  bool `xml:"flipped"`
 
 	GrassType     int `xml:"grassType"`
 	NumberOfWeeds int `xml:"numberOfWeeds"`

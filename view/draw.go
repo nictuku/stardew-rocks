@@ -66,7 +66,6 @@ func grassRect(idx, grassType int) image.Rectangle {
 }
 
 func maybeFlip(flip bool, img image.Image, r image.Rectangle) image.Image {
-
 	if flip {
 		return imaging.FlipH(imaging.Crop(img, r))
 	}
@@ -174,7 +173,10 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 				item.Key.Vector2.X*m.TileWidth - m.TileWidth, // centralize
 				item.Key.Vector2.Y*m.TileHeight - 80,         // stump offset
 			})
-			draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+
+			draw.DrawMask(img, r,
+				maybeFlip(item.Value.TerrainFeature.Flipped, src, sr),
+				sr.Min, mask, sr.Min, draw.Over)
 		}
 	}
 }
