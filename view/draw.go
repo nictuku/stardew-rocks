@@ -95,20 +95,23 @@ func flooringRect(whichFloor int, indexUsed int) image.Rectangle {
 		16, 16)
 }
 
-type Neighbour struct {
+type neighbour struct {
 	x, y, bit int
 }
+
 type neighbourComparison func(otherItem *parser.TerrainItem) bool
+
+var neighbourMapIndeces = []int{0, 4, 13, 1, 15, 3, 14, 2, 12, 8, 9, 5, 11, 7, 10, 6}
 
 func getFlooringIndex(item *parser.TerrainItem, items [][]*parser.TerrainItem, fn neighbourComparison) int {
 	x := item.Key.Vector2.X
 	y := item.Key.Vector2.Y
-	indeces := [16]int{0, 4, 13, 1, 15, 3, 14, 2, 12, 8, 9, 5, 11, 7, 10, 6}
 	index := 0
-	neighbours := []Neighbour{Neighbour{x: x, y: y - 1, bit: 8},
-		Neighbour{x: x - 1, y: y, bit: 4},
-		Neighbour{x: x + 1, y: y, bit: 2},
-		Neighbour{x: x, y: y + 1, bit: 1}}
+	neighbours := []neighbour{
+		{x: x, y: y - 1, bit: 8},
+		{x: x - 1, y: y, bit: 4},
+		{x: x + 1, y: y, bit: 2},
+		{x: x, y: y + 1, bit: 1}}
 	for _, neighbour := range neighbours {
 		if neighbour.y > 0 && neighbour.y < len(items) {
 			for _, otherItem := range items[neighbour.y] {
@@ -118,8 +121,7 @@ func getFlooringIndex(item *parser.TerrainItem, items [][]*parser.TerrainItem, f
 			}
 		}
 	}
-	indexUsed := indeces[index]
-	return indexUsed
+	return neighbourMapIndeces[index]
 }
 
 func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image, items [][]*parser.TerrainItem) {
