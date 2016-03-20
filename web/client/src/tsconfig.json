@@ -1,0 +1,15 @@
+{
+  "version": "1.7.5",
+  "compileOnSave": false,
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "module": "commonjs",
+    "removeComments": true,
+    "sourceMap": false
+  },
+  "exclude": [
+      "node_modules"
+  ]
+}

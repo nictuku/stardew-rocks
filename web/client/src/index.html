@@ -1,31 +1,39 @@
 <!doctype html>
-<html lang="">
+<html>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>client</title>
+    <title>StardewRocks</title>
+    <base href="/">
+    <!-- Put your css files here to have them load in development. In production they will be concated together. -->
+    <!-- build:css -->
+    <link rel="stylesheet" type="text/css" href="../node_modules/materialize-css/dist/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- endbuild -->
+
   </head>
   <body>
+    <app></app>
 
-    <main>Loading...</main>
-
-    <script src="lib/es6-shim.min.js"></script>
-    <script src="lib/angular2-polyfills.js"></script>
-    <script src="lib/traceur-runtime.js"></script>
-    <script src="lib/system-csp-production.src.js"></script>
-    <script src="lib/Reflect.js"></script>
-
+    <!-- These are the necessary angular2 development files. Don't put your own files here or they won't be included in production. -->
+    <!-- build:js -->
+    <script src="../node_modules/angular2/bundles/angular2-polyfills.js"></script>
+    <script src="../node_modules/systemjs/dist/system.js"></script>
+    <script src="../node_modules/typescript/lib/typescript.js"></script>
+    <script src="../node_modules/rxjs/bundles/Rx.js"></script>
+    <script src="../node_modules/angular2/bundles/angular2.dev.js"></script>
+    <script src="../node_modules/angular2/bundles/router.js"></script>
+    <script src="../node_modules/angular2/bundles/http.dev.js"></script>
     <script>
-      System.config({defaultJSExtensions: true});
+      System.config({
+        transpiler: 'typescript',
+        typescriptOptions: { emitDecoratorMetadata: true }
+      });
+      System.import('./app/app.ts');
     </script>
-
-    <script src="lib/angular2.js"></script>
-    <script src="lib/Rx.js"></script>
-
-    <script>
-      System.import('index').catch(console.log.bind(console));
-    </script>
+    <script src="http://localhost:35729/livereload.js"></script>
+    <!-- endbuild -->
 
   </body>
 </html>

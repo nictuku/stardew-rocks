@@ -1,73 +1,62 @@
-var gulp = require('gulp'),
-    rename = require('gulp-rename'),
-    traceur = require('gulp-traceur'),
-    webserver = require('gulp-webserver');
+var gulp = require('gulp');
+var uglify = require('gulp-uglify');
+var minifyCSS = require('gulp-cssnano');
+var autoprefixer = require('gulp-autoprefixer');
+var minifyHTML = require('gulp-htmlmin');
+var concat = require('gulp-concat');
+var del = require('del');
+var webpack = require('webpack-stream');
+var htmlReplace = require('gulp-html-replace');
 
-// run init tasks
-gulp.task('default', ['dependencies', 'js', 'html', 'css']);
-
-// run development task
-gulp.task('dev', ['watch', 'serve']);
-
-// serve the build dir
-gulp.task('serve', function () {
-  gulp.src('build')
-    .pipe(webserver({
-      port: 5000,
-      open: true
-    }));
+gulp.task('clean', function() {
+  return del.sync(['dist/**']);
 });
 
-// watch for changes and run the relevant task
-gulp.task('watch', function () {
-  gulp.watch('src/**/*.js', ['js']);
-  gulp.watch('src/**/*.html', ['html']);
-  gulp.watch('src/**/*.css', ['css']);
+gulp.task('webpack', ['clean'], function() {
+  return gulp.src('src/app/app.ts')
+    .pipe(webpack(require('./webpack.config.js')))
+    .pipe(gulp.dest('src/'));
 });
 
-// move dependencies into build dir
-gulp.task('dependencies', function () {
-  return gulp.src([
-    'node_modules/traceur/bin/traceur-runtime.js',
-    'node_modules/systemjs/dist/system-csp-production.src.js',
-    'node_modules/systemjs/dist/system.js',
-    'node_modules/reflect-metadata/Reflect.js',
-    'node_modules/angular2/bundles/angular2.js',
-    'node_modules/angular2/bundles/angular2-polyfills.js',
-    'node_modules/rxjs/bundles/Rx.js',
-    'node_modules/es6-shim/es6-shim.min.js',
-    'node_modules/es6-shim/es6-shim.map'
-  ])
-    .pipe(gulp.dest('build/lib'));
+gulp.task('js', ['webpack'], function() {
+  return gulp.src('src/bundle.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('dist/'));
 });
 
-// transpile & move js
-gulp.task('js', function () {
-  return gulp.src('src/**/*.js')
-    .pipe(rename({
-      extname: ''
-    }))
-    .pipe(traceur({
-      modules: 'instantiate',
-      moduleName: true,
-      annotations: true,
-      types: true,
-      memberVariables: true
-    }))
-    .pipe(rename({
-      extname: '.js'
-    }))
-    .pipe(gulp.dest('build'));
-});
-
-// move html
-gulp.task('html', function () {
-  return gulp.src('src/**/*.html')
-    .pipe(gulp.dest('build'))
-});
-
-// move css
-gulp.task('css', function () {
+gulp.task('css', function() {
   return gulp.src('src/**/*.css')
-    .pipe(gulp.dest('build'))
+    .pipe(concat('main.css'))
+    .pipe(autoprefixer())
+    .pipe(minifyCSS())
+    .pipe(gulp.dest('dist/'));
+});
+
+gulp.task('html', function() {
+  return gulp.src('src/index.html')
+    .pipe(htmlReplace({
+      'css': {
+        src: 'main.css',
+        tpl: '<link rel="stylesheet" type="text/css" href="%s">'
+      },
+      'js': ['dependencies.js', 'bundle.js']
+    }))
+    .pipe(minifyHTML())
+    .pipe(gulp.dest('dist/'));
+});
+
+gulp.task('assets', function() {
+  return gulp.src('src/**/*.png')
+    .pipe(gulp.dest('dist/'));
+});
+
+gulp.task('dependencies', function() {
+  return gulp.src(['node_modules/reflect-metadata/Reflect.js', 'node_modules/zone.js/dist/zone.js'])
+    .pipe(concat('dependencies.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest('dist/'));
+});
+
+gulp.task('build', ['js', 'css', 'html', 'assets', 'dependencies'], function() {
+  return del.sync(['src/bundle.js'])
 });
