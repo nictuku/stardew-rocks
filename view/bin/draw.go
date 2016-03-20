@@ -14,6 +14,7 @@ func main() {
 	}
 	farm := parser.LoadFarmMap()
 
+	log.Printf("Processing %v", os.Args[1])
 	sg, err := os.Open(os.Args[1])
 	if err != nil {
 		log.Fatal(err)

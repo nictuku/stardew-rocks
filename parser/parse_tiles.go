@@ -54,7 +54,6 @@ func (m *Map) FetchSource(s string) (image.Image, error) {
 	if err == nil {
 		m.imageSources[s] = img
 	}
-	log.Print("found", s)
 	return img, err
 }
 
