@@ -88,14 +88,40 @@ func maybeFlip(flip bool, img image.Image, r image.Rectangle) image.Image {
 	return img
 }
 
-func flooringRect(whichFloor int) image.Rectangle {
+func flooringRect(whichFloor int, indexUsed int) image.Rectangle {
 	return xnaRect(
-		whichFloor%4*64,
-		whichFloor/4*64,
+		whichFloor%4*64 + indexUsed%4 * 16,
+		whichFloor/4*64 + indexUsed/4 * 16,
 		16, 16)
 }
 
-func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
+type Neighbour struct {
+	x, y, bit int
+}
+type neighbourComparison func(otherItem *parser.TerrainItem) bool
+func getFlooringIndex(item *parser.TerrainItem, items [][]*parser.TerrainItem, fn neighbourComparison) int {
+ 	x := item.Key.Vector2.X
+	y := item.Key.Vector2.Y
+ 	indeces := [16]int{0, 4, 13, 1, 15, 3, 14, 2, 12, 8, 9, 5, 11, 7, 10, 6}
+    index := 0
+    neighbours := []Neighbour{Neighbour {x: x  , y: y-1, bit: 8},
+                              Neighbour {x: x-1, y: y  , bit: 4},
+                              Neighbour {x: x+1, y: y  , bit: 2},
+                              Neighbour {x: x  , y: y+1, bit: 1}}
+    for _, neighbour := range neighbours {
+    	if neighbour.y > 0 && neighbour.y < len(items) {
+    		for _, otherItem := range items[neighbour.y] {
+    			if otherItem.Key.Vector2.X == neighbour.x && fn(otherItem) {
+    				index = index | neighbour.bit
+    			}
+    		}
+    	}
+    }
+	indexUsed := indeces[index]
+	return indexUsed
+}
+
+func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image, items [][]*parser.TerrainItem) {
 	m := pm.TMX
 	if item.Value.TerrainFeature.Type != "Flooring" {
 		return
@@ -104,7 +130,11 @@ func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 	if err != nil {
 		log.Fatalf("Error fetching image asset %v", err)
 	}
-	sr := flooringRect(item.Value.TerrainFeature.WhichFloor)
+	indexUsed := getFlooringIndex(item, items, func(otherItem *parser.TerrainItem) bool {
+		return otherItem.Value.TerrainFeature.Type == "Flooring" &&
+		       otherItem.Value.TerrainFeature.WhichFloor == item.Value.TerrainFeature.WhichFloor
+	})
+	sr := flooringRect(item.Value.TerrainFeature.WhichFloor, indexUsed)
 	r := sr.Sub(sr.Min).Add(image.Point{
 		// TODO: support for neighbor connections (also missing for fences).
 		item.Key.Vector2.X * m.TileWidth,
@@ -198,7 +228,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 	}
 }
 
-func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
+func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image, items [][]*parser.TerrainItem) {
 	// TODO: neighbor detection.
 	if item.Value.TerrainFeature.Type != "HoeDirt" {
 		return
@@ -217,7 +247,10 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 		log.Printf("Error fetching image asset %v: %v", p, err)
 		return
 	}
-	sr := image.Rect(0, 0, 16, 16)
+	indexUsed := getFlooringIndex(item, items, func (otherItem *parser.TerrainItem) bool {
+		return otherItem.Value.TerrainFeature.Type == "HoeDirt" && otherItem.Value.TerrainFeature.State == 1
+	})
+	sr := image.Rect(indexUsed%4 * 16, indexUsed/4 * 16, indexUsed%4 * 16 + 16, indexUsed/4 * 16 + 16)
 	r := sr.Sub(sr.Min).Add(image.Point{
 		item.Key.Vector2.X * m.TileWidth,
 		item.Key.Vector2.Y * m.TileHeight,
@@ -504,8 +537,8 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 		for _, item := range items[y] {
 			drawTree(pm, sg.CurrentSeason, item, img)
 			drawGrass(pm, item, img)
-			drawFlooring(pm, item, img)
-			drawHoeDirt(pm, sg.CurrentSeason, item, img)
+			drawFlooring(pm, item, img, items)
+			drawHoeDirt(pm, sg.CurrentSeason, item, img, items)
 		}
 		for x := 0; x < m.Width; x++ {
 			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
