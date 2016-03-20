@@ -354,19 +354,14 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 			}
 			drawGreenhouse(pm, img, fixedGreenhouse)
 		}
-		for _, item := range items[y] {
-			drawFlooring(pm, item, img)
-		}
-
 		for _, object := range objects[y] {
 			drawObject(pm, object, img)
 		}
-
 		for _, item := range items[y] {
 			drawTree(pm, sg.CurrentSeason, item, img)
-			drawGrass(pm, item, img) //
+			drawGrass(pm, item, img)
+			drawFlooring(pm, item, img)
 		}
-
 		for x := 0; x < m.Width; x++ {
 			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
 				var layerOrder float32
@@ -382,9 +377,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 				case "AlwaysFront":
 					layerOrder = alwaysFrontLayer
 				}
-
 				drawTile(pm, sg.CurrentSeason, layer.DecodedTiles[y*m.Width+x], img, x, y, layerOrder)
-
 			}
 		}
 	}
