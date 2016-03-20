@@ -4,6 +4,8 @@ Stardew Rocks is a tool for Stardew Valley that collects saved games and shares 
 
 We create and share screenshots of your game with everyone - no complicated setup needed!
 
+Discord server for stardew.rocks chat: https://discord.gg/0tpEyZrnOVQKA93b
+
 # For Farmers
 
 Install the Stardew Rocks client to share your farm state with the rest of the community! Farm screenshots will automatically appear here every time your game is saved: http://stardew.rocks (website is work in progress, hehe).
