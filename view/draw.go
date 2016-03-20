@@ -290,6 +290,9 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 		log.Fatalf("Error fetching image asset %v", err)
 	}
 	for i, weed := range whichWeed[0:item.Value.TerrainFeature.NumberOfWeeds] {
+		if i >= len(flipWeed) {
+			continue
+		}
 		idx := 0
 		if weed < len(whichWeed) {
 			idx = whichWeed[weed] * 15
@@ -392,11 +395,17 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	items := make([][]*parser.TerrainItem, m.Height)
 	for i := range farm.TerrainFeatures.Items {
 		item := farm.TerrainFeatures.Items[i] // separate pointer for each item
+		if item.Y() >= len(items) {
+			continue
+		}
 		items[item.Y()] = append(items[item.Y()], &item)
 	}
 	objects := make([][]*parser.ObjectItem, m.Height)
 	for i := range farm.Objects.Items {
 		object := farm.Objects.Items[i] // separate pointer for each item
+		if object.X() >= len(objects) {
+			continue
+		}
 		objects[object.Y()] = append(objects[object.Y()], &object)
 	}
 
