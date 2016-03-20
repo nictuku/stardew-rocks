@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>client</title>
+  </head>
+  <body>
+
+    <main>Loading...</main>
+
+    <script src="lib/es6-shim.min.js"></script>
+    <script src="lib/angular2-polyfills.js"></script>
+    <script src="lib/traceur-runtime.js"></script>
+    <script src="lib/system-csp-production.src.js"></script>
+    <script src="lib/Reflect.js"></script>
+
+    <script>
+      System.config({defaultJSExtensions: true});
+    </script>
+
+    <script src="lib/angular2.js"></script>
+    <script src="lib/Rx.js"></script>
+
+    <script>
+      System.import('index').catch(console.log.bind(console));
+    </script>
+
+  </body>
+</html>
