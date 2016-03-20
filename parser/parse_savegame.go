@@ -33,6 +33,19 @@ type GameLocation struct {
 	Objects         Objects         `xml:"objects"`
 	TerrainFeatures TerrainFeatures `xml:"terrainFeatures"`
 	XML             string          `xml:",innerxml"`
+
+	Buildings []Building `xml:"buildings>Building"`
+}
+
+type Building struct {
+	Type string `xml:"type,attr"`
+
+	TileX        int    `xml:"tileX"`
+	TileY        int    `xml:"tileY"`
+	TilesHigh    int    `xml:"tilesHigh"`
+	BuildingType string `xml:"buildingType"`
+	AnimalDoor   Vector `xml:"animalDoor"`
+	HumanDoor    Vector `xml:"humanDoor"`
 }
 
 type Objects struct {

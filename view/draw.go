@@ -308,6 +308,63 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 	}
 }
 
+func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
+	if building.Type == "" {
+		return
+	}
+	m := pm.TMX
+	sourcePath := fmt.Sprintf("../Buildings/%v.png", building.BuildingType)
+	src, err := pm.FetchSource(sourcePath)
+	if err != nil {
+		log.Printf("Error fetching asset %v: %v", sourcePath, err)
+		return
+	}
+	switch building.Type { // Also works for building.BuildingType = Deluxe Coop
+	case "Coop":
+		sr := xnaRect(16, 112, 16, 16)
+		r := sr.Sub(sr.Min).Add(image.Point{
+			(building.TileX + building.AnimalDoor.X) * m.TileWidth,
+			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
+		})
+		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
+
+		// Animal door
+		sr = xnaRect(0, 112, 16, 16)
+		r = sr.Sub(sr.Min).Add(image.Point{
+			((building.TileX + building.AnimalDoor.X) * m.TileWidth) + 16, // TODO: Open door
+			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
+		})
+		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
+
+		// Coop
+		sr = xnaRect(0, 0, 96, 112)
+		dp := image.Point{
+			(building.TileX * m.TileWidth),
+			building.TileY*m.TileHeight + building.TilesHigh*m.TileHeight,
+		}
+		sb.DrawMask(img, topLeftAlign(sr, dp), src, sr.Min, mask, sr.Min, draw.Over, houseLayer)
+
+	default:
+		return
+	}
+}
+
+func topLeftAlign(sr image.Rectangle, dp image.Point) image.Rectangle {
+	r := sr.Sub(sr.Min)
+	return image.Rectangle{
+		image.Point{dp.X, dp.Y - r.Dy()},
+		image.Point{dp.X + r.Max.X, dp.Y},
+	}
+}
+
+func bottomLeftAlign(sr image.Rectangle, dp image.Point) image.Rectangle {
+	r := sr.Sub(sr.Min)
+	return image.Rectangle{
+		image.Point{dp.X, dp.Y},
+		image.Point{dp.X + r.Max.X, dp.Y + r.Dy()},
+	}
+}
+
 func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 	var (
 		tileHeight            = 16 // Width is 32 even for big craftables.
@@ -340,10 +397,9 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 		// TODO: don't panic, but make sure that we only lookup safe locations.
 		// Also cache the failure result so we don't have to check again.
 		log.Printf("Error fetching asset %v: %v", sourcePath, err)
-		panic(err)
+		return
 	}
 	srcBounds := src.Bounds()
-
 	x0, y0 := tileCoordinates(obj.ParentSheetIndex, 16, tileHeight, srcBounds.Dx())
 	sr := image.Rect(x0, y0, x0+16, y0+tileHeight)
 	r := sr.Sub(sr.Min).Add(image.Point{
@@ -391,6 +447,16 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	// TODO: do not trust the user input. Don't hit files or slice indexes based on data.
 	m := pm.TMX
 
+	buildings := make([][]*parser.Building, m.Height)
+	for i := range farm.Buildings {
+		building := farm.Buildings[i]
+		y := building.TileY + building.AnimalDoor.Y
+		if y >= len(buildings) {
+			continue
+		}
+		buildings[y] = append(buildings[y], &building)
+	}
+
 	// Order items and objects to be displayed based on their Y order. Items with a higher Y should be drawn last.
 	items := make([][]*parser.TerrainItem, m.Height)
 	for i := range farm.TerrainFeatures.Items {
@@ -428,6 +494,9 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 				}
 			}
 			drawGreenhouse(pm, img, fixedGreenhouse)
+		}
+		for _, building := range buildings[y] {
+			drawBuilding(pm, building, img)
 		}
 		for _, object := range objects[y] {
 			drawObject(pm, object, img)
