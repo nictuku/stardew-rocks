@@ -59,9 +59,9 @@ var treeRects = map[int]image.Rectangle{
 }
 
 func treeAsset(treeType int, season string) string {
-    if treeType == 3 && season == "summer" {
-        season = "spring"
-    }
+	if treeType == 3 && season == "summer" {
+		season = "spring"
+	}
 	return fmt.Sprintf("../TerrainFeatures/tree%d_%v.png", treeType, season)
 }
 
@@ -104,7 +104,7 @@ type neighbour struct {
 
 type neighbourComparison func(otherItem *parser.TerrainItem) bool
 
-var neighbourMapIndeces = []int{0, 4, 13, 1, 15, 3, 14, 2, 12, 8, 9, 5, 11, 7, 10, 6}
+var flooringNeighbourLookupTable = []int{0, 4, 13, 1, 15, 3, 14, 2, 12, 8, 9, 5, 11, 7, 10, 6}
 
 func getFlooringIndex(item *parser.TerrainItem, items [][]*parser.TerrainItem, fn neighbourComparison) int {
 	x := item.Key.Vector2.X
@@ -124,7 +124,7 @@ func getFlooringIndex(item *parser.TerrainItem, items [][]*parser.TerrainItem, f
 			}
 		}
 	}
-	return neighbourMapIndeces[index]
+	return flooringNeighbourLookupTable[index]
 }
 
 func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image, items [][]*parser.TerrainItem) {
@@ -261,7 +261,7 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 		item.Key.Vector2.X * m.TileWidth,
 		item.Key.Vector2.Y * m.TileHeight,
 	})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, flooringLayer)
 
 	crop := item.Value.TerrainFeature.Crop
 
@@ -404,7 +404,42 @@ func bottomLeftAlign(sr image.Rectangle, dp image.Point) image.Rectangle {
 	}
 }
 
-func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
+type fenceNeighbourComparison func(otherObject *parser.ObjectItem) bool
+
+var fenceNeighbourLookupTable = []int{
+	5, // normal pole
+	0, // neighbour right
+	2, // left
+	4, // left +right
+	3, // above
+	6, // above + right
+	8, // above + left
+	7, // above + right + left
+}
+
+func fenceIndex(object *parser.ObjectItem, objects [][]*parser.ObjectItem, fn fenceNeighbourComparison) int {
+	x := object.Key.Vector2.X
+	y := object.Key.Vector2.Y
+	index := 0
+	neighbours := []neighbour{
+		// 0 = normal
+		{x: x, y: y - 1, bit: 4}, // neighbor above
+		{x: x - 1, y: y, bit: 2}, // neighbor left
+		{x: x + 1, y: y, bit: 1}, // neighbor right
+	}
+	for _, neighbour := range neighbours {
+		if neighbour.y > 0 && neighbour.y < len(objects) {
+			for _, otherObject := range objects[neighbour.y] {
+				if otherObject.Key.Vector2.X == neighbour.x && fn(otherObject) {
+					index = index | neighbour.bit
+				}
+			}
+		}
+	}
+	return fenceNeighbourLookupTable[index]
+}
+
+func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image, objects [][]*parser.ObjectItem) {
 	var (
 		tileHeight            = 16 // Width is 32 even for big craftables.
 		sourcePath            = "../Maps/springobjects.png"
@@ -426,7 +461,10 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 			placementCompensation = -16
 			sourcePath = fmt.Sprintf("../LooseSprites/Fence%d.png", obj.WhichType)
 			tileHeight = 32
-			obj.ParentSheetIndex = 5 // This is a pole with no neighbors.
+			obj.ParentSheetIndex = fenceIndex(item, objects, func(otherObject *parser.ObjectItem) bool {
+				return obj.XSIType == otherObject.Value.Object.XSIType &&
+					obj.WhichType == otherObject.Value.Object.WhichType
+			})
 		default:
 			//log.Printf("do not yet understand this: %v", obj.XML)
 		}
@@ -538,7 +576,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 			drawBuilding(pm, building, img)
 		}
 		for _, object := range objects[y] {
-			drawObject(pm, object, img)
+			drawObject(pm, object, img, objects)
 		}
 		for _, item := range items[y] {
 			drawTree(pm, sg.CurrentSeason, item, img)
