@@ -34,6 +34,8 @@ func tileCoordinates(id int, tileWidth, tileHeight, tilemapWidth int) (x0, y0 in
 
 var mask = image.NewUniform(color.Alpha{255})
 
+var sb = &SpriteBatch{}
+
 var treeRects = map[int]image.Rectangle{
 	0: xnaRect(32, 128, 16, 16),
 	1: xnaRect(0, 128, 16, 16),
@@ -94,7 +96,7 @@ func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 		item.Key.Vector2.X * m.TileWidth,
 		item.Key.Vector2.Y * m.TileHeight,
 	})
-	draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.02)
 }
 
 func drawHouse(pm *parser.Map, img draw.Image, upgradeLevel int) {
@@ -105,7 +107,7 @@ func drawHouse(pm *parser.Map, img draw.Image, upgradeLevel int) {
 	}
 	sr := xnaRect(0, 144*upgradeLevel, 160, 144)
 	r := sr.Sub(sr.Min).Add(image.Point{930, 130})
-	draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0)
 }
 
 func drawGreenhouse(pm *parser.Map, img draw.Image, fixedGreenhouse bool) {
@@ -120,7 +122,7 @@ func drawGreenhouse(pm *parser.Map, img draw.Image, fixedGreenhouse bool) {
 	}
 	sr := xnaRect(160, y, 112, 160)
 	r := sr.Sub(sr.Min).Add(image.Point{400, 96})
-	draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.1)
 }
 
 func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
@@ -143,7 +145,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			return
 		}
 		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight})
-		draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.4)
 	} else {
 		{
 			// shadow
@@ -156,7 +158,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth - m.TileWidth, // centralize
 				item.Key.Vector2.Y*m.TileHeight - 0, // vertical centralize
 			})
-			draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+			sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.4)
 		}
 		{
 			// stump
@@ -164,7 +166,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth,
 				item.Key.Vector2.Y*m.TileHeight - m.TileHeight, // stump offset
 			})
-			draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+			sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.4)
 		}
 		{
 			// tree
@@ -174,9 +176,10 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 				item.Key.Vector2.Y*m.TileHeight - 80,         // stump offset
 			})
 
-			draw.DrawMask(img, r,
+			sb.DrawMask(img, r,
 				maybeFlip(item.Value.TerrainFeature.Flipped, src, sr),
-				sr.Min, mask, sr.Min, draw.Over)
+				sr.Min, mask, sr.Min, draw.Over,
+				0.4)
 		}
 	}
 }
@@ -218,8 +221,7 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 		if flipWeed[i] {
 			sr = xnaRect(0, 0, m.TileWidth, m.TileHeight)
 		}
-
-		draw.DrawMask(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, mask, sr.Min, draw.Over)
+		sb.DrawMask(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, mask, sr.Min, draw.Over, 0.5)
 	}
 }
 
@@ -247,7 +249,7 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 			tileHeight = 32
 			obj.ParentSheetIndex = 5 // This is a pole with no neighbors.
 		default:
-			fmt.Printf("do not yet understand this: %v\n", obj.XML)
+			//log.Printf("do not yet understand this: %v", obj.XML)
 
 		}
 	}
@@ -266,7 +268,7 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 		item.Key.Vector2.X * 16,
 		item.Key.Vector2.Y*16 + placementCompensation,
 	})
-	draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.5)
 }
 
 func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Image, x, y int) {
@@ -287,7 +289,7 @@ func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Ima
 	r := sr.Sub(sr.Min).Add(image.Point{x * m.TileWidth, y * m.TileHeight})
 	// DrawMask with draw.Over and an alpha channel ensure the background is transparent.
 	// Anyway, it works.
-	draw.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.01)
 }
 
 func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
@@ -319,10 +321,8 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 		objects[object.Y()] = append(objects[object.Y()], &object)
 	}
 
-	dirt := &image.Uniform{color.RGBA{0xEE, 0xAC, 0x24, 0xFF}}
 	img := image.NewRGBA(image.Rect(0, 0, m.Width*m.TileWidth, m.Height*m.TileHeight))
-
-	draw.Draw(img, img.Bounds(), dirt, image.ZP, draw.Src)
+	sb.Start()
 
 	// Note that the order we issue draw commands must match the foreground/background order.
 	// At a high level, the expected order is:
@@ -371,6 +371,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 			}
 		}
 	}
+	sb.Flush()
 
 	if err := png.Encode(w, img); err != nil {
 		panic(err)
