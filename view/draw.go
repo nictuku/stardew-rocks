@@ -26,7 +26,7 @@ const (
 	buildingsLayer   = 0.02
 	flooringLayer    = 0.02
 	pathsLayer       = 0.03
-	grassLayer       = 0.4
+	grassLayer       = 0.5
 	treeLayer        = 0.5
 	frontLayer       = 0.5
 	objectLayer      = 0.5
@@ -229,8 +229,8 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 			idx = whichWeed[weed] * 15
 		}
 		sr := grassRect(idx, item.Value.TerrainFeature.GrassType)
-		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth + (i%2*m.TileWidth/2 + offsetWeeds[2][i]) + 7,
-			item.Key.Vector2.Y*m.TileHeight + i%2*m.TileHeight/2 + offsetWeeds[3][i] + 10,
+		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth + (offsetWeeds[2][i] - i%2*m.TileWidth/2),
+			item.Key.Vector2.Y*m.TileHeight - i%2*m.TileHeight/2 + offsetWeeds[3][i],
 		})
 		if flipWeed[i] {
 			sr = xnaRect(0, 0, m.TileWidth, m.TileHeight)
