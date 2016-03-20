@@ -3,15 +3,24 @@ package view
 import (
 	"image"
 	"image/draw"
+	"sort"
 )
+
+type drawSprite struct {
+	f     func()
+	layer float32
+}
 
 type SpriteBatch struct {
 	batch []drawSprite
 }
 
-type drawSprite struct {
-	f     func()
-	layer float32
+func (s *SpriteBatch) Len() int { return len(s.batch) }
+func (s *SpriteBatch) Less(i, j int) bool {
+	return s.batch[i].layer < s.batch[j].layer
+}
+func (s *SpriteBatch) Swap(i, j int) {
+	s.batch[i], s.batch[j] = s.batch[j], s.batch[i]
 }
 
 func (s *SpriteBatch) Start() {
@@ -28,7 +37,7 @@ func (s *SpriteBatch) DrawMask(dst draw.Image, r image.Rectangle, src image.Imag
 }
 
 func (s *SpriteBatch) Flush() {
-	// TODO: sort
+	sort.Stable(s)
 	for _, sprite := range s.batch {
 		sprite.f()
 	}

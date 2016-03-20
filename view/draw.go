@@ -21,6 +21,20 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+const (
+	backLayer        = 0.01
+	buildingsLayer   = 0.02
+	flooringLayer    = 0.02
+	pathsLayer       = 0.03
+	grassLayer       = 0.4
+	treeLayer        = 0.5
+	frontLayer       = 0.5
+	objectLayer      = 0.5
+	greenHouseLayer  = 0.5
+	houseLayer       = 0.6 // after front, same as objects
+	alwaysFrontLayer = 1.0
+)
+
 func xnaRect(x0, y0, width, height int) image.Rectangle {
 	return image.Rect(x0, y0, x0+width, y0+height)
 }
@@ -96,7 +110,7 @@ func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 		item.Key.Vector2.X * m.TileWidth,
 		item.Key.Vector2.Y * m.TileHeight,
 	})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.02)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, flooringLayer)
 }
 
 func drawHouse(pm *parser.Map, img draw.Image, upgradeLevel int) {
@@ -107,7 +121,7 @@ func drawHouse(pm *parser.Map, img draw.Image, upgradeLevel int) {
 	}
 	sr := xnaRect(0, 144*upgradeLevel, 160, 144)
 	r := sr.Sub(sr.Min).Add(image.Point{930, 130})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, houseLayer)
 }
 
 func drawGreenhouse(pm *parser.Map, img draw.Image, fixedGreenhouse bool) {
@@ -122,7 +136,7 @@ func drawGreenhouse(pm *parser.Map, img draw.Image, fixedGreenhouse bool) {
 	}
 	sr := xnaRect(160, y, 112, 160)
 	r := sr.Sub(sr.Min).Add(image.Point{400, 96})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.1)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, greenHouseLayer)
 }
 
 func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
@@ -145,7 +159,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			return
 		}
 		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight})
-		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.4)
+		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, treeLayer)
 	} else {
 		{
 			// shadow
@@ -158,7 +172,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth - m.TileWidth, // centralize
 				item.Key.Vector2.Y*m.TileHeight - 0, // vertical centralize
 			})
-			sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.4)
+			sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, treeLayer)
 		}
 		{
 			// stump
@@ -166,7 +180,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth,
 				item.Key.Vector2.Y*m.TileHeight - m.TileHeight, // stump offset
 			})
-			sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.4)
+			sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, treeLayer)
 		}
 		{
 			// tree
@@ -179,7 +193,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			sb.DrawMask(img, r,
 				maybeFlip(item.Value.TerrainFeature.Flipped, src, sr),
 				sr.Min, mask, sr.Min, draw.Over,
-				0.4)
+				treeLayer)
 		}
 	}
 }
@@ -221,7 +235,7 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 		if flipWeed[i] {
 			sr = xnaRect(0, 0, m.TileWidth, m.TileHeight)
 		}
-		sb.DrawMask(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, mask, sr.Min, draw.Over, 0.5)
+		sb.DrawMask(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, mask, sr.Min, draw.Over, grassLayer)
 	}
 }
 
@@ -250,7 +264,6 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 			obj.ParentSheetIndex = 5 // This is a pole with no neighbors.
 		default:
 			//log.Printf("do not yet understand this: %v", obj.XML)
-
 		}
 	}
 	src, err := pm.FetchSource(sourcePath)
@@ -268,10 +281,10 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
 		item.Key.Vector2.X * 16,
 		item.Key.Vector2.Y*16 + placementCompensation,
 	})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.5)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
 }
 
-func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Image, x, y int) {
+func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Image, x, y int, layer float32) {
 	if tile.IsNil() {
 		return
 	}
@@ -289,7 +302,7 @@ func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Ima
 	r := sr.Sub(sr.Min).Add(image.Point{x * m.TileWidth, y * m.TileHeight})
 	// DrawMask with draw.Over and an alpha channel ensure the background is transparent.
 	// Anyway, it works.
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, 0.01)
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, layer)
 }
 
 func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
@@ -329,15 +342,6 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	// Back Layer; Buildings Layer; Houses; Objects; TerrainFeatures; Front Layer; AlwaysFront Layer
 
 	for y := 0; y < m.Height; y++ {
-		for x := 0; x < m.Width; x++ {
-			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
-				if layer.Name == "Back" || layer.Name == "Buildings" {
-					drawTile(pm, sg.CurrentSeason, layer.DecodedTiles[y*m.Width+x], img, x, y)
-				}
-			}
-		}
-	}
-	for y := 0; y < m.Height; y++ {
 		if y == 20 {
 			drawHouse(pm, img, sg.Player.HouseUpgradeLevel)
 		}
@@ -365,12 +369,26 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 
 		for x := 0; x < m.Width; x++ {
 			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
-				if layer.Name == "Front" || layer.Name == "AlwaysFront" {
-					drawTile(pm, sg.CurrentSeason, layer.DecodedTiles[y*m.Width+x], img, x, y)
+				var layerOrder float32
+				switch layer.Name {
+				case "Back":
+					layerOrder = backLayer
+				case "Buildings":
+					layerOrder = buildingsLayer
+				case "Paths":
+					continue // Don't draw paths.
+				case "Front":
+					layerOrder = frontLayer
+				case "AlwaysFront":
+					layerOrder = alwaysFrontLayer
 				}
+
+				drawTile(pm, sg.CurrentSeason, layer.DecodedTiles[y*m.Width+x], img, x, y, layerOrder)
+
 			}
 		}
 	}
+
 	sb.Flush()
 
 	if err := png.Encode(w, img); err != nil {
