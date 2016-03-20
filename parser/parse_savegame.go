@@ -100,9 +100,20 @@ type TerrainFeature struct {
 
 	WhichFloor int `xml:"whichFloor"`
 
-	State int `xml:"state"`
+	State int  `xml:"state"`
+	Crop  Crop `xml:"crop"`
 	// Always 0 in the save game.
 	// GrassSourceOffset int `xml:"grassSourceOffset"`
+}
+
+type Crop struct {
+	RowInSpriteSheet   int   `xml:"rowInSpriteSheet"`
+	IndexOfHarvest     int   `xml:"indexOfHarvest"`
+	CurrentPhase       int   `xml:"currentPhase"`
+	FullyGrown         bool  `xml:"fullyGrown"`
+	DaysOfCurrentPhase int   `xml:"dayOfCurrentPhase"`
+	RaisedSeeds        bool  `xml:"raisedSeeds"`
+	PhaseDays          []int `xml:"phaseDays>int"`
 }
 
 type ItemValue struct {
