@@ -79,12 +79,12 @@ func main() {
 
 			saveGame, err := parser.ParseSaveGame(bytes.NewReader(d.Body))
 			if err != nil {
-				log.Print(err)
-				return
+				log.Print("Error parsing saved game:", err)
+				continue
 			}
 			if saveGame.Player.Name == "" {
-				log.Printf("blank player name")
-				break
+				log.Print("Ignoring save with blank player name")
+				continue
 			}
 			_, name := path.Split(path.Clean(saveGame.Player.Name)) // please don't hacko me mister
 
@@ -95,10 +95,12 @@ func main() {
 			saveFile := path.Join(wwwDir(), "saveGames", fmt.Sprintf("%v-%d.xml", name, ts))
 			sf, err := os.OpenFile(saveFile, os.O_CREATE|os.O_WRONLY, 0666)
 			if err != nil {
-				log.Fatal(err)
+				log.Printf("Error opening saveGames %v: %v", saveFile, err)
+				continue
 			}
 			if _, err := sf.Write(d.Body); err != nil {
-				log.Printf("failed to write save file at %v: %v", saveFile, err)
+				log.Printf("Failed to write save file at %v: %v", saveFile, err)
+				continue
 			} else {
 				log.Printf("Wrote saveGame file %v", saveFile)
 			}
@@ -107,7 +109,8 @@ func main() {
 			mapFile := path.Join(wwwDir(), fmt.Sprintf("map-%v-%d.png", name, ts))
 			f, err := os.OpenFile(mapFile, os.O_CREATE|os.O_WRONLY, 0666)
 			if err != nil {
-				log.Fatal(err)
+				log.Printf("Error opening screenshot file %v: %v", mapFile, err)
+				continue
 			}
 			lastSaveMu.Lock()
 			lastSave = d.Body
