@@ -59,7 +59,10 @@ var treeRects = map[int]image.Rectangle{
 }
 
 func treeAsset(treeType int, season string) string {
-	return fmt.Sprintf("../TerrainFeatures/tree%d_%v.png", treeType, season) // TODO: other seasons
+    if treeType == 3 && season == "summer" {
+        season = "spring"
+    }
+	return fmt.Sprintf("../TerrainFeatures/tree%d_%v.png", treeType, season)
 }
 
 func grassOffset(grassType int) int {
