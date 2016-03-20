@@ -22,7 +22,7 @@ The app is configured to run on startup for you. If you don't want that, just re
 
 Screenshots look like this:
 
-![Farm Map](view/map-test.png)
+![Farm Map](view/map-Aerlia_1458278945.png)
 
 The screenshots are not perfect yet, but we're working on it as fast as possible!
 
