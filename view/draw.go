@@ -198,6 +198,33 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 	}
 }
 
+func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
+	// TODO: neighbor detection.
+	if item.Value.TerrainFeature.Type != "HoeDirt" {
+		return
+	}
+	if item.Value.TerrainFeature.State != 1 {
+		return
+	}
+	m := pm.TMX
+	// Fetch tile from tileset.
+	p := "../TerrainFeatures/hoeDirt.png"
+	if season == "winter" {
+		p = "../TerrainFeatures/hoeDirtSnow.png"
+	}
+	src, err := pm.FetchSource(p)
+	if err != nil {
+		log.Printf("Error fetching image asset %v: %v", p, err)
+		return
+	}
+	sr := image.Rect(0, 0, 16, 16)
+	r := sr.Sub(sr.Min).Add(image.Point{
+		item.Key.Vector2.X * m.TileWidth,
+		item.Key.Vector2.Y * m.TileHeight,
+	})
+	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
+}
+
 func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 	if item.Value.TerrainFeature.Type != "Grass" {
 		return
@@ -361,6 +388,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 			drawTree(pm, sg.CurrentSeason, item, img)
 			drawGrass(pm, item, img)
 			drawFlooring(pm, item, img)
+			drawHoeDirt(pm, sg.CurrentSeason, item, img)
 		}
 		for x := 0; x < m.Width; x++ {
 			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
