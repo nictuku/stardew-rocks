@@ -1,3 +1,8 @@
+// stardew.rocks web server
+//
+// It contains a few HTTP handlers:
+// - a static handler that serves files from /home/stardew/www.
+// - a handler that serves the latest complete file save in XML format.
 package main
 
 import (
@@ -10,10 +15,6 @@ import (
 
 	"github.com/nytimes/gziphandler"
 )
-
-// This file contains a few HTTP handlers:
-// - a static handler that serves files from /home/stardew/www.
-// - a handler that serves the latest complete file save in XML format.
 
 func Log(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -58,10 +59,10 @@ func RunHTTPServer() {
 	}
 }
 
-func init() {
+func main() {
 	dir := wwwDir()
 	log.Printf("Serving files from %v", dir)
 	http.Handle("/", Log(gziphandler.GzipHandler(http.FileServer(http.Dir(dir)))))
 	http.Handle("/lastsave", Log(gziphandler.GzipHandler(http.HandlerFunc(LastSave))))
-
+	RunHTTPServer()
 }

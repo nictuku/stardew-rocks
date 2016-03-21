@@ -1,10 +1,8 @@
 package view
 
 import (
-	"fmt"
 	"image"
 	"image/color"
-	"image/draw"
 	_ "image/jpeg"
 	"image/png"
 	"io"
@@ -14,7 +12,6 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/nictuku/stardew-rocks/parser"
-	"github.com/salviati/go-tmx/tmx"
 )
 
 func init() {
@@ -48,39 +45,6 @@ func tileCoordinates(id int, tileWidth, tileHeight, tilemapWidth int) (x0, y0 in
 
 var mask = image.NewUniform(color.Alpha{255})
 
-var sb = &SpriteBatch{}
-
-var treeRects = map[int]image.Rectangle{
-	0: xnaRect(32, 128, 16, 16),
-	1: xnaRect(0, 128, 16, 16),
-	2: xnaRect(16, 128, 16, 16),
-	3: xnaRect(0, 96, 16, 32),
-	4: xnaRect(0, 96, 16, 32),
-}
-
-func treeAsset(treeType int, season string) string {
-	return fmt.Sprintf("../TerrainFeatures/tree%d_%v.png", treeType, season) // TODO: other seasons
-}
-
-func grassOffset(grassType int) int {
-	// TODO: other seasons
-	switch grassType {
-	case 1:
-		return 0
-	case 2:
-		return 60
-	case 3:
-		return 80
-	case 4:
-		return 100
-	}
-	return 0
-}
-
-func grassRect(idx, grassType int) image.Rectangle {
-	return xnaRect(idx, grassOffset(grassType), 15, 20)
-}
-
 func maybeFlip(flip bool, img image.Image, r image.Rectangle) image.Image {
 	if flip {
 		return imaging.FlipH(imaging.Crop(img, r))
@@ -88,301 +52,8 @@ func maybeFlip(flip bool, img image.Image, r image.Rectangle) image.Image {
 	return img
 }
 
-func flooringRect(whichFloor int, indexUsed int) image.Rectangle {
-	return xnaRect(
-		whichFloor%4*64+indexUsed%4*16,
-		whichFloor/4*64+indexUsed/4*16,
-		16, 16)
-}
-
 type neighbour struct {
 	x, y, bit int
-}
-
-type neighbourComparison func(otherItem *parser.TerrainItem) bool
-
-var neighbourMapIndeces = []int{0, 4, 13, 1, 15, 3, 14, 2, 12, 8, 9, 5, 11, 7, 10, 6}
-
-func getFlooringIndex(item *parser.TerrainItem, items [][]*parser.TerrainItem, fn neighbourComparison) int {
-	x := item.Key.Vector2.X
-	y := item.Key.Vector2.Y
-	index := 0
-	neighbours := []neighbour{
-		{x: x, y: y - 1, bit: 8},
-		{x: x - 1, y: y, bit: 4},
-		{x: x + 1, y: y, bit: 2},
-		{x: x, y: y + 1, bit: 1}}
-	for _, neighbour := range neighbours {
-		if neighbour.y > 0 && neighbour.y < len(items) {
-			for _, otherItem := range items[neighbour.y] {
-				if otherItem.Key.Vector2.X == neighbour.x && fn(otherItem) {
-					index = index | neighbour.bit
-				}
-			}
-		}
-	}
-	return neighbourMapIndeces[index]
-}
-
-func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image, items [][]*parser.TerrainItem) {
-	m := pm.TMX
-	if item.Value.TerrainFeature.Type != "Flooring" {
-		return
-	}
-	src, err := pm.FetchSource("../TerrainFeatures/Flooring.png")
-	if err != nil {
-		log.Fatalf("Error fetching image asset %v", err)
-	}
-	indexUsed := getFlooringIndex(item, items, func(otherItem *parser.TerrainItem) bool {
-		return otherItem.Value.TerrainFeature.Type == "Flooring" &&
-			otherItem.Value.TerrainFeature.WhichFloor == item.Value.TerrainFeature.WhichFloor
-	})
-	sr := flooringRect(item.Value.TerrainFeature.WhichFloor, indexUsed)
-	r := sr.Sub(sr.Min).Add(image.Point{
-		// TODO: support for neighbor connections (also missing for fences).
-		item.Key.Vector2.X * m.TileWidth,
-		item.Key.Vector2.Y * m.TileHeight,
-	})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, flooringLayer)
-}
-
-func drawHouse(pm *parser.Map, img draw.Image, upgradeLevel int) {
-	src, err := pm.FetchSource("../Buildings/houses.png")
-	if err != nil {
-		log.Printf("Error fetching house asset: %v", err)
-		panic(err)
-	}
-	sr := xnaRect(0, 144*upgradeLevel, 160, 144)
-	r := sr.Sub(sr.Min).Add(image.Point{930, 130})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, houseLayer)
-}
-
-func drawGreenhouse(pm *parser.Map, img draw.Image, fixedGreenhouse bool) {
-	src, err := pm.FetchSource("../Buildings/houses.png")
-	if err != nil {
-		log.Printf("Error fetching houses asset: %v", err)
-		panic(err)
-	}
-	y := 0
-	if fixedGreenhouse {
-		y = 160
-	}
-	sr := xnaRect(160, y, 112, 160)
-	r := sr.Sub(sr.Min).Add(image.Point{400, 96})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, greenHouseLayer)
-}
-
-func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
-	m := pm.TMX
-
-	if item.Value.TerrainFeature.Type != "Tree" {
-		return
-	}
-	p := treeAsset(item.Value.TerrainFeature.TreeType, season)
-	src, err := pm.FetchSource(p)
-	if err != nil {
-		log.Printf("Error fetching terrain asset %v: %v", p, err)
-		return
-	}
-	stage := item.Value.TerrainFeature.GrowthStage
-	if stage < 5 {
-		sr, ok := treeRects[stage]
-		if !ok {
-			log.Printf("Unknown tree rect for %v", item.Value.TerrainFeature.GrowthStage)
-			return
-		}
-		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight})
-		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, treeLayer)
-	} else {
-		{
-			// shadow
-			src, err := pm.FetchSource("../LooseSprites/Cursors.png")
-			if err != nil {
-				log.Printf("Error fetching terrain asset %v", err)
-				return
-			}
-			sr := xnaRect(663, 1011, 41, 30)
-			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth - m.TileWidth, // centralize
-				item.Key.Vector2.Y*m.TileHeight - 0, // vertical centralize
-			})
-			sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, treeLayer)
-		}
-		{
-			// stump
-			sr := xnaRect(32, 96, 16, 32)
-			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth,
-				item.Key.Vector2.Y*m.TileHeight - m.TileHeight, // stump offset
-			})
-			sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, treeLayer)
-		}
-		{
-			// tree
-			sr := image.Rect(0, 0, 48, 96)
-			r := sr.Sub(sr.Min).Add(image.Point{
-				item.Key.Vector2.X*m.TileWidth - m.TileWidth, // centralize
-				item.Key.Vector2.Y*m.TileHeight - 80,         // stump offset
-			})
-
-			sb.DrawMask(img, r,
-				maybeFlip(item.Value.TerrainFeature.Flipped, src, sr),
-				sr.Min, mask, sr.Min, draw.Over,
-				treeLayer)
-		}
-	}
-}
-
-func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image, items [][]*parser.TerrainItem) {
-	// TODO: neighbor detection.
-	if item.Value.TerrainFeature.Type != "HoeDirt" {
-		return
-	}
-	if item.Value.TerrainFeature.State != 1 {
-		return
-	}
-	m := pm.TMX
-	// Fetch tile from tileset.
-	p := "../TerrainFeatures/hoeDirt.png"
-	if season == "winter" {
-		p = "../TerrainFeatures/hoeDirtSnow.png"
-	}
-	src, err := pm.FetchSource(p)
-	if err != nil {
-		log.Printf("Error fetching image asset %v: %v", p, err)
-		return
-	}
-	indexUsed := getFlooringIndex(item, items, func(otherItem *parser.TerrainItem) bool {
-		return otherItem.Value.TerrainFeature.Type == "HoeDirt" && otherItem.Value.TerrainFeature.State == 1
-	})
-	sr := image.Rect(indexUsed%4*16, indexUsed/4*16, indexUsed%4*16+16, indexUsed/4*16+16)
-	r := sr.Sub(sr.Min).Add(image.Point{
-		item.Key.Vector2.X * m.TileWidth,
-		item.Key.Vector2.Y * m.TileHeight,
-	})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
-
-	crop := item.Value.TerrainFeature.Crop
-
-	if crop.IndexOfHarvest != 0 { // Not sure if this is the best way.
-
-		// The sprite sheet is divided in two columns.
-		// row=0 means first plant in the sheet, on the top left.
-		// row=1 means the second plant, which starts at X=128 pixels
-		// row=4 is in the second row *in the image*, or Y=32, but also starting at 128 pixels.
-
-		p := "../TileSheets/crops.png"
-
-		src, err := pm.FetchSource(p)
-		if err != nil {
-			log.Printf("Error fetching image asset %v: %v", p, err)
-			return
-		}
-		x0 := 0
-		if crop.FullyGrown {
-			if crop.DaysOfCurrentPhase <= 0 {
-				x0 = 6 * 16
-			} else {
-				x0 = 7 * 16
-			}
-
-		} else {
-			x0 = (crop.CurrentPhase + 2) * 16
-			if crop.RowInSpriteSheet%2 != 0 {
-				x0 += 128
-			}
-		}
-
-		sr := xnaRect(x0, (crop.RowInSpriteSheet/2)*32, 16, 32)
-		r := sr.Sub(sr.Min).Add(image.Point{
-			item.Key.Vector2.X * m.TileWidth,
-			item.Key.Vector2.Y*m.TileHeight - 16, // because using tile height 32 above
-		})
-		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
-	}
-}
-
-func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
-	if item.Value.TerrainFeature.Type != "Grass" {
-		return
-	}
-	whichWeed := rand.Perm(5)
-	if item.Value.TerrainFeature.NumberOfWeeds >= len(whichWeed) {
-		return
-	}
-	offsetWeeds := [4][]int{
-		rand.Perm(5),
-		rand.Perm(5),
-		rand.Perm(5),
-		rand.Perm(5),
-	}
-	flipWeed := [4]bool{
-		rand.Float32() < 0.5,
-		rand.Float32() < 0.5,
-		rand.Float32() < 0.5,
-		rand.Float32() < 0.5,
-	}
-	m := pm.TMX
-	src, err := pm.FetchSource("../TerrainFeatures/grass.png")
-	if err != nil {
-		log.Fatalf("Error fetching image asset %v", err)
-	}
-	for i, weed := range whichWeed[0:item.Value.TerrainFeature.NumberOfWeeds] {
-		if i >= len(flipWeed) {
-			continue
-		}
-		idx := 0
-		if weed < len(whichWeed) {
-			idx = whichWeed[weed] * 15
-		}
-		sr := grassRect(idx, item.Value.TerrainFeature.GrassType)
-		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth + (offsetWeeds[2][i]),
-			item.Key.Vector2.Y*m.TileHeight - i%2*m.TileHeight/2 + offsetWeeds[3][i],
-		})
-		if flipWeed[i] {
-			sr = xnaRect(0, 0, m.TileWidth, m.TileHeight)
-		}
-		sb.DrawMask(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, mask, sr.Min, draw.Over, grassLayer)
-	}
-}
-
-func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
-	if building.Type == "" {
-		return
-	}
-	m := pm.TMX
-	sourcePath := fmt.Sprintf("../Buildings/%v.png", building.BuildingType)
-	src, err := pm.FetchSource(sourcePath)
-	if err != nil {
-		log.Printf("Error fetching asset %v: %v", sourcePath, err)
-		return
-	}
-	switch building.Type { // Also works for building.BuildingType = Deluxe Coop
-	case "Coop":
-		sr := xnaRect(16, 112, 16, 16)
-		r := sr.Sub(sr.Min).Add(image.Point{
-			(building.TileX + building.AnimalDoor.X) * m.TileWidth,
-			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
-		})
-		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
-
-		// Animal door
-		sr = xnaRect(0, 112, 16, 16)
-		r = sr.Sub(sr.Min).Add(image.Point{
-			((building.TileX + building.AnimalDoor.X) * m.TileWidth) + 16, // TODO: Open door
-			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
-		})
-		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
-
-		// Coop
-		sr = xnaRect(0, 0, 96, 112)
-		dp := image.Point{
-			(building.TileX * m.TileWidth),
-			building.TileY*m.TileHeight + building.TilesHigh*m.TileHeight,
-		}
-		sb.DrawMask(img, topLeftAlign(sr, dp), src, sr.Min, mask, sr.Min, draw.Over, houseLayer)
-
-	default:
-		return
-	}
 }
 
 func topLeftAlign(sr image.Rectangle, dp image.Point) image.Rectangle {
@@ -399,71 +70,6 @@ func bottomLeftAlign(sr image.Rectangle, dp image.Point) image.Rectangle {
 		image.Point{dp.X, dp.Y},
 		image.Point{dp.X + r.Max.X, dp.Y + r.Dy()},
 	}
-}
-
-func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image) {
-	var (
-		tileHeight            = 16 // Width is 32 even for big craftables.
-		sourcePath            = "../Maps/springobjects.png"
-		placementCompensation = 0 // craftables are anchored at the top tile
-	)
-	obj := item.Value.Object
-	switch obj.Type {
-	case "Crafting":
-		placementCompensation = 0
-		switch {
-		case obj.BigCraftable == true:
-			tileHeight = 32
-			sourcePath = "../TileSheets/Craftables.png"
-			placementCompensation = -16
-		case obj.XSIType == "Fence":
-			if obj.WhichType == 4 {
-				return
-			}
-			placementCompensation = -16
-			sourcePath = fmt.Sprintf("../LooseSprites/Fence%d.png", obj.WhichType)
-			tileHeight = 32
-			obj.ParentSheetIndex = 5 // This is a pole with no neighbors.
-		default:
-			//log.Printf("do not yet understand this: %v", obj.XML)
-		}
-	}
-	src, err := pm.FetchSource(sourcePath)
-	if err != nil {
-		// TODO: don't panic, but make sure that we only lookup safe locations.
-		// Also cache the failure result so we don't have to check again.
-		log.Printf("Error fetching asset %v: %v", sourcePath, err)
-		return
-	}
-	srcBounds := src.Bounds()
-	x0, y0 := tileCoordinates(obj.ParentSheetIndex, 16, tileHeight, srcBounds.Dx())
-	sr := image.Rect(x0, y0, x0+16, y0+tileHeight)
-	r := sr.Sub(sr.Min).Add(image.Point{
-		item.Key.Vector2.X * 16,
-		item.Key.Vector2.Y*16 + placementCompensation,
-	})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
-}
-
-func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Image, x, y int, layer float32) {
-	if tile.IsNil() {
-		return
-	}
-	m := pm.TMX
-
-	// Fetch tile from tileset.
-	src, err := pm.FetchSeasonSource(tile.Tileset.Image.Source, season)
-	if err != nil {
-		log.Printf("Error fetching image asset %v: %v", tile.Tileset.Image.Source, err)
-		return
-	}
-	srcBounds := src.Bounds()
-	x0, y0 := tileCoordinates(int(tile.ID), m.TileWidth, m.TileHeight, srcBounds.Dx())
-	sr := image.Rect(x0, y0, x0+m.TileHeight, y0+m.TileWidth)
-	r := sr.Sub(sr.Min).Add(image.Point{x * m.TileWidth, y * m.TileHeight})
-	// DrawMask with draw.Over and an alpha channel ensure the background is transparent.
-	// Anyway, it works.
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, layer)
 }
 
 func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
@@ -505,7 +111,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	objects := make([][]*parser.ObjectItem, m.Height)
 	for i := range farm.Objects.Items {
 		object := farm.Objects.Items[i] // separate pointer for each item
-		if object.X() >= len(objects) {
+		if object.Y() >= len(objects) {
 			continue
 		}
 		objects[object.Y()] = append(objects[object.Y()], &object)
@@ -535,7 +141,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 			drawBuilding(pm, building, img)
 		}
 		for _, object := range objects[y] {
-			drawObject(pm, object, img)
+			drawObject(pm, object, img, objects)
 		}
 		for _, item := range items[y] {
 			drawTree(pm, sg.CurrentSeason, item, img)
@@ -544,7 +150,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 			drawHoeDirt(pm, sg.CurrentSeason, item, img, items)
 		}
 		for x := 0; x < m.Width; x++ {
-			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
+			for _, layer := range m.Layers {
 				var layerOrder float32
 				switch layer.Name {
 				case "Back":

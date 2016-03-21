@@ -26,3 +26,4 @@ _testmain.go
 .vscode
 
 client/client.exe
+view/bin/out.png
