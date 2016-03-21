@@ -1,4 +1,4 @@
-var BrowserSyncPlugin = require("browser-sync-webpack-plugin");
+//var BrowserSyncPlugin = require("browser-sync-webpack-plugin");
 
 module.exports = {
   entry: './main',
@@ -13,13 +13,19 @@ module.exports = {
       { test: /\.ts/, loaders: ['ts-loader'] }
     ]
   },
-  plugins: [
-    new BrowserSyncPlugin({
-      host: 'localhost',
-      port: '3000',
-      server: {
-        baseDir: ['./']
-      }
-    })
-  ]
+  ts: {
+    transpileOnly: true
+  },
+  devServer: {
+    port: 3001
+  }
+  // plugins: [
+  //   new BrowserSyncPlugin({
+  //     host: 'localhost',
+  //     port: '3000',
+  //     proxy: 'http://localhost:3001/'
+  //   }, {
+  //     reload: false
+  //   })
+  // ]
 };

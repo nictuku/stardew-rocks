@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component, Input, SimpleChange, Output, EventEmitter} from 'angular2/core';
 
 @Component({
   selector: 'searchBar',
@@ -11,7 +11,7 @@ import {Component} from 'angular2/core';
             <div class="row">
               <div class="input-field col s12">
                 <i class="material-icons prefix">search</i>
-                <input id="search" type="text" class="validate" [(ngModel)]="query">
+                <input id="search" type="text" [value]="query" (input)="queryChange.next($event.target.value)">
                 <label for="search">Search</label>
               </div>
             </div>
@@ -22,5 +22,10 @@ import {Component} from 'angular2/core';
   `
 })
 export class SearchBarComponent {
-  query: string;
+  query = "";
+  @Output() queryChange = new EventEmitter();
+
+  ngOnChanges(changes) {
+    console.log("query", changes);
+  }
 };

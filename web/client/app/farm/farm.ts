@@ -29,6 +29,6 @@ export class FarmComponent {
   ){}
 
   ngOnInit () {
-    this._service.getFarm(this._routeParams.get('id')).then(farm => this.farm = farm);
+    this._service.getFarm(this._routeParams.get('id')).then(farm => this.farm = farm as Farm);
   }
 };
