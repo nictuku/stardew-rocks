@@ -111,7 +111,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	objects := make([][]*parser.ObjectItem, m.Height)
 	for i := range farm.Objects.Items {
 		object := farm.Objects.Items[i] // separate pointer for each item
-		if object.X() >= len(objects) {
+		if object.Y() >= len(objects) {
 			continue
 		}
 		objects[object.Y()] = append(objects[object.Y()], &object)
@@ -150,7 +150,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 			drawHoeDirt(pm, sg.CurrentSeason, item, img, items)
 		}
 		for x := 0; x < m.Width; x++ {
-			for _, layer := range m.Layers { // Layers are apparently ordered correctly.
+			for _, layer := range m.Layers {
 				var layerOrder float32
 				switch layer.Name {
 				case "Back":
