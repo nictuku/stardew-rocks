@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 	"time"
 
 	"github.com/nictuku/stardew-rocks/parser"
@@ -18,6 +19,14 @@ func failOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
 	}
+}
+
+func wwwDir() string {
+	home := os.Getenv("HOME")
+	if home == "" {
+		home = string(filepath.Separator)
+	}
+	return filepath.Clean(filepath.Join(home, "www"))
 }
 
 func main() {
@@ -86,7 +95,7 @@ func main() {
 				log.Print("Ignoring save with blank player name")
 				continue
 			}
-			_, name := path.Split(path.Clean(saveGame.Player.Name)) // please don't hacko me mister
+			name := path.Base(path.Clean(saveGame.Player.Name)) // please don't hacko me mister
 
 			ts := time.Now().Unix()
 
@@ -112,9 +121,6 @@ func main() {
 				log.Printf("Error opening screenshot file %v: %v", mapFile, err)
 				continue
 			}
-			lastSaveMu.Lock()
-			lastSave = d.Body
-			lastSaveMu.Unlock()
 			view.WriteImage(farmMap, saveGame, f)
 			f.Close()
 			log.Printf("Wrote map file %v", mapFile)
@@ -123,5 +129,5 @@ func main() {
 	}()
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
-	RunHTTPServer()
+	select {}
 }
