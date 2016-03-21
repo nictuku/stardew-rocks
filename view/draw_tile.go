@@ -27,5 +27,5 @@ func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Ima
 	r := sr.Sub(sr.Min).Add(image.Point{x * m.TileWidth, y * m.TileHeight})
 	// DrawMask with draw.Over and an alpha channel ensure the background is transparent.
 	// Anyway, it works.
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, layer)
+	sb.Draw(img, r, src, sr.Min, layer)
 }

@@ -35,7 +35,7 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 		item.Key.Vector2.X * m.TileWidth,
 		item.Key.Vector2.Y * m.TileHeight,
 	})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, flooringLayer)
+	sb.Draw(img, r, src, sr.Min, flooringLayer)
 
 	crop := item.Value.TerrainFeature.Crop
 
@@ -73,6 +73,6 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 			item.Key.Vector2.X * m.TileWidth,
 			item.Key.Vector2.Y*m.TileHeight - 16, // because using tile height 32 above
 		})
-		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
+		sb.Draw(img, r, src, sr.Min, objectLayer)
 	}
 }

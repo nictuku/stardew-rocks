@@ -59,5 +59,5 @@ func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image, item
 		item.Key.Vector2.X * m.TileWidth,
 		item.Key.Vector2.Y * m.TileHeight,
 	})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, flooringLayer)
+	sb.Draw(img, r, src, sr.Min, flooringLayer)
 }

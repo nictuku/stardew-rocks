@@ -68,6 +68,6 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 		if flipWeed[i] {
 			sr = xnaRect(0, 0, m.TileWidth, m.TileHeight)
 		}
-		sb.DrawMask(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, mask, sr.Min, draw.Over, grassLayer)
+		sb.Draw(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, grassLayer)
 	}
 }

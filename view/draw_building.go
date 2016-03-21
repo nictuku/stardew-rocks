@@ -27,7 +27,7 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			(building.TileX + building.AnimalDoor.X) * m.TileWidth,
 			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
 		})
-		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
+		sb.Draw(img, r, src, sr.Min, objectLayer)
 
 		// Animal door
 		sr = xnaRect(0, 112, 16, 16)
@@ -35,7 +35,7 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			((building.TileX + building.AnimalDoor.X) * m.TileWidth) + 16, // TODO: Open door
 			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
 		})
-		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
+		sb.Draw(img, r, src, sr.Min, objectLayer)
 
 		// Coop
 		sr = xnaRect(0, 0, 96, 112)
@@ -43,7 +43,7 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			(building.TileX * m.TileWidth),
 			building.TileY*m.TileHeight + building.TilesHigh*m.TileHeight,
 		}
-		sb.DrawMask(img, topLeftAlign(sr, dp), src, sr.Min, mask, sr.Min, draw.Over, houseLayer)
+		sb.Draw(img, topLeftAlign(sr, dp), src, sr.Min, houseLayer)
 
 	default:
 		return

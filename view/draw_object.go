@@ -88,5 +88,5 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image, objects
 		item.Key.Vector2.X * 16,
 		item.Key.Vector2.Y*16 + placementCompensation,
 	})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, objectLayer)
+	sb.Draw(img, r, src, sr.Min, objectLayer)
 }

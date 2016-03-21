@@ -16,7 +16,7 @@ func drawHouse(pm *parser.Map, img draw.Image, upgradeLevel int) {
 	}
 	sr := xnaRect(0, 144*upgradeLevel, 160, 144)
 	r := sr.Sub(sr.Min).Add(image.Point{930, 130})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, houseLayer)
+	sb.Draw(img, r, src, sr.Min, houseLayer)
 }
 
 func drawGreenhouse(pm *parser.Map, img draw.Image, fixedGreenhouse bool) {
@@ -31,5 +31,5 @@ func drawGreenhouse(pm *parser.Map, img draw.Image, fixedGreenhouse bool) {
 	}
 	sr := xnaRect(160, y, 112, 160)
 	r := sr.Sub(sr.Min).Add(image.Point{400, 96})
-	sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, greenHouseLayer)
+	sb.Draw(img, r, src, sr.Min, greenHouseLayer)
 }

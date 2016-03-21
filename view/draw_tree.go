@@ -44,7 +44,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			return
 		}
 		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight})
-		sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, treeLayer)
+		sb.Draw(img, r, src, sr.Min, treeLayer)
 	} else {
 		{
 			// shadow
@@ -57,7 +57,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth - m.TileWidth, // centralize
 				item.Key.Vector2.Y*m.TileHeight - 0, // vertical centralize
 			})
-			sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, treeLayer)
+			sb.Draw(img, r, src, sr.Min, treeLayer)
 		}
 		{
 			// stump
@@ -65,7 +65,7 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth,
 				item.Key.Vector2.Y*m.TileHeight - m.TileHeight, // stump offset
 			})
-			sb.DrawMask(img, r, src, sr.Min, mask, sr.Min, draw.Over, treeLayer)
+			sb.Draw(img, r, src, sr.Min, treeLayer)
 		}
 		{
 			// tree
@@ -75,9 +75,9 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 				item.Key.Vector2.Y*m.TileHeight - 80,         // stump offset
 			})
 
-			sb.DrawMask(img, r,
+			sb.Draw(img, r,
 				maybeFlip(item.Value.TerrainFeature.Flipped, src, sr),
-				sr.Min, mask, sr.Min, draw.Over,
+				sr.Min,
 				treeLayer)
 		}
 	}
