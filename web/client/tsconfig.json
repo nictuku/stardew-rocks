@@ -1,5 +1,4 @@
 {
-  "version": "1.7.5",
   "compileOnSave": false,
   "compilerOptions": {
     "emitDecoratorMetadata": true,
