@@ -64,11 +64,10 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 
 		} else {
 			x0 = (crop.CurrentPhase + 2) * 16
-			if crop.RowInSpriteSheet%2 != 0 {
-				x0 += 128
-			}
 		}
-
+		if crop.RowInSpriteSheet%2 != 0 {
+			x0 += 128
+		}
 		sr := xnaRect(x0, (crop.RowInSpriteSheet/2)*32, 16, 32)
 		r := sr.Sub(sr.Min).Add(image.Point{
 			item.Key.Vector2.X * m.TileWidth,
