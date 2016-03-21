@@ -13,10 +13,9 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 	if item.Value.TerrainFeature.Type != "HoeDirt" {
 		return
 	}
-	if item.Value.TerrainFeature.State != 1 {
-		return
-	}
+
 	m := pm.TMX
+
 	// Fetch tile from tileset.
 	p := "../TerrainFeatures/hoeDirt.png"
 	if season == "winter" {
@@ -27,10 +26,12 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 		log.Printf("Error fetching image asset %v: %v", p, err)
 		return
 	}
+
 	indexUsed := getFlooringIndex(item, items, func(otherItem *parser.TerrainItem) bool {
-		return otherItem.Value.TerrainFeature.Type == "HoeDirt" && otherItem.Value.TerrainFeature.State == 1
+		return otherItem.Value.TerrainFeature.Type == "HoeDirt" && otherItem.Value.TerrainFeature.State == item.Value.TerrainFeature.State
 	})
-	sr := image.Rect(indexUsed%4*16, indexUsed/4*16, indexUsed%4*16+16, indexUsed/4*16+16)
+	x := indexUsed % 4 * 16 // TODO: +64 if watered.
+	sr := image.Rect(x, indexUsed/4*16, indexUsed%4*16+16, indexUsed/4*16+16)
 	r := sr.Sub(sr.Min).Add(image.Point{
 		item.Key.Vector2.X * m.TileWidth,
 		item.Key.Vector2.Y * m.TileHeight,
