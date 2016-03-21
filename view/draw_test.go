@@ -1,10 +1,12 @@
 package view
 
 import (
+	"math/rand"
 	"os"
 	"testing"
 
 	"fmt"
+
 	"github.com/nictuku/stardew-rocks/parser"
 )
 
@@ -18,6 +20,10 @@ func TestTileCoordinate(t *testing.T) {
 	}
 }
 func TestLoadTile(t *testing.T) {
+
+	// Ensure a known test seed for reproducible test images.
+	rand.Seed(0)
+
 	farm := parser.LoadFarmMap()
 
 	for _, name := range []string{
