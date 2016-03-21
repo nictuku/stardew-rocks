@@ -17,7 +17,8 @@ module.exports = {
     transpileOnly: true
   },
   devServer: {
-    port: 3001
+    port: 3001,
+    historyApiFallback: true
   }
   // plugins: [
   //   new BrowserSyncPlugin({
