@@ -1,5 +1,8 @@
+/// <reference path="../../typings/main.d.ts"/>
+
 import {Component} from 'angular2/core';
-import {_} from 'lodash';
+import * as _ from 'lodash';
+import * as Fuse from 'fuse.js';
 
 import {SearchBarComponent} from './searchBar.ts';
 import {FarmService, Farm} from '../farm/farm.service.ts';
@@ -27,7 +30,13 @@ export class HomeComponent {
   }
 
   queryChange (query) {
-    console.log("query change", query);
-    this._service.getFarms().then(farms => farms.filter(f => f.name == query));
+    if (!_.isEmpty(query)) {
+      this._service.getFarms().then(farms => {
+        this.farms = new Fuse(farms, { keys: ["name", "farmer"]})
+          .search(query);
+      });
+    } else {
+      this._service.getFarms().then(farms => this.farms = farms as Farm[]);
+    }
   }
 };
