@@ -9,6 +9,25 @@ import (
 	"github.com/nictuku/stardew-rocks/parser"
 )
 
+func grassOffset(grassType int) int {
+	// TODO: other seasons
+	switch grassType {
+	case 1:
+		return 0
+	case 2:
+		return 60
+	case 3:
+		return 80
+	case 4:
+		return 100
+	}
+	return 0
+}
+
+func grassRect(idx, grassType int) image.Rectangle {
+	return xnaRect(idx, grassOffset(grassType), 15, 20)
+}
+
 func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 	if item.Value.TerrainFeature.Type != "Grass" {
 		return
