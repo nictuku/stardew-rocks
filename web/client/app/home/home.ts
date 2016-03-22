@@ -2,7 +2,6 @@
 
 import {Component} from 'angular2/core';
 import * as _ from 'lodash';
-import * as Fuse from 'fuse.js';
 
 import {SearchBarComponent} from './searchBar.ts';
 import {FarmService, Farm} from '../farm/farm.service.ts';

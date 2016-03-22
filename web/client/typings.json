@@ -3,7 +3,6 @@
     "lodash": "registry:npm/lodash#4.0.0+20160305082308"
   },
   "ambientDependencies": {
-    "fuse.js": "registry:dt/fuse#1.1.5+20160317120654",
-    "jquery": "registry:dt/jquery#1.10.0+20160316155526"
+    "fuse": "registry:dt/fuse#1.1.5+20160317120654"
   }
 }
