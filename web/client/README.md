@@ -19,7 +19,11 @@ $ webpack
 - You should now have a /dist folder with a bundles.js
 
 ## Running Locally
-- Simply run Webpack in watch mode
+- Install webpack-dev-server
 ```
-$ webpack --watch
+$ npm install -g webpack-dev-server
+```
+- Run webpack-dev-server with hot reloading
+```
+$ webpack-dev-server --hot --inline
 ```
