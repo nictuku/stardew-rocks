@@ -1,7 +1,8 @@
 /// <reference path="../../typings/main.d.ts"/>
 
 import {Component} from 'angular2/core';
-import 'lodash';
+import * as _ from 'lodash';
+import Fuse from 'fuse.js';
 
 import {SearchBarComponent} from './searchBar.ts';
 import {FarmService, Farm} from '../farm/farm.service.ts';
@@ -33,7 +34,6 @@ export class HomeComponent {
 
   ngOnInit () {
     this._service.getFarms().then(farms => this.farms = farms as Farm[]);
-    console.log(_)
   }
 
   queryChange (query) {
