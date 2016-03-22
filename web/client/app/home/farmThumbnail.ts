@@ -15,7 +15,7 @@ import {Farm} from '../farm/farm.service.ts';
       <a [routerLink]="['Farm', {id: farm.id}]">
         <div class="card-content">
           <span class="card-title">{{farm.name}} Farm</span>
-          <img class="thumbnail" [src]="farm.thumbnail.url" >
+          <img class="thumbnail" [src]="farm.thumbnail" >
         </div>
       </a>
     </div>

@@ -16,16 +16,10 @@ import {Farm, FarmService} from './farm.service.ts';
       <div class="card-content">
         <span class="card-title">{{farm?.name}} Farm</span>
         <p>{{farm?.farmer}}</p>
-        <div class="slider">
-          <ul class="slides">
-            <li *ngFor="#image of farm?.images">
-              <img [src]="image.url">
-              <div class="caption center-align">
-                <h5 class="light grey-text text-lighten-3">{{image?.date}}</h5>
-              </div>
-            </li>
-          </ul>
-        </div>
+        <video class="thumbnail" [poster]="farm?.thumbnail" autoplay loop muted>
+          <source [src]="farm?.webm">
+          <p class="warning">Your browser does not support HTML5 video.</p>
+        </video>
       </div>
     </div>
   `,
@@ -42,9 +36,5 @@ export class FarmComponent {
 
   ngOnInit () {
     this._service.getFarm(this._routeParams.get('id')).then(farm => this.farm = farm as Farm);
-  }
-
-  ngAfterViewInit () {
-    console.log(this._dom);
   }
 };
