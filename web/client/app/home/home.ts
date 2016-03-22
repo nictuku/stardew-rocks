@@ -13,7 +13,7 @@ import {FarmThumbnailComponent} from './farmThumbnail.ts';
   template: `
     <searchBar (queryChange)="queryChange($event)"></searchBar>
     <div class="row">
-      <div class="col m6" *ngFor="#farm of farms">
+      <div class="col m6 l4" *ngFor="#farm of farms">
         <farmThumbnail [farm]="farm"></farmThumbnail>
       </div>
     </div>

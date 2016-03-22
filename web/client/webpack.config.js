@@ -1,5 +1,3 @@
-//var BrowserSyncPlugin = require("browser-sync-webpack-plugin");
-
 module.exports = {
   entry: './main',
   output: {
@@ -20,13 +18,4 @@ module.exports = {
     port: 3001,
     historyApiFallback: true
   }
-  // plugins: [
-  //   new BrowserSyncPlugin({
-  //     host: 'localhost',
-  //     port: '3000',
-  //     proxy: 'http://localhost:3001/'
-  //   }, {
-  //     reload: false
-  //   })
-  // ]
 };
