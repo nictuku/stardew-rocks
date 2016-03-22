@@ -11,9 +11,19 @@ import {FarmService} from './farm/farm.service.ts';
 
 @Component({
   selector: 'app',
+  styles:[`
+    .app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+  `],
   template: `
-    <navbar></navbar>
-    <router-outlet></router-outlet>
+    <div class="app">
+      <navbar></navbar>
+      <router-outlet></router-outlet>
+    </div>
   `,
   directives: [NavbarComponent, ROUTER_DIRECTIVES],
   providers: [FarmService]

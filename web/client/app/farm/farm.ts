@@ -5,7 +5,15 @@ import {Farm, FarmService} from './farm.service.ts';
 
 @Component({
   selector: 'farm',
+  host: {
+    'class': 'farm'
+  },
   styles: [`
+    :host(.farm), .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
     .meta {
       padding-top: 1rem;
       line-height: 2rem;
@@ -19,13 +27,19 @@ import {Farm, FarmService} from './farm.service.ts';
       display: block;
     }
     .history-row {
+      flex: 1;
       position: relative;
-      //display: flex;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
-    // .history {
-    //   max-height: 100%;
-    //   max-width: 100%;
-    // }
+    .history {
+      position: absolute;
+      max-height: 100%;
+      top: 0;
+      width: 100%;
+      background-color: #dddddd;
+    }
     .play-pause-btn {
       position: absolute;
       top: 0;
@@ -40,8 +54,8 @@ import {Farm, FarmService} from './farm.service.ts';
           <span class="farmer">by {{farm?.farmer}}</span>
         </div>
       </div>
-      <div class="row history-row">
-        <video class="history responsive-video" [poster]="farm?.thumbnail" autoplay loop muted>
+      <div class="history-row">
+        <video class="history" [poster]="farm?.thumbnail" autoplay loop muted>
           <source [src]="farm?.history">
           <p class="warning">Your browser does not support HTML5 video.</p>
         </video>
