@@ -13,9 +13,7 @@ import {FarmService} from './farm/farm.service.ts';
   selector: 'app',
   template: `
     <navbar></navbar>
-    <div class="container">
-      <router-outlet></router-outlet>
-    </div>
+    <router-outlet></router-outlet>
   `,
   directives: [NavbarComponent, ROUTER_DIRECTIVES],
   providers: [FarmService]
