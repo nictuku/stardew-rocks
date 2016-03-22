@@ -32,6 +32,7 @@ import {Farm, FarmService} from './farm.service.ts';
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
+      margin-bottom: 1rem;
     }
     .history {
       position: absolute;

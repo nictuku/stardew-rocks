@@ -14,7 +14,7 @@ import {FarmService} from './farm/farm.service.ts';
   selector: 'app',
   styles:[`
     .app {
-      height: 100%;
+      min-height: 100%;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -26,7 +26,7 @@ import {FarmService} from './farm/farm.service.ts';
   `],
   template: `
     <div class="app">
-      <header>
+      <header class="navbar-fixed">
         <navbar></navbar>
       </header>
       <main>

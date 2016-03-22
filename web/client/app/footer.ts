@@ -8,6 +8,7 @@ import {Component} from 'angular2/core';
   styles: [`
     :host(.page-footer) {
       padding-top: initial;
+      margin-top: initial;
     }
   `],
   template: `

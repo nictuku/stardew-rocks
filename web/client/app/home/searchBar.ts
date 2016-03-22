@@ -20,8 +20,4 @@ import {Component, Input, SimpleChange, Output, EventEmitter} from 'angular2/cor
 export class SearchBarComponent {
   query = "";
   @Output() queryChange = new EventEmitter();
-
-  ngOnChanges(changes) {
-    console.log("query", changes);
-  }
 };
