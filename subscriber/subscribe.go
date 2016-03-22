@@ -2,7 +2,9 @@ package main
 
 import (
 	"bytes"
+	"compress/bzip2"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path"
@@ -85,8 +87,11 @@ func main() {
 	go func() {
 		for d := range msgs {
 			count++
-
-			saveGame, err := parser.ParseSaveGame(bytes.NewReader(d.Body))
+			var reader io.Reader = bytes.NewReader(d.Body)
+			if d.ContentEncoding == "bzip2" {
+				reader = bzip2.NewReader(reader)
+			}
+			saveGame, err := parser.ParseSaveGame(reader)
 			if err != nil {
 				log.Print("Error parsing saved game:", err)
 				continue

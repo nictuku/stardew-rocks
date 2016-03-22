@@ -36,9 +36,9 @@ func publishOtherFiles(ch *amqp.Channel, fileName string) error {
 		false,          // mandatory
 		false,          // immediate
 		amqp.Publishing{
-			ContentType: "application/xml",
-			//ContentEncoding: "gzip",
-			Body: content,
+			ContentType:     "application/xml",
+			ContentEncoding: "bzip2",
+			Body:            content,
 		})
 
 }
@@ -59,9 +59,9 @@ func publishSavedGame(ch *amqp.Channel, fileName string) error {
 		false,            // mandatory
 		false,            // immediate
 		amqp.Publishing{
-			ContentType: "application/xml",
-			//ContentEncoding: "gzip",
-			Body: content,
+			ContentType:     "application/xml",
+			ContentEncoding: "bzip2",
+			Body:            content,
 		})
 
 }
