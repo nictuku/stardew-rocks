@@ -22,6 +22,7 @@ import {FarmService} from './farm/farm.service.ts';
     main {
       flex: 1;
       display: flex;
+      flex-direction: column;
     }
   `],
   template: `

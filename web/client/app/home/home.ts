@@ -1,7 +1,7 @@
 /// <reference path="../../typings/main.d.ts"/>
 
 import {Component} from 'angular2/core';
-import * as _ from 'lodash';
+import 'lodash';
 
 import {SearchBarComponent} from './searchBar.ts';
 import {FarmService, Farm} from '../farm/farm.service.ts';
@@ -16,6 +16,11 @@ import {FarmThumbnailComponent} from './farmThumbnail.ts';
         <div class="col m6 l4" *ngFor="#farm of farms">
           <farmThumbnail [farm]="farm"></farmThumbnail>
         </div>
+        <div class="col m12" *ngIf="farms?.length < 1">
+          <div class="card-panel">
+            No results found
+          </div>
+        </div>
       </div>
     </div>
   `,
@@ -28,6 +33,7 @@ export class HomeComponent {
 
   ngOnInit () {
     this._service.getFarms().then(farms => this.farms = farms as Farm[]);
+    console.log(_)
   }
 
   queryChange (query) {
