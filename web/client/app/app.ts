@@ -11,9 +11,17 @@ import {FarmService} from './farm/farm.service.ts';
 
 @Component({
   selector: 'app',
+  styles:[`
+    .app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+  `],
   template: `
-    <navbar></navbar>
-    <div class="container">
+    <div class="app">
+      <navbar></navbar>
       <router-outlet></router-outlet>
     </div>
   `,

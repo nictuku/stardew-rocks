@@ -8,7 +8,7 @@ export interface Farm {
   likes: number,
   lastUpdate: Date,
   thumbnail: string,
-  webm: string
+  history: string
 };
 
 @Injectable()
@@ -27,7 +27,7 @@ var Farms = [{
   likes: 5,
   lastUpdate: new Date(),
   thumbnail: "content/farms/map-Mitchel-1458449416.png",
-  webm: ""
+  history: ""
 }, {
   id: "FarmRey",
   name: "Farm",
@@ -35,7 +35,7 @@ var Farms = [{
   likes: 5,
   lastUpdate: new Date(),
   thumbnail: "content/farms/map-Rey-1458460624.png",
-  webm: "content/farms/Rey.webm"
+  history: "content/farms/Rey.webm"
 }];
 
 var farmsPromise = Promise.resolve(Farms);

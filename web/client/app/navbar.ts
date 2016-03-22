@@ -16,7 +16,7 @@ import {RouterLink} from 'angular2/router';
   template: `
     <nav>
       <div class="nav-wrapper deep-orange darken-2">
-        <a [routerLink]="['Home']" class="brand-logo padded">
+        <a [routerLink]="['Home']" class="brand-logo padded left">
           <object class="logo" type="image/svg+xml" data="content/logo.svg"></object>
           StardewRocks
         </a>

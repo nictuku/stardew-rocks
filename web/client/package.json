@@ -2,8 +2,6 @@
   "name": "stardew-rocks-web-client",
   "main": "main.ts",
   "devDependencies": {
-    "browser-sync": "^2.11.1",
-    "browser-sync-webpack-plugin": "^1.0.1",
     "css-loader": "^0.23.1",
     "ts-loader": "^0.8.1",
     "typescript": "^1.8.9",

@@ -6,16 +6,21 @@ import {Farm} from '../farm/farm.service.ts';
 @Component({
   selector: 'farmThumbnail',
   styles: [`
-    .thumbnail {
-      width: 100%;
+    .card-title {
+      background-color: rgba(100, 100, 100, .5);
+      right: 0;
+      line-height: 2rem;
     }
   `],
   template: `
-    <div class="card">
+    <div class="card hoverable">
       <a [routerLink]="['Farm', {id: farm.id}]">
-        <div class="card-content">
-          <span class="card-title">{{farm.name}} Farm</span>
-          <img class="thumbnail" [src]="farm.thumbnail" >
+        <div class="card-image">
+          <img class="responsive-img" [src]="farm.thumbnail" >
+          <span class="card-title">
+            {{farm.name}} Farm<br>
+            by {{farm.farmer}}
+          </span>
         </div>
       </a>
     </div>
