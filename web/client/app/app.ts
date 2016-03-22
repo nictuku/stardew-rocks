@@ -4,6 +4,7 @@ import {Component} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 
 import {NavbarComponent} from './navbar.ts';
+import {FooterComponent} from './footer.ts';
 import {HomeComponent} from './home/home.ts';
 import {FarmComponent} from './farm/farm.ts';
 
@@ -18,14 +19,23 @@ import {FarmService} from './farm/farm.service.ts';
       flex-direction: column;
       overflow: hidden;
     }
+    main {
+      flex: 1;
+      display: flex;
+    }
   `],
   template: `
     <div class="app">
-      <navbar></navbar>
-      <router-outlet></router-outlet>
+      <header>
+        <navbar></navbar>
+      </header>
+      <main>
+        <router-outlet></router-outlet>
+      </main>
+      <footer></footer>
     </div>
   `,
-  directives: [NavbarComponent, ROUTER_DIRECTIVES],
+  directives: [NavbarComponent, FooterComponent, ROUTER_DIRECTIVES],
   providers: [FarmService]
 })
 @RouteConfig([
