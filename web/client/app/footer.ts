@@ -3,7 +3,7 @@ import {Component} from 'angular2/core';
 @Component({
   selector: 'footer',
   host: {
-    'class': 'page-footer'
+    'class': 'page-footer orange accent-4'
   },
   styles: [`
     :host(.page-footer) {

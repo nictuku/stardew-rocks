@@ -18,13 +18,8 @@ import {Farm, FarmService} from './farm.service.ts';
       padding-top: 1rem;
       line-height: 2rem;
     }
-    .meta .name {
-      font-size: 2.5rem;
-      display: block;
-    }
-    .meta .farmer {
-      font-size: 1.5rem;
-      display: block;
+    .sub-title {
+      font-size: 1rem;
     }
     .history-row {
       flex: 1;
@@ -41,18 +36,26 @@ import {Farm, FarmService} from './farm.service.ts';
       width: 100%;
       background-color: #dddddd;
     }
-    .play-pause-btn {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
   `],
   template: `
     <div class="container">
-      <div class="row">
-        <div class="meta">
-          <span class="name">{{farm?.name}} Farm</span>
-          <span class="farmer">by {{farm?.farmer}}</span>
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">
+            {{farm?.name}} Farm
+            <span class="sub-title">by {{farm?.farmer}}</span>
+            <a class="btn waves-effect waves-light right orange lighten-1">
+              <i class="material-icons">star_border</i>
+              {{farm?.likes}}
+            </a>
+          </span>
+          <p>
+            Last Updated: {{farm?.lastUpdate | date: 'medium'}}
+          </p>
+        </div>
+        <div class="card-action">
+          <a (click)="playPause()">Play/Pause</a>
+          <a>Export GIF</a>
         </div>
       </div>
       <div class="history-row">
@@ -60,7 +63,6 @@ import {Farm, FarmService} from './farm.service.ts';
           <source [src]="farm?.history">
           <p class="warning">Your browser does not support HTML5 video.</p>
         </video>
-        <a class="waves-effect waves-light btn play-pause-btn" (click)="playPause()">Play/Pause</a>
       </div>
     </div>
   `
