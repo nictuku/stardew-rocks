@@ -2,6 +2,7 @@ import {Component, ElementRef} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 
 import {Farm, FarmService} from './farm.service.ts';
+import {MaterializeDirective} from 'angular2-materialize';
 
 @Component({
   selector: 'farm',
@@ -13,10 +14,6 @@ import {Farm, FarmService} from './farm.service.ts';
       flex: 1;
       display: flex;
       flex-direction: column;
-    }
-    .meta {
-      padding-top: 1rem;
-      line-height: 2rem;
     }
     .sub-title {
       font-size: 1rem;
@@ -32,26 +29,35 @@ import {Farm, FarmService} from './farm.service.ts';
     .history {
       position: absolute;
       max-height: 100%;
+      min-height: 200px;
       top: 0;
       width: 100%;
       background-color: #dddddd;
     }
+    .card-action > a {
+      cursor: pointer;
+    }
   `],
   template: `
     <div class="container">
-      <div class="card">
+      <div class="card meta deep-orange lighten-5">
         <div class="card-content">
           <span class="card-title">
             {{farm?.name}} Farm
-            <span class="sub-title">by {{farm?.farmer}}</span>
-            <a class="btn waves-effect waves-light right orange lighten-1">
-              <i class="material-icons">star_border</i>
-              {{farm?.likes}}
+            <span class="sub-title hide-on-small-only">by {{farm?.farmer}}</span>
+            <a class="btn waves-effect waves-light right orange lighten-1 hide-on-small-only">
+              <i class="material-icons">star_border</i> {{farm?.likes}}
             </a>
           </span>
-          <p>
+          <div class="sub-title hide-on-med-and-up">Farmer: {{farm?.farmer}}</div>
+          <div>
             Last Updated: {{farm?.lastUpdate | date: 'medium'}}
-          </p>
+          </div>
+          <div class="hide-on-med-and-up" style="font-size: 1.6rem;">
+            <a class="btn waves-effect waves-light orange lighten-1">
+              <i class="material-icons">star_border</i> {{farm?.likes}}
+            </a>
+          </div>
         </div>
         <div class="card-action">
           <a (click)="playPause()">Play/Pause</a>

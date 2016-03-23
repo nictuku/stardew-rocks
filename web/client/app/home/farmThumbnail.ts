@@ -11,6 +11,9 @@ import {Farm} from '../farm/farm.service.ts';
       right: 0;
       line-height: 2rem;
     }
+    .sub-title {
+      font-size: 1rem;
+    }
   `],
   template: `
     <div class="card hoverable">
@@ -18,8 +21,8 @@ import {Farm} from '../farm/farm.service.ts';
         <div class="card-image">
           <img class="responsive-img" [src]="farm.thumbnail" >
           <span class="card-title">
-            {{farm.name}} Farm<br>
-            by {{farm.farmer}}
+            {{farm.name}} Farm
+            <div class="sub-title">by {{farm.farmer}}</div>
           </span>
         </div>
       </a>

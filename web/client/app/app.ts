@@ -20,6 +20,7 @@ import {FarmService} from './farm/farm.service.ts';
       overflow: hidden;
     }
     main {
+      overflow: auto;
       flex: 1;
       display: flex;
       flex-direction: column;

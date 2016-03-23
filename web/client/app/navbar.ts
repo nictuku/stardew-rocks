@@ -11,6 +11,8 @@ import {RouterLink} from 'angular2/router';
       vertical-align: text-bottom;
       height: 40px;
       width: 40px;
+      pointer-events: none;
+      cursor: pointer;
     }
   `],
   template: `
