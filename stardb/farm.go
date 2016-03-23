@@ -46,12 +46,12 @@ func init() {
 	//mgo.SetDebug(true)
 }
 
-func UpdateFarmTime(c *mgo.Collection, farm bson.ObjectId) error {
-	return c.Update(bson.M{"_id": farm}, bson.M{"savetime": time.Now()})
+func UpdateFarmTime(c *mgo.Collection, id bson.ObjectId) error {
+	return c.Update(bson.M{"_id": id}, bson.M{"savetime": time.Now()})
 }
 
-func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName string) (*Farm, error) {
-	ret := &Farm{}
+func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName string) (ret *Farm, existing bool, err error) {
+	ret = &Farm{}
 	q := c.Find(bson.M{
 		"name":     farmName,
 		"farmer":   playerName,
@@ -70,14 +70,14 @@ func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName s
 		}
 		if err := c.Insert(farm); err != nil {
 			log.Println("could not insert", err)
-			return nil, err
+			return nil, false, err
 		}
 		log.Println("insert ok", farm.ID.String())
-		return farm, nil
+		return farm, false, nil
 	}
 	log.Printf("found ok %v, %v, %v", ret.Name, ret.Farmer, ret.SaveTime)
 
-	return ret, nil
+	return ret, true, nil
 }
 
 func WriteSaveFile(farm *Farm, body []byte) error {
