@@ -92,7 +92,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	for i := range farm.Buildings {
 		building := farm.Buildings[i]
 		y := building.TileY + building.AnimalDoor.Y
-		if y >= len(buildings) {
+		if y >= len(buildings) || y < 0 {
 			continue
 		}
 		buildings[y] = append(buildings[y], &building)
@@ -102,7 +102,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	items := make([][]*parser.TerrainItem, m.Height)
 	for i := range farm.TerrainFeatures.Items {
 		item := farm.TerrainFeatures.Items[i] // separate pointer for each item
-		if item.Y() >= len(items) {
+		if item.Y() >= len(items) || item.Y() < 0 {
 			continue
 		}
 		items[item.Y()] = append(items[item.Y()], &item)
@@ -110,7 +110,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	objects := make([][]*parser.ObjectItem, m.Height)
 	for i := range farm.Objects.Items {
 		object := farm.Objects.Items[i] // separate pointer for each item
-		if object.Y() >= len(objects) {
+		if object.Y() >= len(objects) || object.Y() < 0  {
 			continue
 		}
 		objects[object.Y()] = append(objects[object.Y()], &object)
