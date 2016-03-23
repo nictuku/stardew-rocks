@@ -15,9 +15,14 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	// Not relevant or possible.
 	// Session.Close()
 
 	DB = Session.DB("stardew")
 	FarmCollection = DB.C("farms")
 	GFS = DB.GridFS("sdr")
+
+	//mgo.SetLogger(log.New(os.Stderr, "", log.LstdFlags))
+	//mgo.SetDebug(true)
+
 }

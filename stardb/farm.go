@@ -41,10 +41,6 @@ func FarmsJSON() ([]byte, error) {
 	}
 	return json.Marshal(result)
 }
-func init() {
-	mgo.SetLogger(log.New(os.Stderr, "", log.LstdFlags))
-	//mgo.SetDebug(true)
-}
 
 func UpdateFarmTime(c *mgo.Collection, id bson.ObjectId) error {
 	return c.Update(bson.M{"_id": id}, bson.M{"savetime": time.Now()})
@@ -105,4 +101,9 @@ func NewScreenshotWriter(farm *Farm) (io.WriteCloser, error) {
 		return nil, fmt.Errorf("error writing screenshot: unexpected zero save time")
 	}
 	return GFS.Create(farm.ScreenshotPath())
+}
+
+func init() {
+	mgo.SetLogger(log.New(os.Stderr, "", log.LstdFlags))
+	//mgo.SetDebug(true)
 }
