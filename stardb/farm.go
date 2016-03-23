@@ -52,7 +52,6 @@ func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName s
 		"farmer":   playerName,
 		"uniqueid": uniqueIDForThisGame,
 	})
-	log.Printf("q %v", q)
 	if err := q.One(&ret); err != nil {
 		log.Println("not found", err)
 
