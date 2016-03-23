@@ -15,7 +15,6 @@ import (
 	"github.com/nictuku/stardew-rocks/view"
 
 	"github.com/streadway/amqp"
-	"labix.org/v2/mgo"
 )
 
 func failOnError(err error, msg string) {
@@ -30,28 +29,6 @@ func wwwDir() string {
 		home = string(filepath.Separator)
 	}
 	return filepath.Clean(filepath.Join(home, "www"))
-}
-
-func writeSaveFile(fs *mgo.GridFS, farm *stardb.Farm, body []byte) error {
-
-	saveFile := path.Join("saveGames", fmt.Sprintf("%v.xml", farm.ID.Hex()))
-	g, err := fs.Create(saveFile)
-	if err != nil {
-		return fmt.Errorf("Error opening grid saveGames %v: %v", saveFile, err)
-
-	}
-	defer g.Close()
-	if _, err := g.Write(body); err != nil {
-		return fmt.Errorf("Failed to write grid save file at %v: %v", saveFile, err)
-	}
-	log.Printf("Wrote grid saveGame file %v", saveFile)
-	return nil
-}
-
-// newScreenshotWriter saves a screenshot in GFS at screenshots/<hexid>.png
-func newScreenshotWriter(fs *mgo.GridFS, farm *stardb.Farm) (io.WriteCloser, error) {
-	screenshotFile := path.Join("screenshots", fmt.Sprintf("%v.png", farm.ID.Hex()))
-	return fs.Create(screenshotFile)
 }
 
 func main() {
@@ -108,8 +85,6 @@ func main() {
 
 	farmMap := parser.LoadFarmMap()
 
-	fs := stardb.GFS
-
 	go func() {
 		for d := range msgs {
 			count++
@@ -156,8 +131,13 @@ func main() {
 			sf.Close()
 
 			// GridFS XML save file write.
-			if err := writeSaveFile(fs, farm, d.Body); err != nil {
-				log.Print(err)
+			if err := stardb.WriteSaveFile(farm, d.Body); err != nil {
+				log.Print("write save file:", err)
+				continue
+			}
+			// The save file is the most critical and it's been updated, so we should be fine.
+			if err := stardb.UpdateFarmTime(stardb.FarmCollection, farm.ID); err != nil {
+				log.Print("update farm time:", err)
 				continue
 			}
 
@@ -173,7 +153,7 @@ func main() {
 			log.Printf("Wrote map file %v", mapFile)
 
 			// GridFs screenshot write.
-			fs, err := newScreenshotWriter(fs, farm)
+			fs, err := stardb.NewScreenshotWriter(farm)
 			if err != nil {
 				log.Print("Error writing grid screenshot:", err)
 				continue
@@ -185,7 +165,7 @@ func main() {
 				continue
 			}
 			fs.Close()
-			log.Printf("Wrote grid map file %v", mapFile)
+			log.Printf("Wrote grid map file %v", farm.ScreenshotPath())
 
 		}
 		log.Printf("Total messages so far: %d", count)
