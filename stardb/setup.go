@@ -1,6 +1,6 @@
 package stardb
 
-import "labix.org/v2/mgo"
+import "gopkg.in/mgo.v2"
 
 var (
 	Session        *mgo.Session

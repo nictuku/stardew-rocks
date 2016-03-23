@@ -8,8 +8,9 @@ import (
 	"path"
 	"time"
 
-	"labix.org/v2/mgo"
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 type Farm struct {
@@ -41,8 +42,8 @@ func FarmsJSON() ([]byte, error) {
 	return json.Marshal(result)
 }
 
-func UpdateFarmTime(c *mgo.Collection, id bson.ObjectId) error {
-	return c.Update(bson.M{"_id": id}, bson.M{"savetime": time.Now()})
+func UpdateFarmTime(c *mgo.Collection, id bson.ObjectId, ts time.Time) error {
+	return c.Update(bson.M{"_id": id}, bson.M{"savetime": ts})
 }
 
 func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName string) (ret *Farm, existing bool, err error) {
@@ -74,7 +75,7 @@ func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName s
 	return ret, true, nil
 }
 
-func WriteSaveFile(farm *Farm, body []byte) error {
+func WriteSaveFile(farm *Farm, body []byte, ts time.Time) error {
 	if farm.SaveTime.IsZero() {
 		return fmt.Errorf("error writing save file: unexpected zero save time")
 	}
@@ -85,18 +86,25 @@ func WriteSaveFile(farm *Farm, body []byte) error {
 		return fmt.Errorf("Error opening grid saveGames %v: %v", saveFile, err)
 
 	}
+	g.SetUploadDate(ts)
 	defer g.Close()
 	if _, err := g.Write(body); err != nil {
 		return fmt.Errorf("Failed to write grid save file at %v: %v", saveFile, err)
 	}
+
 	log.Printf("Wrote grid saveGame file %v", saveFile)
 	return nil
 }
 
 // NewScreenshotWriter saves a screenshot in GFS at screenshots/<hexid>.png
-func NewScreenshotWriter(farm *Farm) (io.WriteCloser, error) {
+func NewScreenshotWriter(farm *Farm, ts time.Time) (io.WriteCloser, error) {
 	if farm.SaveTime.IsZero() {
 		return nil, fmt.Errorf("error writing screenshot: unexpected zero save time")
 	}
-	return GFS.Create(farm.ScreenshotPath())
+	g, err := GFS.Create(farm.ScreenshotPath())
+	if err != nil {
+		return nil, err
+	}
+	g.SetUploadDate(ts)
+	return g, nil
 }

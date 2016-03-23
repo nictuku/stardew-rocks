@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -8,7 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 
 	"io/ioutil"
 
@@ -24,6 +26,24 @@ func parseTime(t string) time.Time {
 	}
 	return time.Unix(i, 0)
 }
+
+func prevUpload(farmid bson.ObjectId, uniqueIDForThisGame int, playerName, farmName string, ts time.Time) (existing bool, err error) {
+
+	q := stardb.GFS.Find(bson.M{
+		"filename": fmt.Sprintf("/screenshot/%v/%d.xml", farmid.Hex(), ts.Unix()),
+	})
+	n, err := q.Count()
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			log.Println("not found", err)
+			return false, nil
+		}
+		return false, err
+	}
+
+	return n > 0, nil
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		log.Fatalf("Expected `%v <xml save file>`", os.Args[0])
@@ -48,13 +68,17 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	farmid, existing, err := stardb.FindFarm(stardb.FarmCollection, gameSave.UniqueIDForThisGame, gameSave.Player.Name, gameSave.Player.FarmName)
+	farmid, _, err := stardb.FindFarm(stardb.FarmCollection, gameSave.UniqueIDForThisGame, gameSave.Player.Name, gameSave.Player.FarmName)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if existing {
-		log.Println("already existing:", farmid.ID.Hex())
-		return
+
+	found, err := prevUpload(farmid.ID, gameSave.UniqueIDForThisGame, gameSave.Player.Name, gameSave.Player.FarmName, prevTimestamp)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if found {
+		log.Fatal("update with the same save date already found")
 	}
 
 	// GridFS XML save file write.
@@ -62,16 +86,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := stardb.WriteSaveFile(farmid, buf); err != nil {
+	if err := stardb.WriteSaveFile(farmid, buf, prevTimestamp); err != nil {
 		log.Fatal("write save file:", err)
 	}
 	// The save file is the most critical and it's been updated, so we should be fine.
-	if err := stardb.FarmCollection.Update(bson.M{"_id": farmid.ID}, bson.M{"savetime": prevTimestamp}); err != nil {
+	if err := stardb.FarmCollection.Update(bson.M{"_id": farmid.ID}, bson.M{"$set": bson.M{"savetime": prevTimestamp}}); err != nil {
 		log.Fatal("update farm time:", err)
 	}
 
 	// GridFs screenshot write.
-	fs, err := stardb.NewScreenshotWriter(farmid)
+	fs, err := stardb.NewScreenshotWriter(farmid, prevTimestamp)
 	if err != nil {
 		log.Fatal("Error writing grid screenshot:", err)
 	}

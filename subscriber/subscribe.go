@@ -104,7 +104,7 @@ func main() {
 
 			name := path.Base(path.Clean(saveGame.Player.Name)) // please don't hacko me mister
 
-			ts := time.Now().Unix()
+			ts := time.Now()
 
 			farm, _, err := stardb.FindFarm(stardb.FarmCollection, saveGame.UniqueIDForThisGame, saveGame.Player.Name, saveGame.Player.FarmName)
 			if err != nil {
@@ -116,7 +116,7 @@ func main() {
 			//
 			// Write the save game, then write the screenshot.
 			// TODO: deal with races and conflicts.
-			saveFile := path.Join(wwwDir(), "saveGames", fmt.Sprintf("%v-%d.xml", name, ts))
+			saveFile := path.Join(wwwDir(), "saveGames", fmt.Sprintf("%v-%d.xml", name, ts.Unix()))
 			sf, err := os.OpenFile(saveFile, os.O_CREATE|os.O_WRONLY, 0666)
 			if err != nil {
 				log.Printf("Error opening saveGames %v: %v", saveFile, err)
@@ -131,12 +131,12 @@ func main() {
 			sf.Close()
 
 			// GridFS XML save file write.
-			if err := stardb.WriteSaveFile(farm, d.Body); err != nil {
+			if err := stardb.WriteSaveFile(farm, d.Body, ts); err != nil {
 				log.Print("write save file:", err)
 				continue
 			}
 			// The save file is the most critical and it's been updated, so we should be fine.
-			if err := stardb.UpdateFarmTime(stardb.FarmCollection, farm.ID); err != nil {
+			if err := stardb.UpdateFarmTime(stardb.FarmCollection, farm.ID, ts); err != nil {
 				log.Print("update farm time:", err)
 				continue
 			}
@@ -153,7 +153,7 @@ func main() {
 			log.Printf("Wrote map file %v", mapFile)
 
 			// GridFs screenshot write.
-			fs, err := stardb.NewScreenshotWriter(farm)
+			fs, err := stardb.NewScreenshotWriter(farm, ts)
 			if err != nil {
 				log.Print("Error writing grid screenshot:", err)
 				continue
