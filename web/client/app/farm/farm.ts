@@ -1,5 +1,6 @@
 import {Component, ElementRef} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
+import {NgStyle} from 'angular2/common';
 
 import {Farm, FarmService} from './farm.service.ts';
 import {MaterializeDirective} from 'angular2-materialize';
@@ -60,22 +61,30 @@ import {MaterializeDirective} from 'angular2-materialize';
           </div>
         </div>
         <div class="card-action">
-          <a (click)="playPause()">Play/Pause</a>
-          <a>Export GIF</a>
+          <a (click)="playPause()">{{playPauseLabel}}</a>
         </div>
       </div>
       <div class="history-row">
-        <video class="history" [poster]="farm?.thumbnail" autoplay loop muted>
+        <video class="history" materialize="materialbox" [poster]="farm?.thumbnail"
+          autoplay loop muted (click)="historyClicked = !historyClicked"
+           [ngStyle]="historyClicked ? historyExpandedStyle : null" >
           <source [src]="farm?.history">
           <p class="warning">Your browser does not support HTML5 video.</p>
         </video>
       </div>
     </div>
-  `
+  `,
+  directives: [MaterializeDirective, NgStyle]
 })
 export class FarmComponent {
   farm: Farm;
   historyEl: HTMLVideoElement;
+  playPauseLabel: string = "Pause";
+  historyClicked = false;
+  historyExpandedStyle = {
+    "max-height": "initial",
+    "background-color": "initial"
+  };
 
   constructor(
     private _service: FarmService,
@@ -91,8 +100,10 @@ export class FarmComponent {
   playPause () {
     if (this.historyEl.paused) {
       this.historyEl.play();
+      this.playPauseLabel = "Pause";
     } else {
       this.historyEl.pause();
+      this.playPauseLabel = "Play";
     }
   }
 };
