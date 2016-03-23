@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"compress/gzip"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"os"
 
 	"github.com/streadway/amqp"
 )
@@ -37,14 +41,31 @@ func publishOtherFiles(ch *amqp.Channel, fileName string) error {
 		false,          // immediate
 		amqp.Publishing{
 			ContentType:     "application/xml",
-			ContentEncoding: "bzip2",
+			ContentEncoding: "gzip",
 			Body:            content,
 		})
 
 }
 
+// readAll reads the XML file, compresses and returns it as a slice of bytes.
+func readAll(fileName string) ([]byte, error) {
+	f, err := os.Open(fileName)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	buf := bytes.NewBuffer(nil)
+	w := gzip.NewWriter(buf)
+	if _, err := io.Copy(w, f); err != nil {
+		return nil, err
+	}
+	w.Close()
+	return buf.Bytes(), nil
+}
+
 func publishSavedGame(ch *amqp.Channel, fileName string) error {
-	content, err := ioutil.ReadFile(fileName)
+
+	content, err := readAll(fileName)
 	if err != nil {
 		return fmt.Errorf("Could not read file %v: %v", fileName, err)
 	}
@@ -60,7 +81,7 @@ func publishSavedGame(ch *amqp.Channel, fileName string) error {
 		false,            // immediate
 		amqp.Publishing{
 			ContentType:     "application/xml",
-			ContentEncoding: "bzip2",
+			ContentEncoding: "gzip",
 			Body:            content,
 		})
 
