@@ -20,7 +20,7 @@ import (
 // information to the output, including the used log level and the name of
 // the function.
 var format = logging.MustStringFormatter(
-	`%{time:15:04:05.000} %{message}`, // %{shortfunc} %{level:.1s}
+	`%{time} %{message}`, // %{shortfunc} %{level:.1s}
 )
 
 var log = logging.MustGetLogger("stardew.rocks")
