@@ -39,18 +39,19 @@ func main() {
 	ch, err := conn.Channel()
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
+	for _, exc := range []string{"SaveGameInfo-1", "OtherFiles-1"} {
+		err = ch.ExchangeDeclare(
+			exc,      // name
+			"fanout", // type
+			false,    // durable
+			false,    // auto-deleted
+			false,    // internal
+			false,    // no-wait
+			nil,      // arguments
+		)
 
-	err = ch.ExchangeDeclare(
-		"OtherFiles-1", // name
-		"fanout",       // type
-		false,          // durable
-		false,          // auto-deleted
-		false,          // internal
-		false,          // no-wait
-		nil,            // arguments
-	)
-	failOnError(err, "Failed to declare an exchange")
-
+		failOnError(err, "Failed to declare an exchange")
+	}
 	q, err := ch.QueueDeclare(
 		"",    // name
 		false, // durable
