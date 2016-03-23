@@ -131,6 +131,7 @@ func main() {
 			sf.Close()
 
 			// GridFS XML save file write.
+			// TODO: broken saves (length 0)
 			if err := stardb.WriteSaveFile(farm, d.Body, ts); err != nil {
 				log.Print("write save file:", err)
 				continue
