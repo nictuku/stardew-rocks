@@ -2,7 +2,7 @@
 
 import {Component} from 'angular2/core';
 import * as _ from 'lodash';
-import * as Fuse from 'fuse.js';
+import Fuse from 'fuse.js';
 
 import {SearchBarComponent} from './searchBar.ts';
 import {FarmService, Farm} from '../farm/farm.service.ts';
@@ -13,9 +13,14 @@ import {FarmThumbnailComponent} from './farmThumbnail.ts';
   template: `
     <div class="container">
       <searchBar (queryChange)="queryChange($event)"></searchBar>
-      <div class="row">
+      <div class="row results">
         <div class="col m6 l4" *ngFor="#farm of farms">
           <farmThumbnail [farm]="farm"></farmThumbnail>
+        </div>
+        <div class="col m12" *ngIf="farms?.length < 1">
+          <div class="card-panel">
+            No results found
+          </div>
         </div>
       </div>
     </div>

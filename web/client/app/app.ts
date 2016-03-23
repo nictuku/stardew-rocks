@@ -4,6 +4,7 @@ import {Component} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
 
 import {NavbarComponent} from './navbar.ts';
+import {FooterComponent} from './footer.ts';
 import {HomeComponent} from './home/home.ts';
 import {FarmComponent} from './farm/farm.ts';
 
@@ -13,19 +14,30 @@ import {FarmService} from './farm/farm.service.ts';
   selector: 'app',
   styles:[`
     .app {
-      height: 100%;
+      min-height: 100%;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
+    main {
+      overflow: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
   `],
   template: `
     <div class="app">
-      <navbar></navbar>
-      <router-outlet></router-outlet>
+      <header class="navbar-fixed">
+        <navbar></navbar>
+      </header>
+      <main>
+        <router-outlet></router-outlet>
+      </main>
+      <footer></footer>
     </div>
   `,
-  directives: [NavbarComponent, ROUTER_DIRECTIVES],
+  directives: [NavbarComponent, FooterComponent, ROUTER_DIRECTIVES],
   providers: [FarmService]
 })
 @RouteConfig([

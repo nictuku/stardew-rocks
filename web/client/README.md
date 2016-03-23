@@ -1,29 +1,39 @@
-# How to build
+# Usage
 ## Prerequisites
 - Install [Nodejs](https://nodejs.org/en/)
-- Install Webpack
+- Install jspm
 ```
-$ npm install -g webpack
+$ npm install -g jspm
 ```
 
 ## Building
-- Change directory to where this README is
-- Install dependencies
+- Install project's jspm packages (do this every pull)
 ```
-$ npm install
+$ jspm install
 ```
-- Run webpack
-```
-$ webpack
-```
-- You should now have a /dist folder with a bundles.js
 
-## Running Locally
-- Install webpack-dev-server
+Currently we aren't building a bundle, but in the future we could if we need slightly better performance.
+
+# Running Locally
+## Prerequisites
+- Install live-server
 ```
-$ npm install -g webpack-dev-server
+$ npm install -g live-server
 ```
-- Run webpack-dev-server with hot reloading
+
+## Running
+- Make sure you've gotten the dependencies
 ```
-$ webpack-dev-server --hot --inline
+$ jspm install
 ```
+- Run live-server in web/client (where this readme is)
+```
+$ live-server --entry-file="index.html"
+```
+
+# Required things for app to run
+- index.html
+- app/
+- jspm_packages/
+- config.js
+- main.js

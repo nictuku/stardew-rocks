@@ -2,6 +2,7 @@ import {Component, ElementRef} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
 
 import {Farm, FarmService} from './farm.service.ts';
+import {MaterializeDirective} from 'angular2-materialize';
 
 @Component({
   selector: 'farm',
@@ -14,17 +15,8 @@ import {Farm, FarmService} from './farm.service.ts';
       display: flex;
       flex-direction: column;
     }
-    .meta {
-      padding-top: 1rem;
-      line-height: 2rem;
-    }
-    .meta .name {
-      font-size: 2.5rem;
-      display: block;
-    }
-    .meta .farmer {
-      font-size: 1.5rem;
-      display: block;
+    .sub-title {
+      font-size: 1rem;
     }
     .history-row {
       flex: 1;
@@ -32,26 +24,44 @@ import {Farm, FarmService} from './farm.service.ts';
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
+      margin-bottom: 1rem;
     }
     .history {
       position: absolute;
       max-height: 100%;
+      min-height: 200px;
       top: 0;
       width: 100%;
       background-color: #dddddd;
     }
-    .play-pause-btn {
-      position: absolute;
-      top: 0;
-      left: 0;
+    .card-action > a {
+      cursor: pointer;
     }
   `],
   template: `
     <div class="container">
-      <div class="row">
-        <div class="meta">
-          <span class="name">{{farm?.name}} Farm</span>
-          <span class="farmer">by {{farm?.farmer}}</span>
+      <div class="card meta deep-orange lighten-5">
+        <div class="card-content">
+          <span class="card-title">
+            {{farm?.name}} Farm
+            <span class="sub-title hide-on-small-only">by {{farm?.farmer}}</span>
+            <a class="btn waves-effect waves-light right orange lighten-1 hide-on-small-only">
+              <i class="material-icons">star_border</i> {{farm?.likes}}
+            </a>
+          </span>
+          <div class="sub-title hide-on-med-and-up">Farmer: {{farm?.farmer}}</div>
+          <div>
+            Last Updated: {{farm?.lastUpdate | date: 'medium'}}
+          </div>
+          <div class="hide-on-med-and-up" style="font-size: 1.6rem;">
+            <a class="btn waves-effect waves-light orange lighten-1">
+              <i class="material-icons">star_border</i> {{farm?.likes}}
+            </a>
+          </div>
+        </div>
+        <div class="card-action">
+          <a (click)="playPause()">Play/Pause</a>
+          <a>Export GIF</a>
         </div>
       </div>
       <div class="history-row">
@@ -59,7 +69,6 @@ import {Farm, FarmService} from './farm.service.ts';
           <source [src]="farm?.history">
           <p class="warning">Your browser does not support HTML5 video.</p>
         </video>
-        <a class="waves-effect waves-light btn play-pause-btn" (click)="playPause()">Play/Pause</a>
       </div>
     </div>
   `
