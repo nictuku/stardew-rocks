@@ -12,15 +12,17 @@ type Document struct {
 }
 
 type SaveGame struct {
-	Player        Player    `xml:"player"`
-	Locations     Locations `xml:"locations"`
-	CurrentSeason string    `xml:"currentSeason"`
+	Player              Player    `xml:"player"`
+	Locations           Locations `xml:"locations"`
+	CurrentSeason       string    `xml:"currentSeason"`
+	UniqueIDForThisGame int       `xml:"uniqueIDForThisGame"`
 }
 
 type Player struct {
 	Name              string   `xml:"name"`
 	HouseUpgradeLevel int      `xml:"houseUpgradeLevel"`
 	MailReceived      []string `xml:"mailReceived>string"`
+	FarmName          string   `xml:"farmName"`
 }
 
 type Locations struct {

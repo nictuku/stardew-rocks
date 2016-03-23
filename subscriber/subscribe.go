@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/nictuku/stardew-rocks/db"
 	"github.com/nictuku/stardew-rocks/parser"
+	"github.com/nictuku/stardew-rocks/stardb"
 	"github.com/nictuku/stardew-rocks/view"
 
 	"github.com/streadway/amqp"
@@ -32,9 +32,9 @@ func wwwDir() string {
 	return filepath.Clean(filepath.Join(home, "www"))
 }
 
-func writeSaveFile(fs *mgo.GridFS, farmID int64, body []byte) error {
+func writeSaveFile(fs *mgo.GridFS, farm *stardb.Farm, body []byte) error {
 
-	saveFile := path.Join("saveGames", fmt.Sprintf("%d.xml", farmID))
+	saveFile := path.Join("saveGames", fmt.Sprintf("%v.xml", farm.ID.Hex()))
 	g, err := fs.Create(saveFile)
 	if err != nil {
 		return fmt.Errorf("Error opening grid saveGames %v: %v", saveFile, err)
@@ -48,8 +48,9 @@ func writeSaveFile(fs *mgo.GridFS, farmID int64, body []byte) error {
 	return nil
 }
 
-func newScreenshotWriter(fs *mgo.GridFS, farmID int64) (io.WriteCloser, error) {
-	screenshotFile := path.Join("screenshots", fmt.Sprintf("%d.png", farmID))
+// newScreenshotWriter saves a screenshot in GFS at screenshots/<hexid>.png
+func newScreenshotWriter(fs *mgo.GridFS, farm *stardb.Farm) (io.WriteCloser, error) {
+	screenshotFile := path.Join("screenshots", fmt.Sprintf("%v.png", farm.ID.Hex()))
 	return fs.Create(screenshotFile)
 }
 
@@ -107,15 +108,7 @@ func main() {
 
 	farmMap := parser.LoadFarmMap()
 
-	session, err := mgo.Dial(mongoAddr)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-
-	db := session.DB("stardew")
-	c := db.C("farms")
-	fs := db.GridFS("sdr")
+	fs := stardb.GFS
 
 	go func() {
 		for d := range msgs {
@@ -138,7 +131,7 @@ func main() {
 
 			ts := time.Now().Unix()
 
-			id, err := stardb.FarmID(c, saveGame.UniqueIDForThisGame, saveGame.Player.Name, saveGame.Player.FarmName)
+			farm, err := stardb.FindFarm(stardb.FarmCollection, saveGame.UniqueIDForThisGame, saveGame.Player.Name, saveGame.Player.FarmName)
 			if err != nil {
 				log.Print("Error fetching farm ID:", err)
 				continue
@@ -163,7 +156,7 @@ func main() {
 			sf.Close()
 
 			// GridFS XML save file write.
-			if err := writeSaveFile(fs, id, d.Body); err != nil {
+			if err := writeSaveFile(fs, farm, d.Body); err != nil {
 				log.Print(err)
 				continue
 			}
@@ -180,7 +173,7 @@ func main() {
 			log.Printf("Wrote map file %v", mapFile)
 
 			// GridFs screenshot write.
-			fs, err := newScreenshotWriter(fs, id)
+			fs, err := newScreenshotWriter(fs, farm)
 			if err != nil {
 				log.Print("Error writing grid screenshot:", err)
 				continue
@@ -192,7 +185,7 @@ func main() {
 				continue
 			}
 			fs.Close()
-			log.Printf("Wrote map file %v", mapFile)
+			log.Printf("Wrote grid map file %v", mapFile)
 
 		}
 		log.Printf("Total messages so far: %d", count)

@@ -13,10 +13,15 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/nictuku/stardew-rocks/stardb"
 	"github.com/nytimes/gziphandler"
 )
 
-func Log(handler http.Handler) http.Handler {
+func logzip(handler http.Handler) http.Handler {
+	return gziphandler.GzipHandler(logHandler(handler))
+}
+
+func logHandler(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
 		handler.ServeHTTP(w, r)
@@ -47,6 +52,17 @@ func LastSave(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func GetFarms(w http.ResponseWriter, r *http.Request) {
+	b, err := stardb.FarmsJSON()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func RunHTTPServer() {
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
@@ -62,7 +78,8 @@ func RunHTTPServer() {
 func main() {
 	dir := wwwDir()
 	log.Printf("Serving files from %v", dir)
-	http.Handle("/", Log(gziphandler.GzipHandler(http.FileServer(http.Dir(dir)))))
-	http.Handle("/lastsave", Log(gziphandler.GzipHandler(http.HandlerFunc(LastSave))))
+	http.Handle("/", logzip(http.FileServer(http.Dir(dir))))
+	http.Handle("/lastsave", logzip(http.HandlerFunc(LastSave)))
+	http.Handle("/farms", logHandler(http.HandlerFunc(GetFarms)))
 	RunHTTPServer()
 }
