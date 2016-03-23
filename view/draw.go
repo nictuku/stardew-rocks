@@ -1,12 +1,12 @@
 package view
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	_ "image/jpeg"
 	"image/png"
 	"io"
-	"log"
 	"math/rand"
 	"time"
 
@@ -72,7 +72,7 @@ func bottomLeftAlign(sr image.Rectangle, dp image.Point) image.Rectangle {
 	}
 }
 
-func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
+func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	var farm *parser.GameLocation
 	for _, gameloc := range sg.Locations.GameLocations {
 		if gameloc.Name == "Farm" {
@@ -82,8 +82,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	}
 
 	if farm == nil {
-		log.Printf("farm not found for %v", sg.Player.Name)
-		return
+		return fmt.Errorf("farm not found for %v", sg.Player.Name)
 	}
 
 	// TODO: do not trust the user input. Don't hit files or slice indexes based on data.
@@ -172,6 +171,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	sb.Flush()
 
 	if err := png.Encode(w, img); err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
