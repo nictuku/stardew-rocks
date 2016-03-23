@@ -1,6 +1,10 @@
-package db
+package stardb
 
-import "time"
+import (
+	"time"
+
+	"labix.org/v2/mgo"
+)
 
 type Farm struct {
 	Id         string
@@ -9,4 +13,8 @@ type Farm struct {
 	Likes      int
 	LastUpdate time.Time
 	Thumbnail  string
+}
+
+func FarmID(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName string) (int64, error) {
+	return 0, nil
 }
