@@ -1,12 +1,12 @@
 package view
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	_ "image/jpeg"
 	"image/png"
 	"io"
-	"log"
 	"math/rand"
 	"time"
 
@@ -72,7 +72,7 @@ func bottomLeftAlign(sr image.Rectangle, dp image.Point) image.Rectangle {
 	}
 }
 
-func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
+func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	var farm *parser.GameLocation
 	for _, gameloc := range sg.Locations.GameLocations {
 		if gameloc.Name == "Farm" {
@@ -82,8 +82,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	}
 
 	if farm == nil {
-		log.Printf("farm not found for %v", sg.Player.Name)
-		return
+		return fmt.Errorf("farm not found for %v", sg.Player.Name)
 	}
 
 	// TODO: do not trust the user input. Don't hit files or slice indexes based on data.
@@ -93,7 +92,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	for i := range farm.Buildings {
 		building := farm.Buildings[i]
 		y := building.TileY + building.AnimalDoor.Y
-		if y >= len(buildings) {
+		if y >= len(buildings) || y < 0 {
 			continue
 		}
 		buildings[y] = append(buildings[y], &building)
@@ -103,7 +102,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	items := make([][]*parser.TerrainItem, m.Height)
 	for i := range farm.TerrainFeatures.Items {
 		item := farm.TerrainFeatures.Items[i] // separate pointer for each item
-		if item.Y() >= len(items) {
+		if item.Y() >= len(items) || item.Y() < 0 {
 			continue
 		}
 		items[item.Y()] = append(items[item.Y()], &item)
@@ -111,7 +110,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	objects := make([][]*parser.ObjectItem, m.Height)
 	for i := range farm.Objects.Items {
 		object := farm.Objects.Items[i] // separate pointer for each item
-		if object.Y() >= len(objects) {
+		if object.Y() >= len(objects) || object.Y() < 0  {
 			continue
 		}
 		objects[object.Y()] = append(objects[object.Y()], &object)
@@ -172,6 +171,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) {
 	sb.Flush()
 
 	if err := png.Encode(w, img); err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }

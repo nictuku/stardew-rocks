@@ -174,18 +174,19 @@ func main() {
 
 			topic, close, err := rabbitStart()
 			if err != nil {
-				log.Fatal(err)
+				log.Warning(err)
+				time.Sleep(randSleep())
+				continue
 			}
-			defer close()
-
 			// Find when we need to reconnect.
 			cc := make(chan *amqp.Error)
 			topic.NotifyClose(cc)
 
 			watchAndPublish(topic, cc)
-
+			close()
 			// Don't retry too fast.
 			time.Sleep(randSleep())
+
 		}
 
 	}()

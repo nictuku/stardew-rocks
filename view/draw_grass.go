@@ -58,7 +58,7 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 			continue
 		}
 		idx := 0
-		if weed < len(whichWeed) {
+		if weed > 0 && weed < len(whichWeed) {
 			idx = whichWeed[weed] * 15
 		}
 		sr := grassRect(idx, item.Value.TerrainFeature.GrassType)
