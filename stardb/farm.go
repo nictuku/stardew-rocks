@@ -106,5 +106,6 @@ func NewScreenshotWriter(farm *Farm, ts time.Time) (io.WriteCloser, error) {
 		return nil, err
 	}
 	g.SetUploadDate(ts)
+	defer g.Close()
 	return g, nil
 }
