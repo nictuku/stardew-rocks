@@ -33,7 +33,6 @@ import {MaterializeDirective} from 'angular2-materialize';
       min-height: 200px;
       top: 0;
       width: 100%;
-      background-color: #dddddd;
     }
     .card-action > a {
       cursor: pointer;
@@ -41,7 +40,7 @@ import {MaterializeDirective} from 'angular2-materialize';
   `],
   template: `
     <div class="container">
-      <div class="card meta deep-orange lighten-5">
+      <div class="card meta">
         <div class="card-content">
           <span class="card-title">
             {{farm?.name}} Farm
@@ -61,13 +60,13 @@ import {MaterializeDirective} from 'angular2-materialize';
           </div>
         </div>
         <div class="card-action">
-          <a (click)="playPause()">{{playPauseLabel}}</a>
+          <a (click)="playPause()">{{historyEl.paused ? 'Play' : 'Pause'}}</a>
         </div>
       </div>
       <div class="history-row">
-        <video class="history" materialize="materialbox" [poster]="farm?.thumbnail"
-          autoplay loop muted (click)="historyClicked = !historyClicked"
-           [ngStyle]="historyClicked ? historyExpandedStyle : null" >
+        <video class="history deep-orange lighten-5" materialize="materialbox" [poster]="farm?.thumbnail" autoplay loop muted
+        (click)="historyClicked = !historyClicked"
+        [ngStyle]="historyClicked ? historyExpandedStyle : null" >
           <source [src]="farm?.history">
           <p class="warning">Your browser does not support HTML5 video.</p>
         </video>
@@ -79,7 +78,6 @@ import {MaterializeDirective} from 'angular2-materialize';
 export class FarmComponent {
   farm: Farm;
   historyEl: HTMLVideoElement;
-  playPauseLabel: string = "Pause";
   historyClicked = false;
   historyExpandedStyle = {
     "max-height": "initial",
@@ -100,10 +98,8 @@ export class FarmComponent {
   playPause () {
     if (this.historyEl.paused) {
       this.historyEl.play();
-      this.playPauseLabel = "Pause";
     } else {
       this.historyEl.pause();
-      this.playPauseLabel = "Play";
     }
   }
 };
