@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"path"
 	"time"
 
 	"gopkg.in/mgo.v2"
@@ -27,7 +26,11 @@ type Farm struct {
 }
 
 func (f *Farm) ScreenshotPath() string {
-	return fmt.Sprintf("/screenshot/%v/%d.xml", f.ID.Hex(), f.SaveTime.Unix())
+	return fmt.Sprintf("/screenshot/%v/%d.png", f.ID.Hex(), f.SaveTime.Unix())
+}
+
+func (f *Farm) saveGamePath() string {
+	return fmt.Sprintf("/saveGames/%v/%d.xml", f.ID.Hex(), f.SaveTime.Unix())
 }
 
 func FarmsJSON() ([]byte, error) {
@@ -80,7 +83,7 @@ func WriteSaveFile(farm *Farm, body []byte, ts time.Time) error {
 		return fmt.Errorf("error writing save file: unexpected zero save time")
 	}
 
-	saveFile := path.Join("saveGames", farm.ScreenshotPath())
+	saveFile := farm.saveGamePath()
 	g, err := GFS.Create(saveFile)
 	if err != nil {
 		return fmt.Errorf("Error opening grid saveGames %v: %v", saveFile, err)
