@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
 	"path"
 	"time"
 
@@ -101,9 +100,4 @@ func NewScreenshotWriter(farm *Farm) (io.WriteCloser, error) {
 		return nil, fmt.Errorf("error writing screenshot: unexpected zero save time")
 	}
 	return GFS.Create(farm.ScreenshotPath())
-}
-
-func init() {
-	mgo.SetLogger(log.New(os.Stderr, "", log.LstdFlags))
-	//mgo.SetDebug(true)
 }
