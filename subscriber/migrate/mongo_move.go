@@ -68,12 +68,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	farmid, _, err := stardb.FindFarm(stardb.FarmCollection, gameSave.UniqueIDForThisGame, gameSave.Player.Name, gameSave.Player.FarmName)
+	farm, _, err := stardb.FindFarm(stardb.FarmCollection, gameSave.UniqueIDForThisGame, gameSave.Player.Name, gameSave.Player.FarmName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	found, err := prevUpload(farmid.ID, gameSave.UniqueIDForThisGame, gameSave.Player.Name, gameSave.Player.FarmName, prevTimestamp)
+	found, err := prevUpload(farm.InternalID, gameSave.UniqueIDForThisGame, gameSave.Player.Name, gameSave.Player.FarmName, prevTimestamp)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -86,16 +86,16 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err := stardb.WriteSaveFile(farmid, buf, prevTimestamp); err != nil {
+	if err := stardb.WriteSaveFile(farm, buf, prevTimestamp); err != nil {
 		log.Fatal("write save file:", err)
 	}
 	// The save file is the most critical and it's been updated, so we should be fine.
-	if err := stardb.UpdateFarmTime(farmid.ID, prevTimestamp); err != nil {
+	if err := stardb.UpdateFarmTime(farm.InternalID, prevTimestamp); err != nil {
 		log.Fatal("update farm time:", err)
 	}
 
 	// GridFs screenshot write.
-	fs, err := stardb.NewScreenshotWriter(farmid, prevTimestamp)
+	fs, err := stardb.NewScreenshotWriter(farm, prevTimestamp)
 	if err != nil {
 		log.Fatal("Error writing grid screenshot:", err)
 	}
@@ -106,5 +106,5 @@ func main() {
 		return
 	}
 	fs.Close()
-	log.Printf("Wrote grid map file %v", farmid.ScreenshotPath())
+	log.Printf("Wrote grid map file %v", farm.ScreenshotPath())
 }
