@@ -31,7 +31,11 @@ func (f *Farm) ScreenshotPath() string {
 }
 
 func (f *Farm) saveGamePath() string {
-	return fmt.Sprintf("/saveGames/%v/%d.xml", f.InternalID.Hex(), f.SaveTime.Unix())
+	return SaveGamePath(f.InternalID.Hex(), f.SaveTime)
+}
+
+func SaveGamePath(id string, ts time.Time) string {
+	return fmt.Sprintf("/saveGames/%v/%d.xml", id, ts.Unix())
 }
 
 func FarmsJSON() ([]byte, error) {
@@ -81,10 +85,7 @@ func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName s
 }
 
 func WriteSaveFile(farm *Farm, body []byte, ts time.Time) error {
-	if farm.SaveTime.IsZero() {
-		return fmt.Errorf("error writing save file: unexpected zero save time")
-	}
-
+	farm.SaveTime = ts
 	saveFile := farm.saveGamePath()
 	g, err := GFS.Create(saveFile)
 	if err != nil {

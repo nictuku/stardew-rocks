@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -28,9 +27,8 @@ func parseTime(t string) time.Time {
 }
 
 func prevUpload(farmid bson.ObjectId, uniqueIDForThisGame int, playerName, farmName string, ts time.Time) (existing bool, err error) {
-
 	q := stardb.GFS.Find(bson.M{
-		"filename": fmt.Sprintf("/screenshot/%v/%d.xml", farmid.Hex(), ts.Unix()),
+		"filename": stardb.SaveGamePath(farmid.Hex(), ts),
 	})
 	n, err := q.Count()
 	if err != nil {
@@ -82,6 +80,10 @@ func main() {
 	}
 
 	// GridFS XML save file write.
+	if _, err := sg.Seek(0, 0); err != nil {
+		log.Fatal("seek error:", err)
+	}
+
 	buf, err := ioutil.ReadAll(sg)
 	if err != nil {
 		log.Fatal(err)
