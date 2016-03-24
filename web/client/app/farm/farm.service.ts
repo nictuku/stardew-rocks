@@ -3,7 +3,7 @@ import {Injectable} from 'angular2/core';
 import {Http, Response} from 'angular2/http';
 
 export interface Farm {
-  Id: string,
+  ID: string,
   Name: string,
   Farmer: string,
   Likes: number,
