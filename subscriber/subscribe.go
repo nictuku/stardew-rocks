@@ -137,7 +137,7 @@ func main() {
 				continue
 			}
 			// The save file is the most critical and it's been updated, so we should be fine.
-			if err := stardb.UpdateFarmTime(stardb.FarmCollection, farm.ID, ts); err != nil {
+			if err := stardb.UpdateFarmTime(farm.ID, ts); err != nil {
 				log.Print("update farm time:", err)
 				continue
 			}

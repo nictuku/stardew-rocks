@@ -90,7 +90,7 @@ func main() {
 		log.Fatal("write save file:", err)
 	}
 	// The save file is the most critical and it's been updated, so we should be fine.
-	if err := stardb.FarmCollection.Update(bson.M{"_id": farmid.ID}, bson.M{"$set": bson.M{"savetime": prevTimestamp}}); err != nil {
+	if err := stardb.UpdateFarmTime(farmid.ID, prevTimestamp); err != nil {
 		log.Fatal("update farm time:", err)
 	}
 

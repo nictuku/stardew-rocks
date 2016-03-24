@@ -27,7 +27,6 @@ func init() {
 	}
 	// Not relevant or possible.
 	// Session.Close()
-
 	DB = Session.DB(dbName())
 	FarmCollection = DB.C("farms")
 	GFS = DB.GridFS("sdr")

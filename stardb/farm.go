@@ -45,8 +45,8 @@ func FarmsJSON() ([]byte, error) {
 	return json.Marshal(result)
 }
 
-func UpdateFarmTime(c *mgo.Collection, id bson.ObjectId, ts time.Time) error {
-	return c.Update(bson.M{"_id": id}, bson.M{"savetime": ts})
+func UpdateFarmTime(id bson.ObjectId, ts time.Time) error {
+	return FarmCollection.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"savetime": ts}})
 }
 
 func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName string) (ret *Farm, existing bool, err error) {
