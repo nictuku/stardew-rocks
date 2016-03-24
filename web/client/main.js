@@ -4,7 +4,6 @@ import 'es6-shim';
 import 'zone.js/dist/zone';
 import 'zone.js/dist/long-stack-trace-zone';
 import 'reflect-metadata';
-import 'rxjs/Rx';
 
 // extra stuff
 import 'angular2-materialize';
