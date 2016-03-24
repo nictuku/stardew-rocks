@@ -3,13 +3,13 @@ import {Injectable} from 'angular2/core';
 import {Http, Response} from 'angular2/http';
 
 export interface Farm {
-  id: string,
-  name: string,
-  farmer: string,
-  likes: number,
-  lastUpdate: Date,
-  thumbnail: string,
-  history: string
+  Id: string,
+  Name: string,
+  Farmer: string,
+  Likes: number,
+  LastUpdate: Date,
+  Thumbnail: string,
+  History: string
 };
 
 @Injectable()

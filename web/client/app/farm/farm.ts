@@ -43,19 +43,19 @@ import {MaterializeDirective} from 'angular2-materialize';
       <div class="card meta">
         <div class="card-content">
           <span class="card-title">
-            {{farm?.name}} Farm
-            <span class="sub-title hide-on-small-only">by {{farm?.farmer}}</span>
+            {{farm?.Name}} Farm
+            <span class="sub-title hide-on-small-only">by {{farm?.Farmer}}</span>
             <a class="btn waves-effect waves-light right orange lighten-1 hide-on-small-only">
-              <i class="material-icons">star_border</i> {{farm?.likes}}
+              <i class="material-icons">star_border</i> {{farm?.Likes}}
             </a>
           </span>
-          <div class="sub-title hide-on-med-and-up">Farmer: {{farm?.farmer}}</div>
+          <div class="sub-title hide-on-med-and-up">Farmer: {{farm?.Farmer}}</div>
           <div>
-            Last Updated: {{farm?.lastUpdate | date: 'medium'}}
+            Last Updated: {{farm?.LastUpdate | date: 'medium'}}
           </div>
           <div class="hide-on-med-and-up" style="font-size: 1.6rem;">
             <a class="btn waves-effect waves-light orange lighten-1">
-              <i class="material-icons">star_border</i> {{farm?.likes}}
+              <i class="material-icons">star_border</i> {{farm?.Likes}}
             </a>
           </div>
         </div>
@@ -64,10 +64,10 @@ import {MaterializeDirective} from 'angular2-materialize';
         </div>
       </div>
       <div class="history-row">
-        <video class="history deep-orange lighten-5" materialize="materialbox" [poster]="farm?.thumbnail" autoplay loop muted
+        <video class="history deep-orange lighten-5" materialize="materialbox" [poster]="farm?.Thumbnail" autoplay loop muted
         (click)="historyClicked = !historyClicked"
         [ngStyle]="historyClicked ? historyExpandedStyle : null" >
-          <source [src]="farm?.history">
+          <source [src]="farm?.History">
           <p class="warning">Your browser does not support HTML5 video.</p>
         </video>
       </div>
