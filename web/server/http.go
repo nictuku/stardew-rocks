@@ -6,8 +6,6 @@
 package main
 
 import (
-	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -66,34 +64,6 @@ func GetFarm(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func ServeGFSFile(w http.ResponseWriter, r *http.Request) {
-	if !strings.HasPrefix(r.URL.Path, "/screenshot") {
-		http.Error(w, "Not found"+r.URL.Path, http.StatusNotFound)
-		return
-	}
-	s := strings.Split(r.URL.Path, "/")
-	if len(s) != 4 {
-		http.Error(w, fmt.Sprintf("...%v - %d", s, len(s)), http.StatusNotFound)
-		return
-	}
-	if s[1] != "screenshot" && s[1] != "saveGames" {
-		http.Error(w, "no.. Not found", http.StatusNotFound)
-		return
-	}
-
-	f, err := stardb.GFS.Open(r.URL.Path)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	_, err = io.Copy(w, f)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	return
-}
-
 func RunHTTPServer() {
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
@@ -112,8 +82,8 @@ func main() {
 	http.Handle("/api/farms", logHandler(http.HandlerFunc(GetFarms)))
 	http.Handle("/api/farm/", logHandler(http.HandlerFunc(GetFarm)))
 
-	http.Handle("/screenshot/", logHandler(http.HandlerFunc(ServeGFSFile)))
-	http.Handle("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))
+	http.Handle("/screenshot/", logHandler(http.HandlerFunc(ServeScreenshot)))
+	//http.Handle("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))
 
 	// This is served by the web app.
 	http.Handle("/farm/", logHandler(http.HandlerFunc(Index)))
