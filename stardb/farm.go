@@ -85,10 +85,7 @@ func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName s
 }
 
 func WriteSaveFile(farm *Farm, body []byte, ts time.Time) error {
-	if farm.SaveTime.IsZero() {
-		return fmt.Errorf("error writing save file: unexpected zero save time")
-	}
-
+	farm.SaveTime = ts
 	saveFile := farm.saveGamePath()
 	g, err := GFS.Create(saveFile)
 	if err != nil {
