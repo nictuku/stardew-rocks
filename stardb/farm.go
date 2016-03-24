@@ -16,21 +16,22 @@ type Farm struct {
 
 	// Fields with  `json:"-"` are ommited for web display
 
-	ID        bson.ObjectId `bson:"_id,omitempty" json:"-"`
-	UniqueID  int           `json:"-"`
-	Name      string
-	Farmer    string
-	Likes     int
-	SaveTime  time.Time `json:"-"`
-	Thumbnail string
+	InternalID bson.ObjectId `bson:"_id,omitempty" json:"-"`
+	ID         string        // Like InternalID, but in hex format. This can be exposed on the web.
+	UniqueID   int           `json:"-"`
+	Name       string
+	Farmer     string
+	Likes      int
+	SaveTime   time.Time `json:"-"`
+	Thumbnail  string
 }
 
 func (f *Farm) ScreenshotPath() string {
-	return fmt.Sprintf("/screenshot/%v/%d.png", f.ID.Hex(), f.SaveTime.Unix())
+	return fmt.Sprintf("/screenshot/%v/%d.png", f.InternalID.Hex(), f.SaveTime.Unix())
 }
 
 func (f *Farm) saveGamePath() string {
-	return fmt.Sprintf("/saveGames/%v/%d.xml", f.ID.Hex(), f.SaveTime.Unix())
+	return fmt.Sprintf("/saveGames/%v/%d.xml", f.InternalID.Hex(), f.SaveTime.Unix())
 }
 
 func FarmsJSON() ([]byte, error) {
@@ -41,12 +42,13 @@ func FarmsJSON() ([]byte, error) {
 	}
 	for _, farm := range result {
 		farm.Thumbnail = farm.ScreenshotPath()
+		farm.ID = farm.InternalID.Hex()
 	}
 	return json.Marshal(result)
 }
 
-func UpdateFarmTime(c *mgo.Collection, id bson.ObjectId, ts time.Time) error {
-	return c.Update(bson.M{"_id": id}, bson.M{"savetime": ts})
+func UpdateFarmTime(id bson.ObjectId, ts time.Time) error {
+	return FarmCollection.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"savetime": ts}})
 }
 
 func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName string) (ret *Farm, existing bool, err error) {
@@ -60,17 +62,17 @@ func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName s
 		log.Println("not found", err)
 
 		farm := &Farm{
-			Name:     farmName,
-			Farmer:   playerName,
-			UniqueID: uniqueIDForThisGame,
-			ID:       bson.NewObjectId(),
-			SaveTime: time.Now(),
+			Name:       farmName,
+			Farmer:     playerName,
+			UniqueID:   uniqueIDForThisGame,
+			InternalID: bson.NewObjectId(),
+			SaveTime:   time.Now(),
 		}
 		if err := c.Insert(farm); err != nil {
 			log.Println("could not insert", err)
 			return nil, false, err
 		}
-		log.Println("insert ok", farm.ID.String())
+		log.Println("insert ok", farm.InternalID.String())
 		return farm, false, nil
 	}
 	log.Printf("found ok %v, %v, %v", ret.Name, ret.Farmer, ret.SaveTime)

@@ -1,6 +1,12 @@
 package stardb
 
-import "gopkg.in/mgo.v2"
+import (
+	"log"
+	"os"
+	"strings"
+
+	"gopkg.in/mgo.v2"
+)
 
 var (
 	Session        *mgo.Session
@@ -9,16 +15,22 @@ var (
 	GFS            *mgo.GridFS
 )
 
+func dbName() string {
+	// The last bit of the Dial string is the database.
+	spl := strings.Split(mongoAddr, "/")
+	return spl[len(spl)-1]
+}
+
 func init() {
 	var err error
 	Session, err = mgo.Dial(mongoAddr)
 	if err != nil {
-		panic(err)
+		log.Printf("Mongodb connection failure: %v", err)
+		os.Exit(1)
 	}
 	// Not relevant or possible.
 	// Session.Close()
-
-	DB = Session.DB("stardew")
+	DB = Session.DB(dbName())
 	FarmCollection = DB.C("farms")
 	GFS = DB.GridFS("sdr")
 
