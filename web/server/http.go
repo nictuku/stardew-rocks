@@ -15,12 +15,7 @@ import (
 	"strings"
 
 	"github.com/nictuku/stardew-rocks/stardb"
-	"github.com/nytimes/gziphandler"
 )
-
-func logzip(handler http.Handler) http.Handler {
-	return gziphandler.GzipHandler(logHandler(handler))
-}
 
 func logHandler(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -35,6 +30,10 @@ func wwwDir() string {
 		home = string(filepath.Separator)
 	}
 	return filepath.Clean(filepath.Join(home, "www"))
+}
+
+func Index(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, filepath.Join(wwwDir(), "index.html"))
 }
 
 func GetFarms(w http.ResponseWriter, r *http.Request) {
@@ -108,9 +107,14 @@ func RunHTTPServer() {
 func main() {
 	dir := wwwDir()
 	log.Printf("Serving files from %v", dir)
-	http.Handle("/", logzip(http.FileServer(http.Dir(dir))))
 	http.Handle("/api/farms", logHandler(http.HandlerFunc(GetFarms)))
 	http.Handle("/screenshot/", logHandler(http.HandlerFunc(ServeGFSFile)))
 	http.Handle("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))
+
+	// This is served by the web app.
+	http.Handle("/farm/", logHandler(http.HandlerFunc(Index)))
+
+	// This is served from the filesystem, but / goes to index.html which has our web app.
+	http.Handle("/", logHandler(http.FileServer(http.Dir(dir))))
 	RunHTTPServer()
 }
