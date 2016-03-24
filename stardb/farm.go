@@ -31,7 +31,11 @@ func (f *Farm) ScreenshotPath() string {
 }
 
 func (f *Farm) saveGamePath() string {
-	return fmt.Sprintf("/saveGames/%v/%d.xml", f.InternalID.Hex(), f.SaveTime.Unix())
+	return SaveGamePath(f.InternalID.Hex(), f.SaveTime)
+}
+
+func SaveGamePath(id string, ts time.Time) string {
+	return fmt.Sprintf("/saveGames/%v/%d.xml", id, ts.Unix())
 }
 
 func FarmsJSON() ([]byte, error) {
