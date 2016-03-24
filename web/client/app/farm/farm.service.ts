@@ -1,5 +1,7 @@
 /// <reference path="../../typings/main.d.ts"/>
 import {Injectable} from 'angular2/core';
+import {Http, Response} from 'angular2/http';
+import {Observable}     from 'rxjs/Observable';
 
 export interface Farm {
   id: string,
@@ -13,29 +15,24 @@ export interface Farm {
 
 @Injectable()
 export class FarmService {
-  getFarms () { return farmsPromise; }
+  constructor(private _http: Http){};
+
+  getFarms () {
+    return this._http.get("api/farms")
+      .map(res => <Farm[]>res.json().data)
+      .catch(this.handleError)
+      .toPromise();
+  }
 
   getFarm (id: string) {
-    return farmsPromise.then(farms => farms.filter(f => f.id == id)[0]);
+    return this._http.get(`api/farm/${id}`)
+      .map(res => <Farm>res.json().data)
+      .catch(this.handleError)
+      .toPromise();
+  }
+
+  private handleError (error: Response) {
+    console.error(error);
+    return Observable.throw(error.json().error || 'Server error');
   }
 };
-
-var Farms = [{
-  id: "PomegranateMitchel",
-  name: "Pomegranate",
-  farmer: "Mitchel",
-  likes: 5,
-  lastUpdate: new Date(),
-  thumbnail: "content/farms/map-Mitchel-1458449416.png",
-  history: ""
-}, {
-  id: "FarmRey",
-  name: "Farm",
-  farmer: "Rey",
-  likes: 5,
-  lastUpdate: new Date(),
-  thumbnail: "content/farms/map-Rey-1458460624.png",
-  history: "content/farms/Rey.webm"
-}];
-
-var farmsPromise = Promise.resolve(Farms);

@@ -137,13 +137,13 @@ func main() {
 				continue
 			}
 			// The save file is the most critical and it's been updated, so we should be fine.
-			if err := stardb.UpdateFarmTime(stardb.FarmCollection, farm.ID, ts); err != nil {
+			if err := stardb.UpdateFarmTime(farm.InternalID, ts); err != nil {
 				log.Print("update farm time:", err)
 				continue
 			}
 
 			// DEPRECATED filesystem write.
-			mapFile := path.Join(wwwDir(), fmt.Sprintf("map-%v-%d.png", name, ts))
+			mapFile := path.Join(wwwDir(), fmt.Sprintf("map-%v-%d.png", name, ts.Unix()))
 			f, err := os.OpenFile(mapFile, os.O_CREATE|os.O_WRONLY, 0666)
 			if err != nil {
 				log.Printf("Error opening screenshot file %v: %v", mapFile, err)
