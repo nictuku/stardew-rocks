@@ -37,6 +37,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFarms(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("..")
 	b, err := stardb.FarmsJSON()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -51,7 +52,9 @@ func GetFarms(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFarm(w http.ResponseWriter, r *http.Request) {
-	b, err := stardb.FarmsJSON()
+	farmid := strings.TrimPrefix(r.URL.Path, "/api/farm/")
+
+	b, err := stardb.FarmJSON(farmid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -108,6 +111,8 @@ func main() {
 	dir := wwwDir()
 	log.Printf("Serving files from %v", dir)
 	http.Handle("/api/farms", logHandler(http.HandlerFunc(GetFarms)))
+	http.Handle("/api/farm/", logHandler(http.HandlerFunc(GetFarm)))
+
 	http.Handle("/screenshot/", logHandler(http.HandlerFunc(ServeGFSFile)))
 	http.Handle("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))
 
