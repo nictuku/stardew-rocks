@@ -1,6 +1,8 @@
 package stardb
 
 import (
+	"log"
+	"os"
 	"strings"
 
 	"gopkg.in/mgo.v2"
@@ -23,7 +25,8 @@ func init() {
 	var err error
 	Session, err = mgo.Dial(mongoAddr)
 	if err != nil {
-		panic(err)
+		log.Printf("Mongodb connection failure: %v", err)
+		os.Exit(1)
 	}
 	// Not relevant or possible.
 	// Session.Close()
