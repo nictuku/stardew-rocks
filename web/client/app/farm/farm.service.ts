@@ -20,7 +20,6 @@ export class FarmService {
     return new Promise((resolve, reject) => {
       this._http.get("api/farms")
         .subscribe(res => {
-          console.log(res.json());
           resolve(res.json());
         });
     });
@@ -30,7 +29,6 @@ export class FarmService {
     return new Promise((resolve, reject) => {
       this._http.get(`api/farm/${id}`)
         .subscribe(res => {
-          console.log(res.json());
           resolve(res.json());
         });
     });
