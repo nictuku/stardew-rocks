@@ -34,7 +34,15 @@ func init() {
 	FarmCollection = DB.C("farms")
 	GFS = DB.GridFS("sdr")
 
+	if err := FarmCollection.EnsureIndexKey("name", "farmer"); err != nil {
+		log.Printf("Failed to create a FarmCollection index: %v", err)
+		os.Exit(1)
+	}
+	if err := FarmCollection.EnsureIndexKey("-likes"); err != nil {
+		log.Printf("Failed to create a FarmCollection index: %v", err)
+		os.Exit(1)
+	}
+
 	//mgo.SetLogger(log.New(os.Stderr, "", log.LstdFlags))
 	//mgo.SetDebug(true)
-
 }

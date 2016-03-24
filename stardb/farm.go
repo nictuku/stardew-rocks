@@ -41,7 +41,7 @@ func SaveGamePath(id string, ts time.Time) string {
 func FarmsJSON() ([]byte, error) {
 	var result []*Farm
 
-	if err := FarmCollection.Find(nil).Limit(20).All(&result); err != nil {
+	if err := FarmCollection.Find(nil).Sort("-likes").Limit(20).All(&result); err != nil {
 		return nil, err
 	}
 	for _, farm := range result {
@@ -49,6 +49,20 @@ func FarmsJSON() ([]byte, error) {
 		farm.ID = farm.InternalID.Hex()
 	}
 	return json.Marshal(result)
+}
+
+func FarmJSON(id string) ([]byte, error) {
+	if !bson.IsObjectIdHex(id) {
+		return nil, fmt.Errorf("invalid farm id")
+	}
+	var farm *Farm
+	if err := FarmCollection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&farm); err != nil {
+		return nil, err
+	}
+	farm.Thumbnail = farm.ScreenshotPath()
+	farm.ID = farm.InternalID.Hex()
+
+	return json.Marshal(farm)
 }
 
 func UpdateFarmTime(id bson.ObjectId, ts time.Time) error {
