@@ -13,14 +13,10 @@ import (
 	"strings"
 
 	"github.com/nictuku/stardew-rocks/stardb"
-)
 
-func logHandler(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
-		handler.ServeHTTP(w, r)
-	})
-}
+	hs "github.com/gorilla/handlers"
+	"gopkg.in/natefinch/lumberjack.v2"
+)
 
 func wwwDir() string {
 	home := os.Getenv("HOME")
@@ -77,18 +73,33 @@ func RunHTTPServer() {
 }
 
 func main() {
+
+	log.SetOutput(&lumberjack.Logger{
+		Filename:   "/var/log/stardew/server.log",
+		MaxSize:    500, // megabytes
+		MaxBackups: 3,
+		MaxAge:     28, //days
+	})
+
+	combinedLog := &lumberjack.Logger{
+		Filename:   "/var/log/stardew/access.log",
+		MaxSize:    500, // megabytes
+		MaxBackups: 3,
+		MaxAge:     28, //days
+	}
+
 	dir := wwwDir()
 	log.Printf("Serving files from %v", dir)
-	http.Handle("/api/farms", logHandler(http.HandlerFunc(GetFarms)))
-	http.Handle("/api/farm/", logHandler(http.HandlerFunc(GetFarm)))
+	http.Handle("/api/farms", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarms)))
+	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarm)))
 
-	http.Handle("/screenshot/", logHandler(http.HandlerFunc(ServeScreenshot)))
+	http.Handle("/screenshot/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeScreenshot)))
 	//http.Handle("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))
 
 	// This is served by the web app.
-	http.Handle("/farm/", logHandler(http.HandlerFunc(Index)))
+	http.Handle("/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Index)))
 
 	// This is served from the filesystem, but / goes to index.html which has our web app.
-	http.Handle("/", logHandler(http.FileServer(http.Dir(dir))))
+	http.Handle("/", hs.CombinedLoggingHandler(combinedLog, http.FileServer(http.Dir(dir))))
 	RunHTTPServer()
 }
