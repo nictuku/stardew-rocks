@@ -1,6 +1,10 @@
 package stardb
 
-import "gopkg.in/mgo.v2"
+import (
+	"strings"
+
+	"gopkg.in/mgo.v2"
+)
 
 var (
 	Session        *mgo.Session
@@ -8,6 +12,12 @@ var (
 	FarmCollection *mgo.Collection
 	GFS            *mgo.GridFS
 )
+
+func dbName() string {
+	// The last bit of the Dial string is the database.
+	spl := strings.Split(mongoAddr, "/")
+	return spl[len(spl)-1]
+}
 
 func init() {
 	var err error
@@ -18,7 +28,7 @@ func init() {
 	// Not relevant or possible.
 	// Session.Close()
 
-	DB = Session.DB("stardew")
+	DB = Session.DB(dbName())
 	FarmCollection = DB.C("farms")
 	GFS = DB.GridFS("sdr")
 
