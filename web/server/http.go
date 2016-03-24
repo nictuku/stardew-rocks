@@ -51,6 +51,20 @@ func GetFarms(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func GetFarm(w http.ResponseWriter, r *http.Request) {
+	b, err := stardb.FarmsJSON()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	return
+}
+
 func ServeGFSFile(w http.ResponseWriter, r *http.Request) {
 	if !strings.HasPrefix(r.URL.Path, "/screenshot") {
 		http.Error(w, "Not found"+r.URL.Path, http.StatusNotFound)
@@ -95,7 +109,7 @@ func main() {
 	dir := wwwDir()
 	log.Printf("Serving files from %v", dir)
 	http.Handle("/", logzip(http.FileServer(http.Dir(dir))))
-	http.Handle("/farms", logHandler(http.HandlerFunc(GetFarms)))
+	http.Handle("/api/farms", logHandler(http.HandlerFunc(GetFarms)))
 	http.Handle("/screenshot/", logHandler(http.HandlerFunc(ServeGFSFile)))
 	http.Handle("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))
 	RunHTTPServer()
