@@ -19,14 +19,14 @@ export class FarmService {
 
   getFarms () {
     return this._http.get("api/farms")
-      .map(res => <Farm[]>res.json().data)
+      .map(res => <Farm[]>res.json())
       .catch(this.handleError)
       .toPromise();
   }
 
   getFarm (id: string) {
     return this._http.get(`api/farm/${id}`)
-      .map(res => <Farm>res.json().data)
+      .map(res => <Farm>res.json())
       .catch(this.handleError)
       .toPromise();
   }
