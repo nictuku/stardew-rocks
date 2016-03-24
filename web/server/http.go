@@ -37,7 +37,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFarms(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("..")
 	b, err := stardb.FarmsJSON()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

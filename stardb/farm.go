@@ -41,7 +41,7 @@ func SaveGamePath(id string, ts time.Time) string {
 func FarmsJSON() ([]byte, error) {
 	var result []*Farm
 
-	if err := FarmCollection.Find(nil).Limit(20).All(&result); err != nil {
+	if err := FarmCollection.Find(nil).Sort("-likes").Limit(20).All(&result); err != nil {
 		return nil, err
 	}
 	for _, farm := range result {
