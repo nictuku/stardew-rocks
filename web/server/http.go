@@ -63,6 +63,28 @@ func GetFarm(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+// SearchFarms searches for farms or farmers. It looks for a query paramater "q". 
+func SearchFarms(w http.ResponseWriter, r *http.Request) {
+    r.ParseForm()
+
+    q := r.Form.Get("q")
+    if len(q) == 0 {
+        w.Write([]byte("{}"))
+        return
+    }
+	b, err := stardb.SearchFarmsJSON(q)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	return
+}
+
 func RunHTTPServer() {
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
@@ -103,6 +125,7 @@ func main() {
 	log.Infof("Serving files from %v", dir)
 	http.Handle("/api/farms", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarms)))
 	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarm)))
+	http.Handle("/api/search/farm", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(SearchFarms)))
 
 	http.Handle("/screenshot/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeScreenshot)))
 	//http.Handle("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))

@@ -39,16 +39,16 @@ func SaveGamePath(id string, ts time.Time) string {
 }
 
 func FarmsJSON() ([]byte, error) {
-	var result []*Farm
+	var farms []*Farm
 
-	if err := FarmCollection.Find(nil).Sort("-lastupdate").Limit(20).All(&result); err != nil {
+	if err := FarmCollection.Find(nil).Sort("-lastupdate").Limit(20).All(&farms); err != nil {
 		return nil, err
 	}
-	for _, farm := range result {
+	for _, farm := range farms {
 		farm.Thumbnail = farm.ScreenshotPath()
 		farm.ID = farm.InternalID.Hex()
 	}
-	return json.Marshal(result)
+	return json.Marshal(farms)
 }
 
 func FarmJSON(id string) ([]byte, error) {
@@ -63,6 +63,24 @@ func FarmJSON(id string) ([]byte, error) {
 	farm.ID = farm.InternalID.Hex()
 
 	return json.Marshal(farm)
+}
+
+func SearchFarmsJSON(query string) ([]byte, error) {
+	var farms []*Farm
+	re := bson.RegEx{query, "i"}
+	if err := FarmCollection.Find(
+		bson.M{"$or": []interface{}{
+			bson.M{"name": bson.M{"$regex": re}},
+			bson.M{"farmer": bson.M{"$regex": re}},
+		}}).Sort("-lastupdate").Limit(20).All(&farms); err != nil {
+		return nil, err
+
+	}
+	for _, farm := range farms {
+		farm.Thumbnail = farm.ScreenshotPath()
+		farm.ID = farm.InternalID.Hex()
+	}
+	return json.Marshal(farms)
 }
 
 func UpdateFarmTime(id bson.ObjectId, ts time.Time) error {
