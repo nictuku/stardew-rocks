@@ -63,7 +63,7 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 			}
 
 		} else {
-			x0 = (crop.CurrentPhase + 2) * 16
+			x0 = (crop.CurrentPhase + 1) * 16
 		}
 		if crop.RowInSpriteSheet%2 != 0 {
 			x0 += 128
