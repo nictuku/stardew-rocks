@@ -6,7 +6,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -14,9 +13,13 @@ import (
 
 	"github.com/nictuku/stardew-rocks/stardb"
 
+	logging "github.com/op/go-logging"
+
 	hs "github.com/gorilla/handlers"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
+
+var log = logging.MustGetLogger("stardew.rocks")
 
 func wwwDir() string {
 	home := os.Getenv("HOME")
@@ -63,23 +66,31 @@ func GetFarm(w http.ResponseWriter, r *http.Request) {
 func RunHTTPServer() {
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
-		log.Println("Error starting www server:", err)
+		log.Error("Error starting www server:", err)
 		// os.IsPermission doesn't match.
 		if strings.Contains(err.Error(), "permission denied") {
 			// Only for linux and port 80. Keeping here for future convenience.
-			log.Println("Try: sudo setcap 'cap_net_bind_service=+ep' www")
+			log.Error("Try: sudo setcap 'cap_net_bind_service=+ep' www")
 		}
 	}
 }
 
 func main() {
 
-	log.SetOutput(&lumberjack.Logger{
+	serverlog := logging.NewBackendFormatter(logging.NewLogBackend(&lumberjack.Logger{
 		Filename:   "/var/log/stardew/server.log",
 		MaxSize:    500, // megabytes
 		MaxBackups: 3,
 		MaxAge:     28, //days
-	})
+	}, "", 0), logging.GlogFormatter)
+
+	formatted := logging.AddModuleLevel(serverlog)
+	formatted.SetLevel(logging.INFO, "")
+
+	stderr := logging.NewBackendFormatter(logging.NewLogBackend(os.Stderr, "", 0), logging.GlogFormatter)
+
+	// Set the backends to be used and the default level.
+	logging.SetBackend(stderr, formatted)
 
 	combinedLog := &lumberjack.Logger{
 		Filename:   "/var/log/stardew/access.log",
@@ -89,7 +100,7 @@ func main() {
 	}
 
 	dir := wwwDir()
-	log.Printf("Serving files from %v", dir)
+	log.Infof("Serving files from %v", dir)
 	http.Handle("/api/farms", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarms)))
 	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarm)))
 
