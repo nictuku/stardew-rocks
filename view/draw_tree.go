@@ -43,7 +43,12 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 			log.Printf("Unknown tree rect for %v", item.Value.TerrainFeature.GrowthStage)
 			return
 		}
-		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight})
+		var r image.Rectangle
+		if stage < 3 {
+			r = sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight})
+		} else {
+			r = midLeftAlign(sr, image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight})
+		}
 		sb.Draw(img, r, src, sr.Min, treeLayer)
 	} else {
 		{

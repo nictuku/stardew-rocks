@@ -65,6 +65,14 @@ func topLeftAlign(sr image.Rectangle, dp image.Point) image.Rectangle {
 	}
 }
 
+func midLeftAlign(sr image.Rectangle, dp image.Point) image.Rectangle {
+	r := sr.Sub(sr.Min)
+	return image.Rectangle{
+		image.Point{dp.X, dp.Y - r.Dy()/2},
+		image.Point{dp.X + r.Max.X, dp.Y + r.Dy()/2},
+	}
+}
+
 func bottomLeftAlign(sr image.Rectangle, dp image.Point) image.Rectangle {
 	r := sr.Sub(sr.Min)
 	return image.Rectangle{
