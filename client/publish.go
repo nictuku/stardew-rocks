@@ -14,7 +14,7 @@ import (
 func rabbitStart() (ch *amqp.Channel, close func(), err error) {
 	conn, err := amqp.Dial("amqp://guest:guest@amqp.stardew.rocks:5672/")
 	if err != nil {
-		log.Fatalf("Failed to connect to AMQP server: %v", err)
+		return nil, nil, fmt.Errorf("Failed to connect to AMQP server: %v", err)
 	}
 
 	if ch, err = conn.Channel(); err != nil {
