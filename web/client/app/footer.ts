@@ -10,12 +10,22 @@ import {Component} from 'angular2/core';
       padding-top: initial;
       margin-top: initial;
     }
+    .padded {
+      padding: 1rem;
+    }
   `],
   template: `
     <div class="footer-copyright">
       <div class="container">
-      © 2014 Copyright Text
-      <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+        <span class="right">
+          <a class="grey-text text-lighten-4 padded" href="https://discord.gg/0tpEyZrnOVQKA93b">
+            Discord Channel
+          </a>
+          <a class="grey-text text-lighten-4 padded"
+            href="https://github.com/nictuku/stardew-rocks">
+            Github Page
+          </a>
+        </span>
       </div>
     </div>
   `

@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "lodash": "registry:npm/lodash#4.0.0+20160305082308"
+    "lodash": "registry:npm/lodash#4.0.0+20160305082308",
+    "moment": "registry:npm/moment#2.10.5+20160211003958"
   },
   "ambientDependencies": {
     "fuse": "registry:dt/fuse#1.1.5+20160317120654",
