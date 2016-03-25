@@ -2,5 +2,6 @@
 
 set -eu
 
-jspm bundle main.js --inject -m
-cp -R index.html app/ jspm_packages/ config.js main.js build.js ~/www/
+jspm install
+jspm bundle -m main.js build.js
+cp -R index.html content/ app/ jspm_packages/ config.js main.js build.js ~/www/
