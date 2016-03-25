@@ -30,6 +30,20 @@ The screenshots are not perfect yet, but we're working on it as fast as possible
 
 # For Developers
 
+## Renderer development
+
+The rendered is in the view/ directory. To test it, try:
+
+  cd view
+  go get .  # to fetch the dependencies
+  go test 
+  
+If all goes well, this will re-generate the .png's in the current directory. Make changes to the renderer then run "go test" again to see the results.
+
+Reference screenshots are available in the assets/img/ directory - they were produced in-game and serve as a target for the renderer development.
+
+## AMPQ / RabbitMQ
+
 The ampq URL is: `amqp://guest:guest@amqp.stardew.rocks:5672/`
 
 We currently publish the following exchanges:
