@@ -43,7 +43,8 @@ import {FarmService} from './farm/farm.service.ts';
 })
 @RouteConfig([
   {path: '/', name: 'Home', component: HomeComponent, useAsDefault: true},
-  {path: '/farm/:id', name: 'Farm', component: FarmComponent}
+  {path: '/farm/:id', name: 'Farm', component: FarmComponent},
+  {path: '/client', name: 'Client', component: HomeComponent}
 ])
 export class AppComponent {
 
