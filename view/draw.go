@@ -19,16 +19,17 @@ func init() {
 }
 
 const (
-	backLayer        = 0.01
-	buildingsLayer   = 0.02
-	flooringLayer    = 0.02
-	pathsLayer       = 0.03
-	grassLayer       = 0.5
-	treeLayer        = 0.5
-	frontLayer       = 0.5
+	backLayer      = 0.01
+	buildingsLayer = 0.02
+	flooringLayer  = 0.02
+	pathsLayer     = 0.03
+	grassLayer     = 0.5
+	treeLayer      = 0.5
+
 	objectLayer      = 0.5
 	greenHouseLayer  = 0.5
-	houseLayer       = 0.6 // after front, same as objects
+	frontLayer       = 0.4
+	houseLayer       = 0.5 // after front, same as objects
 	alwaysFrontLayer = 1.0
 )
 
@@ -110,7 +111,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	objects := make([][]*parser.ObjectItem, m.Height)
 	for i := range farm.Objects.Items {
 		object := farm.Objects.Items[i] // separate pointer for each item
-		if object.Y() >= len(objects) || object.Y() < 0  {
+		if object.Y() >= len(objects) || object.Y() < 0 {
 			continue
 		}
 		objects[object.Y()] = append(objects[object.Y()], &object)
@@ -124,7 +125,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	// Back Layer; Buildings Layer; Houses; Objects; TerrainFeatures; Front Layer; AlwaysFront Layer
 
 	for y := 0; y < m.Height; y++ {
-		if y == 20 {
+		if y == 0 {
 			drawHouse(pm, img, sg.Player.HouseUpgradeLevel)
 		}
 		if y == 15 {
