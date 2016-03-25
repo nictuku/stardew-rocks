@@ -14,6 +14,28 @@ import (
 	"github.com/disintegration/imaging"
 )
 
+func LegacyMap(w http.ResponseWriter, r *http.Request) {
+	// map-Rey-1458536597.png
+	m := strings.Split(r.URL.Path, "-")
+	if len(m) != 3 {
+		http.Error(w, fmt.Sprintf("unexpected length: %d", len(m)), http.StatusBadRequest)
+		return
+	}
+	farmer := m[1]
+	lastSave := strings.Split(m[2], ".")[0]
+	farm, err := stardb.LegacyMap(farmer)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if farm.ID == "" {
+		http.Error(w, fmt.Sprintf("empty %d", len(farm.ID)), http.StatusBadRequest)
+		return
+	}
+	http.Redirect(w, r, fmt.Sprintf("/screenshot/%v/%v.png", farm.ID, lastSave), http.StatusSeeOther)
+	return
+}
+
 func ServeScreenshot(w http.ResponseWriter, r *http.Request) {
 	if !strings.HasPrefix(r.URL.Path, "/screenshot") {
 		http.Error(w, "Not found"+r.URL.Path, http.StatusNotFound)

@@ -65,19 +65,13 @@ func FarmJSON(id string) ([]byte, error) {
 	return json.Marshal(farm)
 }
 
-func LegacyFarmJSON(farmer string, lastSave string) ([]byte, error) {
+func LegacyMap(farmer string) (*Farm, error) {
 	var farm *Farm
-	t, err := time.Parse(time.RFC3339, lastSave)
-	if err != nil {
-		return nil, err
+	if err := FarmCollection.Find(bson.M{"farmer": farmer}).One(&farm); err != nil {
+		return nil, fmt.Errorf("error finding farm: %v", err)
 	}
-	if err := FarmCollection.Find(bson.M{"farmer": farmer, "lastsave": t}).One(&farm); err != nil {
-		return nil, err
-	}
-	farm.Thumbnail = farm.ScreenshotPath()
 	farm.ID = farm.InternalID.Hex()
-
-	return json.Marshal(farm)
+	return farm, nil
 }
 
 func SearchFarmsJSON(query string) ([]byte, error) {

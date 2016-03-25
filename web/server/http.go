@@ -72,26 +72,6 @@ func Root(w http.ResponseWriter, r *http.Request) {
 	http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
 }
 
-func LegacyMap(w http.ResponseWriter, r *http.Request) {
-	// map-Rey-1458536597.png
-	m := strings.Split(r.URL.Path, "-")
-	if len(m) != 3 {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	b, err := stardb.LegacyMapJSON(m[1], m[2])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	_, err = w.Write(b)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	return
-}
-
 // SearchFarms searches for farms or farmers. It looks for a query paramater "q".
 func SearchFarms(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
