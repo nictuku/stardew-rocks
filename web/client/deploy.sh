@@ -4,4 +4,4 @@ set -eu
 
 jspm install
 jspm bundle -m main.js build.js
-cp -R index.html content/ app/ jspm_packages/ config.js main.js build.js ~/www/
+cp -R index.html content/ app/ jspm_packages/ config.js main.js build.js build.js.map ~/www/
