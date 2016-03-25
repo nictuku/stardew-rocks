@@ -1,8 +1,6 @@
 /// <reference path="../../typings/main.d.ts"/>
 import {Injectable} from 'angular2/core';
 import {Http, Response} from 'angular2/http';
-import 'lodash';
-import moment from 'moment';
 
 export interface Farm {
   ID: string,
@@ -22,10 +20,7 @@ export class FarmService {
     return new Promise((resolve, reject) => {
       this._http.get("api/farms")
         .subscribe(res => {
-          resolve(_(res.json()).map((farm: Farm) => {
-            farm.LastUpdate = moment(farm.LastUpdate).toDate();
-            return farm;
-          }));
+          resolve(res.json());
         });
     });
   }
@@ -34,9 +29,7 @@ export class FarmService {
     return new Promise((resolve, reject) => {
       this._http.get(`api/farm/${id}`)
         .subscribe(res => {
-          var farm: Farm = res.json();
-          farm.LastUpdate = moment(farm.LastUpdate).toDate();
-          resolve(farm);
+          resolve(res.json());
         });
     });
   }

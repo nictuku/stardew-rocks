@@ -5,7 +5,7 @@ import {RouterLink} from 'angular2/router';
   selector: 'navbar',
   styles: [`
     .padded {
-      padding: 0 1rem;
+      padding-left: 1rem;
     }
     .logo {
       vertical-align: text-bottom;
@@ -21,9 +21,6 @@ import {RouterLink} from 'angular2/router';
         <a [routerLink]="['Home']" class="brand-logo padded left">
           <object class="logo" type="image/svg+xml" data="content/logo.svg"></object>
           StardewRocks
-        </a>
-        <a href="https://github.com/nictuku/stardew-rocks/releases" class="right padded">
-          Download Client
         </a>
       </div>
     </nav>

@@ -31,7 +31,6 @@ System.config({
     "fuse.js": "npm:fuse.js@2.2.0",
     "lodash": "npm:lodash@4.6.1",
     "materialize": "npm:materialize-css@0.97.5",
-    "moment": "npm:moment@2.12.0",
     "reflect-metadata": "npm:reflect-metadata@0.1.3",
     "typescript": "npm:typescript@1.8.9",
     "zone.js": "npm:zone.js@0.6.5",
@@ -370,9 +369,6 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "minimist": "npm:minimist@0.0.8",
       "path": "github:jspm/nodelibs-path@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:moment@2.12.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:node-archiver@0.2.0": {
