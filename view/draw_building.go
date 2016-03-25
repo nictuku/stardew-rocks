@@ -44,6 +44,19 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			building.TileY*m.TileHeight + building.TilesHigh*m.TileHeight,
 		}
 		sb.Draw(img, topLeftAlign(sr, dp), src, sr.Min, houseLayer)
+	case "Barn":
+		// Door. TODO: open or closed.
+		sr := xnaRect(0, 112, 32, 16)
+		r := sr.Sub(sr.Min).Add(image.Point{
+			(building.TileX + building.AnimalDoor.X) * m.TileWidth,
+			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
+		})
+		sr = xnaRect(0, 0, 112, 112)
+		dp := image.Point{
+			(building.TileX * m.TileWidth),
+			building.TileY*m.TileHeight + building.TilesHigh*m.TileHeight,
+		}
+		sb.Draw(img, topLeftAlign(sr, dp), src, sr.Min, houseLayer)
 
 	default:
 		return
