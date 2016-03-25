@@ -51,6 +51,15 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			(building.TileX + building.AnimalDoor.X) * m.TileWidth,
 			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
 		})
+		// Top part of the door.
+		sb.Draw(img, r, src, sr.Min, objectLayer)
+		sr = xnaRect(0, 112, 32, 16)
+		r = sr.Sub(sr.Min).Add(image.Point{
+			(building.TileX + building.AnimalDoor.X) * m.TileWidth,
+			(building.TileY + building.AnimalDoor.Y - 1) * m.TileHeight,
+		})
+		sb.Draw(img, r, src, sr.Min, objectLayer)
+		// Barn
 		sr = xnaRect(0, 0, 112, 112)
 		dp := image.Point{
 			(building.TileX * m.TileWidth),
