@@ -1,6 +1,6 @@
 # stardew-rocks
 
-Stardew Rocks is a tool for Stardew Valley that collects saved games and shares them with the community. 
+Stardew Rocks is a tool for Stardew Valley that collects saved games and shares them with the community at http://stardew.rocks. 
 
 We create and share screenshots of your game with everyone - no complicated setup needed!
 
