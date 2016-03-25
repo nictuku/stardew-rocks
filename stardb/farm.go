@@ -22,16 +22,16 @@ type Farm struct {
 	Name       string
 	Farmer     string
 	Likes      int
-	SaveTime   time.Time `json:"-"`
+	LastUpdate time.Time
 	Thumbnail  string
 }
 
 func (f *Farm) ScreenshotPath() string {
-	return fmt.Sprintf("/screenshot/%v/%d.png", f.InternalID.Hex(), f.SaveTime.Unix())
+	return fmt.Sprintf("/screenshot/%v/%d.png", f.InternalID.Hex(), f.LastUpdate.Unix())
 }
 
 func (f *Farm) saveGamePath() string {
-	return SaveGamePath(f.InternalID.Hex(), f.SaveTime)
+	return SaveGamePath(f.InternalID.Hex(), f.LastUpdate)
 }
 
 func SaveGamePath(id string, ts time.Time) string {
@@ -66,7 +66,7 @@ func FarmJSON(id string) ([]byte, error) {
 }
 
 func UpdateFarmTime(id bson.ObjectId, ts time.Time) error {
-	return FarmCollection.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"savetime": ts}})
+	return FarmCollection.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"lastupdate": ts}})
 }
 
 func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName string) (ret *Farm, existing bool, err error) {
@@ -84,7 +84,7 @@ func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName s
 			Farmer:     playerName,
 			UniqueID:   uniqueIDForThisGame,
 			InternalID: bson.NewObjectId(),
-			SaveTime:   time.Now(),
+			LastUpdate: time.Now(),
 		}
 		if err := c.Insert(farm); err != nil {
 			log.Println("could not insert", err)
@@ -93,13 +93,13 @@ func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName s
 		log.Println("insert ok", farm.InternalID.String())
 		return farm, false, nil
 	}
-	log.Printf("found ok %v, %v, %v", ret.Name, ret.Farmer, ret.SaveTime)
+	log.Printf("found ok %v, %v, %v", ret.Name, ret.Farmer, ret.LastUpdate)
 
 	return ret, true, nil
 }
 
 func WriteSaveFile(farm *Farm, body []byte, ts time.Time) error {
-	farm.SaveTime = ts
+	farm.LastUpdate = ts
 	saveFile := farm.saveGamePath()
 	g, err := GFS.Create(saveFile)
 	if err != nil {
@@ -118,7 +118,7 @@ func WriteSaveFile(farm *Farm, body []byte, ts time.Time) error {
 
 // NewScreenshotWriter saves a screenshot in GFS at screenshots/<hexid>.png
 func NewScreenshotWriter(farm *Farm, ts time.Time) (io.WriteCloser, error) {
-	if farm.SaveTime.IsZero() {
+	if farm.LastUpdate.IsZero() {
 		return nil, fmt.Errorf("error writing screenshot: unexpected zero save time")
 	}
 	g, err := GFS.Create(farm.ScreenshotPath())
