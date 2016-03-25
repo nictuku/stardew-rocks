@@ -2,6 +2,7 @@
 
 import {Component} from 'angular2/core';
 import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
+import {HTTP_PROVIDERS}    from 'angular2/http';
 
 import {NavbarComponent} from './navbar.ts';
 import {FooterComponent} from './footer.ts';
@@ -38,7 +39,7 @@ import {FarmService} from './farm/farm.service.ts';
     </div>
   `,
   directives: [NavbarComponent, FooterComponent, ROUTER_DIRECTIVES],
-  providers: [FarmService]
+  providers: [FarmService, HTTP_PROVIDERS]
 })
 @RouteConfig([
   {path: '/', name: 'Home', component: HomeComponent, useAsDefault: true},

@@ -1,5 +1,6 @@
 import {Component, ElementRef} from 'angular2/core';
 import {RouteParams} from 'angular2/router';
+import {NgStyle} from 'angular2/common';
 
 import {Farm, FarmService} from './farm.service.ts';
 import {MaterializeDirective} from 'angular2-materialize';
@@ -32,7 +33,6 @@ import {MaterializeDirective} from 'angular2-materialize';
       min-height: 200px;
       top: 0;
       width: 100%;
-      background-color: #dddddd;
     }
     .card-action > a {
       cursor: pointer;
@@ -40,42 +40,49 @@ import {MaterializeDirective} from 'angular2-materialize';
   `],
   template: `
     <div class="container">
-      <div class="card meta deep-orange lighten-5">
+      <div class="card meta">
         <div class="card-content">
           <span class="card-title">
-            {{farm?.name}} Farm
-            <span class="sub-title hide-on-small-only">by {{farm?.farmer}}</span>
+            {{farm?.Name}} Farm
+            <span class="sub-title hide-on-small-only">by {{farm?.Farmer}}</span>
             <a class="btn waves-effect waves-light right orange lighten-1 hide-on-small-only">
-              <i class="material-icons">star_border</i> {{farm?.likes}}
+              <i class="material-icons">star_border</i> {{farm?.Likes}}
             </a>
           </span>
-          <div class="sub-title hide-on-med-and-up">Farmer: {{farm?.farmer}}</div>
+          <div class="sub-title hide-on-med-and-up">Farmer: {{farm?.Farmer}}</div>
           <div>
-            Last Updated: {{farm?.lastUpdate | date: 'medium'}}
+            Last Updated: {{farm?.LastUpdate | date: 'medium'}}
           </div>
           <div class="hide-on-med-and-up" style="font-size: 1.6rem;">
             <a class="btn waves-effect waves-light orange lighten-1">
-              <i class="material-icons">star_border</i> {{farm?.likes}}
+              <i class="material-icons">star_border</i> {{farm?.Likes}}
             </a>
           </div>
         </div>
         <div class="card-action">
-          <a (click)="playPause()">Play/Pause</a>
-          <a>Export GIF</a>
+          <a (click)="playPause()">{{historyEl.paused ? 'Play' : 'Pause'}}</a>
         </div>
       </div>
       <div class="history-row">
-        <video class="history" [poster]="farm?.thumbnail" autoplay loop muted>
-          <source [src]="farm?.history">
+        <video class="history deep-orange lighten-5" materialize="materialbox" [poster]="farm?.Thumbnail" autoplay loop muted
+        (click)="historyClicked = !historyClicked"
+        [ngStyle]="historyClicked ? historyExpandedStyle : null" >
+          <source [src]="farm?.History">
           <p class="warning">Your browser does not support HTML5 video.</p>
         </video>
       </div>
     </div>
-  `
+  `,
+  directives: [MaterializeDirective, NgStyle]
 })
 export class FarmComponent {
   farm: Farm;
   historyEl: HTMLVideoElement;
+  historyClicked = false;
+  historyExpandedStyle = {
+    "max-height": "initial",
+    "background-color": "initial"
+  };
 
   constructor(
     private _service: FarmService,
