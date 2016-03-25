@@ -42,11 +42,13 @@ func TestLoadTile(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		f, err := os.OpenFile(fmt.Sprintf("map-%v.png", name), os.O_CREATE|os.O_WRONLY, 0666)
+		mf := fmt.Sprintf("map-%v.png", name)
+		f, err := os.OpenFile(mf, os.O_CREATE|os.O_WRONLY, 0666)
 		if err != nil {
 			panic(err)
 		}
 		WriteImage(farm, gameSave, f)
 		f.Close()
+		t.Log("Wrote map", mf)
 	}
 }
