@@ -63,15 +63,44 @@ func GetFarm(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// SearchFarms searches for farms or farmers. It looks for a query paramater "q". 
-func SearchFarms(w http.ResponseWriter, r *http.Request) {
-    r.ParseForm()
+func Root(w http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/map") {
+		LegacyMap(w, r)
+		return
+	}
+	dir := wwwDir()
+	http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
+}
 
-    q := r.Form.Get("q")
-    if len(q) == 0 {
-        w.Write([]byte("{}"))
-        return
-    }
+func LegacyMap(w http.ResponseWriter, r *http.Request) {
+	// map-Rey-1458536597.png
+	m := strings.Split(r.URL.Path, "-")
+	if len(m) != 3 {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	b, err := stardb.LegacyMapJSON(m[1], m[2])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	return
+}
+
+// SearchFarms searches for farms or farmers. It looks for a query paramater "q".
+func SearchFarms(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	q := r.Form.Get("q")
+	if len(q) == 0 {
+		w.Write([]byte("{}"))
+		return
+	}
 	b, err := stardb.SearchFarmsJSON(q)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -134,6 +163,6 @@ func main() {
 	http.Handle("/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Index)))
 
 	// This is served from the filesystem, but / goes to index.html which has our web app.
-	http.Handle("/", hs.CombinedLoggingHandler(combinedLog, http.FileServer(http.Dir(dir))))
+	http.Handle("/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Root)))
 	RunHTTPServer()
 }
