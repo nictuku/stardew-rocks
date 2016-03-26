@@ -23,15 +23,24 @@ class Farm extends ReactCSS.Component {
       default: {
         farm: {
           display: "flex",
-          flexDirection: "column"
-        },
-        card: {
-          display: "flex",
           flexDirection: "column",
-          flex: "1"
+          flex: '1'
         },
         cardMedia: {
-          flex: "1"
+          flex: '1',
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'row',
+          marginBottom: '1rem',
+          backgroundColor: this.context.muiTheme.palette.accent3Color
+        },
+        image: {
+          position: 'absolute',
+          maxHeight: '100%',
+          maxWidth: '100%',
+          left: '0',
+          right: '0',
+          margin: '0 auto'
         }
       }
     }
@@ -41,18 +50,23 @@ class Farm extends ReactCSS.Component {
     const farm = _.get(this.props.farm, 'data', null);
     return (
       <div style={this.styles().farm}>
-        <Card style={this.styles().card}>
-          <CardTitle
-            title={farm.Name}
-            subtitle={`by ${farm.Farmer}`}
-          />
-          <CardMedia style={this.styles().cardMedia}>
-            <img src={farm.Thumbnail} />
-          </CardMedia>
-        </Card>
+        <CardTitle
+          title={farm.Name}
+          subtitle={`by ${farm.Farmer}`}
+        />
+        <div style={this.styles().cardMedia}>
+          <img src={farm.Thumbnail} style={this.styles().image}/>
+          <div style={this.styles().imageWrapper}>
+
+          </div>
+        </div>
       </div>
     );
   };
+};
+
+Farm.contextTypes = {
+  muiTheme: React.PropTypes.object
 };
 
 Farm.propTypes = {

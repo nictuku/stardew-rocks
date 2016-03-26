@@ -28,7 +28,6 @@ class Home extends ReactCSS.Component {
           flexDirection: 'column'
         },
         list: {
-          minHeight: 'min-content',
           overflowY: 'auto',
           overflowX: 'hidden',
           flex: '1',
