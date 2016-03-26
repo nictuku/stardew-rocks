@@ -8,13 +8,13 @@ import theme from '../theme';
 class App extends ReactCSS.Component {
   constructor (props) {
     super(props);
-  };
+  }
 
   getChildContext () {
     return {
       muiTheme: getMuiTheme(theme)
-    }
-  };
+    };
+  }
 
   classes () {
     return {
@@ -32,7 +32,7 @@ class App extends ReactCSS.Component {
         }
       }
     }
-  };
+  }
 
   render () {
     return (
@@ -46,8 +46,8 @@ class App extends ReactCSS.Component {
         <footer></footer>
       </div>
     );
-  };
-};
+  }
+}
 
 App.childContextTypes = {
   muiTheme: React.PropTypes.object

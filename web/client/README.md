@@ -1,9 +1,13 @@
 # Usage
 ## Prerequisites
 - Install [Nodejs](https://nodejs.org/en/)
-- Install jspm
+- Install non-jspm dev dependencies
 ```
-$ npm install -g jspm
+$ npm install
+```
+- Install jspm 0.17 beta
+```
+$ npm install -g jspm@beta
 ```
 
 ## Building
@@ -11,29 +15,26 @@ $ npm install -g jspm
 ```
 $ jspm install
 ```
-
-Currently we aren't building a bundle, but in the future we could if we need slightly better performance.
+- Minify and make bundle
+```
+$ jspm bundle src/main.js -m
+```
 
 # Running Locally
-## Prerequisites
-- Install live-server
-```
-$ npm install -g live-server
-```
-
-## Running
 - Make sure you've gotten the dependencies
 ```
 $ jspm install
 ```
-- Run live-server in web/client (where this readme is)
+- Run the go server
 ```
-$ live-server --entry-file="index.html"
+$ go get ../server
+$ go build ../server
+$ go ../server/server
 ```
 
 # Required things for app to run
 - index.html
-- app/
+- src/
 - jspm_packages/
-- config.js
-- main.js
+- jspm.config.js
+- jspm.browser.js

@@ -4,20 +4,25 @@
     "browser": true,
     "es6": true
   },
-  "ecmaFeatures": {
-    "modules": true,
-    "jsx": true
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    },
+    "sourceType": "module"
   },
   "plugins": [
     "react"
   ],
+  "globals": {
+    "SystemJS": true
+  },
   "rules": {
     "no-console": 1,
     "no-unused-vars": 1,
     "dot-notation": 2,
     "no-magic-numbers": 2,
     "eqeqeq": 2,
-    "quotes": [2, "double"],
     "curly": 2,
     "semi": [2, "always"],
     "array-bracket-spacing": 2,
@@ -28,7 +33,6 @@
     "space-before-function-paren": 2,
     "space-infix-ops": 2,
     "spaced-comment": 2,
-    "linebreak-style": 2,
     "indent": [2, 2, {"VariableDeclarator": 2}],
     "func-style": [2, "expression"],
     "comma-style": 2
