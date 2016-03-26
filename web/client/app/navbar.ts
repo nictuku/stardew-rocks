@@ -22,6 +22,7 @@ import {RouterLink} from 'angular2/router';
           <object class="logo" type="image/svg+xml" data="content/logo.svg"></object>
           StardewRocks
         </a>
+        <a href="#" class="padded right"><i class="fa fa-paypal"></i>Donate</a>
       </div>
     </nav>
   `,

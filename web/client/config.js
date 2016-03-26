@@ -28,10 +28,13 @@ System.config({
     "css": "github:systemjs/plugin-css@0.1.20",
     "es6-promise": "npm:es6-promise@3.1.2",
     "es6-shim": "npm:es6-shim@0.35.0",
+    "font-awesome": "npm:font-awesome@4.5.0",
     "fuse.js": "npm:fuse.js@2.2.0",
     "lodash": "npm:lodash@4.6.1",
     "materialize": "npm:materialize-css@0.97.5",
+    "moment": "npm:moment@2.12.0",
     "reflect-metadata": "npm:reflect-metadata@0.1.3",
+    "rxjs": "npm:rxjs@5.0.0-beta.2",
     "typescript": "npm:typescript@1.8.9",
     "zone.js": "npm:zone.js@0.6.5",
     "github:jspm/nodelibs-assert@0.1.0": {
@@ -290,6 +293,9 @@ System.config({
       "create-hash": "npm:create-hash@1.1.2",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0"
     },
+    "npm:font-awesome@4.5.0": {
+      "css": "github:systemjs/plugin-css@0.1.20"
+    },
     "npm:fstream@0.1.31": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
@@ -369,6 +375,9 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "minimist": "npm:minimist@0.0.8",
       "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:moment@2.12.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:node-archiver@0.2.0": {
