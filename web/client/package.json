@@ -9,14 +9,13 @@
   "jspm": {
     "dependencies": {
       "font-awesome": "npm:font-awesome@^4.5.0",
-      "fuse.js": "npm:fuse.js@^2.2.0",
       "isomorphic-fetch": "npm:isomorphic-fetch@^2.2.1",
-      "jsx": "npm:jspm-loader-jsx@^0.0.7",
       "lodash": "npm:lodash@^4.6.1",
       "material-ui": "npm:material-ui@^0.15.0-alpha.2",
       "moment": "npm:moment@^2.12.0",
       "react": "npm:react@^0.14.7",
       "react-dom": "npm:react-dom@^0.14.7",
+      "react-image-lightbox": "npm:react-image-lightbox@^1.1.1",
       "react-redux": "npm:react-redux@^4.4.1",
       "react-router": "npm:react-router@^2.0.1",
       "react-tap-event-plugin": "npm:react-tap-event-plugin@^0.2.2",
@@ -31,7 +30,7 @@
       "clean-css": "npm:clean-css@^3.4.10",
       "core-js": "npm:core-js@^1.1.4",
       "css": "github:systemjs/plugin-css@^0.1.20",
-      "jspm-loader-jsx": "npm:jspm-loader-jsx@^0.0.7"
+      "jsx": "npm:jspm-loader-jsx@^0.0.7"
     }
   }
 }

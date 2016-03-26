@@ -42,6 +42,8 @@ System.config({
     "moment": "npm:moment@2.12.0",
     "react": "npm:react@0.14.7",
     "react-dom": "npm:react-dom@0.14.7",
+    "react-image-lightbox": "npm:react-image-lightbox@1.1.1",
+    "react-images": "npm:react-images@0.3.2",
     "react-redux": "npm:react-redux@4.4.1",
     "react-router": "npm:react-router@2.0.1",
     "react-tap-event-plugin": "npm:react-tap-event-plugin@0.2.2",
@@ -301,6 +303,9 @@ System.config({
       "public-encrypt": "npm:public-encrypt@4.0.0",
       "randombytes": "npm:randombytes@2.0.3"
     },
+    "npm:css-vendor@0.3.2": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:des.js@1.0.0": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "inherits": "npm:inherits@2.0.1",
@@ -439,6 +444,10 @@ System.config({
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
+    "npm:inline-style-prefixer@0.6.7": {
+      "bowser": "npm:bowser@1.0.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:inline-style-prefixer@1.0.3": {
       "bowser": "npm:bowser@1.0.0",
       "inline-style-prefix-all": "npm:inline-style-prefix-all@1.0.4"
@@ -456,6 +465,27 @@ System.config({
       "path": "github:jspm/nodelibs-path@0.1.0",
       "react": "npm:react@0.13.3",
       "react-hot-api": "github:gaearon/react-hot-api@0.4.5"
+    },
+    "npm:jss-camel-case@1.0.2": {
+      "jss": "npm:jss@3.3.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:jss-nested@1.0.3": {
+      "jss": "npm:jss@3.3.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:jss-px@1.0.0": {
+      "jss": "npm:jss@3.3.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:jss-vendor-prefixer@1.0.1": {
+      "css-vendor": "npm:css-vendor@0.3.2",
+      "jss": "npm:jss@3.3.0",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:jss@3.3.0": {
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
     "npm:jstransform@10.1.0": {
       "base62": "npm:base62@0.1.1",
@@ -620,6 +650,13 @@ System.config({
     "npm:query-string@3.0.3": {
       "strict-uri-encode": "npm:strict-uri-encode@1.1.0"
     },
+    "npm:radium@0.16.6": {
+      "array-find": "npm:array-find@1.0.0",
+      "exenv": "npm:exenv@1.2.0",
+      "inline-style-prefixer": "npm:inline-style-prefixer@0.6.7",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "rimraf": "npm:rimraf@2.5.2"
+    },
     "npm:randombytes@2.0.3": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
@@ -638,6 +675,27 @@ System.config({
       "react": "npm:react@0.14.7"
     },
     "npm:react-dom@0.14.7": {
+      "react": "npm:react@0.14.7"
+    },
+    "npm:react-image-lightbox@1.1.1": {
+      "radium": "npm:radium@0.16.6",
+      "react": "npm:react@0.14.7"
+    },
+    "npm:react-images@0.3.2": {
+      "jss": "npm:jss@3.3.0",
+      "jss-camel-case": "npm:jss-camel-case@1.0.2",
+      "jss-nested": "npm:jss-nested@1.0.3",
+      "jss-px": "npm:jss-px@1.0.0",
+      "jss-vendor-prefixer": "npm:jss-vendor-prefixer@1.0.1",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "react": "npm:react@0.14.7",
+      "react-addons-transition-group": "npm:react-addons-transition-group@0.14.7",
+      "react-dom": "npm:react-dom@0.14.7",
+      "react-jss": "npm:react-jss@2.0.2"
+    },
+    "npm:react-jss@2.0.2": {
+      "jss": "npm:jss@3.3.0",
+      "process": "github:jspm/nodelibs-process@0.1.2",
       "react": "npm:react@0.14.7"
     },
     "npm:react-redux@4.4.1": {
