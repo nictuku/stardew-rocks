@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDom from 'react-dom';
 import {Router, Route, Link, browserHistory, IndexRoute} from 'react-router';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
@@ -30,4 +31,4 @@ class Routes extends React.Component {
   };
 };
 
-export default Routes;
+ReactDom.render(<Routes />, document.getElementById('app'));
