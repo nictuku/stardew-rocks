@@ -28,6 +28,7 @@ type Farm struct {
 	// TODO: stop omitting this once the web client understands it.
 	LastUpdate time.Time `json:"-"`
 	Thumbnail  string
+	History    []int `json:",omitempty"`
 }
 
 func (f *Farm) ScreenshotPath() string {
@@ -136,6 +137,8 @@ func FarmJSON(id string) ([]byte, error) {
 	}
 	farm.Thumbnail = farm.ScreenshotPath()
 	farm.ID = farm.InternalID.Hex()
+	// Note: This is probably a bit slow in the current implementation.
+	farm.History = farm.SaveTimes()
 
 	return json.Marshal(farm)
 }
@@ -163,6 +166,8 @@ func SearchFarmsJSON(query string) ([]byte, error) {
 	for _, farm := range farms {
 		farm.Thumbnail = farm.ScreenshotPath()
 		farm.ID = farm.InternalID.Hex()
+		// We don't populate the farm's history here because it's too slow and
+		// that information is not really necessary at this stage.
 	}
 	return json.Marshal(farms)
 }
