@@ -68,6 +68,11 @@ func Root(w http.ResponseWriter, r *http.Request) {
 		LegacyMap(w, r)
 		return
 	}
+	// Allow URLs such as http://stardew.farm/56f360131700d41646571433
+	if len(r.URL.Path) == 25 { // len("/56f360131700d41646571433")
+		Index(w, r)
+		return
+	}
 	dir := wwwDir()
 	http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
 }

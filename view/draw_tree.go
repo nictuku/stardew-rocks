@@ -20,6 +20,10 @@ var treeRects = map[int]image.Rectangle{
 func treeAsset(treeType int, season string) string {
 	if treeType == 3 && season == "summer" {
 		season = "spring"
+	} else if treeType == 6 {
+		return "../TerrainFeatures/tree_palm.png"
+	} else if treeType == 7 {
+		return "../TerrainFeatures/mushroom_tree.png"
 	}
 	return fmt.Sprintf("../TerrainFeatures/tree%d_%v.png", treeType, season)
 }
