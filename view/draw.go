@@ -100,7 +100,11 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	buildings := make([][]*parser.Building, m.Height)
 	for i := range farm.Buildings {
 		building := farm.Buildings[i]
-		y := building.TileY + building.AnimalDoor.Y
+		y := building.TileY
+		if building.Type != "" {
+			// For Coop, Barn, etc.
+			y += building.AnimalDoor.Y
+		}
 		if y >= len(buildings) || y < 0 {
 			continue
 		}
