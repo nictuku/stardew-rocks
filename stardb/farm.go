@@ -22,7 +22,8 @@ type Farm struct {
 	Name       string
 	Farmer     string
 	Likes      int
-	LastUpdate time.Time
+	// TODO: stop omitting this once the web client understands it.
+	LastUpdate time.Time `json:"-"`
 	Thumbnail  string
 }
 
