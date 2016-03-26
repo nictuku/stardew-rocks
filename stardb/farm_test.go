@@ -14,3 +14,15 @@ func TestSearch(t *testing.T) {
 	}
 	t.Logf("Found %d farms", len(farms))
 }
+
+func TestAllFarms(t *testing.T) {
+	count := 0
+	c := AllFarms()
+	for farm := range c {
+		t.Logf("AllFarms seen %v", farm.Name)
+		count++
+	}
+	if count < 1 {
+		t.Errorf("Expected more farms, got %d", count)
+	}
+}

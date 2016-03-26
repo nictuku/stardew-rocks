@@ -39,6 +39,29 @@ func SaveGamePath(id string, ts time.Time) string {
 	return fmt.Sprintf("/saveGames/%v/%d.xml", id, ts.Unix())
 }
 
+// AllFarms iterates over all farms and sends them over c until it's done, then it closes the channel.
+// There is no cancellation here so the caller *must* read everything from c until it's closed, otherwise the goroutine will leak out.
+// Future implementations should consider allowing the client to abort the reads properly.
+func AllFarms() (c chan Farm) {
+	c = make(chan Farm)
+
+	go func() {
+		defer close(c)
+
+		var farm Farm
+		iter := FarmCollection.Find(nil).Sort("-lastupdate").Iter()
+
+		for iter.Next(&farm) {
+			c <- farm
+		}
+
+		if err := iter.Close(); err != nil {
+			log.Printf("AllFarm warning, may have returned partial results: %v", iter.Err())
+		}
+	}()
+	return c
+}
+
 func FarmsJSON() ([]byte, error) {
 	var farms []*Farm
 
