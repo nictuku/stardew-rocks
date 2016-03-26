@@ -148,11 +148,13 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 		for _, building := range buildings[y] {
 			drawBuilding(pm, building, img)
 		}
+		for _, item := range items[y] {
+			drawTree(pm, sg.CurrentSeason, item, img)
+		}
 		for _, object := range objects[y] {
 			drawObject(pm, object, img, objects)
 		}
 		for _, item := range items[y] {
-			drawTree(pm, sg.CurrentSeason, item, img)
 			drawGrass(pm, item, img)
 			drawFlooring(pm, item, img, items)
 			drawHoeDirt(pm, sg.CurrentSeason, item, img, items)
