@@ -6,7 +6,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -70,7 +69,6 @@ func Root(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Allow URLs such as http://stardew.farm/56f360131700d41646571433
-	fmt.Println(len(r.URL.Path))
 	if len(r.URL.Path) == 25 { // len("/56f360131700d41646571433")
 		Index(w, r)
 		return
