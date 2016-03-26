@@ -7,6 +7,7 @@ import {createStore, applyMiddleware} from 'redux';
 import mainReducer from "./reducers/mainReducer";
 import App from "./components/App";
 import Home from "./components/Home";
+import Farm from "./components/Farm";
 
 // Redux store stuff
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
@@ -17,6 +18,7 @@ const routes = (
     <Router history={browserHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={Home} />
+        <Route path=":id" component={Farm} />
       </Route>
     </Router>
   </Provider>

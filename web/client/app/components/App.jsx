@@ -26,7 +26,6 @@ class App extends ReactCSS.Component {
           overflow: "hidden"
         },
         main: {
-          overflow: "auto",
           flex: "1",
           display: "flex",
           flexDirection: "column"

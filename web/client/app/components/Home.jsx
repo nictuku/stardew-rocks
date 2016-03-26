@@ -22,28 +22,49 @@ class Home extends ReactCSS.Component {
   classes () {
     return {
       default: {
+        home: {
+          flex: '1',
+          display: 'flex',
+          flexDirection: 'column'
+        },
+        list: {
+          minHeight: 'min-content',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          flex: '1',
+          position: 'relative'
+        },
+        gridList: {
+          position: 'absolute',
+          bottom: '0',
+          left: '0',
+          right: '0',
+          top: '0'
+        }
       }
     };
   };
 
   render () {
     return (
-      <div>
+      <div style={this.styles().home}>
         <SearchBar filter={this.props.filter} filters={this.props.filters}
           changeFilter={this.props.onChangeFilter}
         />
-        <GridList cellHeight={284}>
-          {_.get(this.props.farms.data, 'data', []).map(farm => (
-            <Link to={`/${farm.ID}`} key={farm.ID}>
-              <GridTile
-                title={farm.Name}
-                subtitle={`by ${farm.Farmer}`}
-              >
-                <img src={`${farm.Thumbnail}?w=350`} />
-              </GridTile>
-            </Link>
-          ))}
-        </GridList>
+        <div style={this.styles().list}>
+          <GridList cellHeight={284} style={this.styles().gridList}>
+            {_.get(this.props.farms.data, 'data', []).map(farm => (
+              <Link to={`/${farm.ID}`} key={farm.ID}>
+                <GridTile
+                  title={farm.Name}
+                  subtitle={`by ${farm.Farmer}`}
+                >
+                  <img src={`${farm.Thumbnail}?w=350`} />
+                </GridTile>
+              </Link>
+            ))}
+          </GridList>
+        </div>
       </div>
     );
   }
