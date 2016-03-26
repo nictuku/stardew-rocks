@@ -67,14 +67,11 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 		}
 		sb.Draw(img, topLeftAlign(sr, dp), src, sr.Min, houseLayer)
 	case building.BuildingType == "Silo":
-		// Door. TODO: open or closed.
 		sr := xnaRect(0, 0, 48, 128)
 		dp := image.Point{
 			building.TileX * m.TileWidth,
 			(building.TileY - 1) * m.TileHeight,
 		}
-
-		// Top part of the door.
 		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
 
 	default:
