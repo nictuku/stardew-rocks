@@ -10,7 +10,7 @@ import (
 )
 
 func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
-	if building.Type == "" {
+	if building.Type == "" && building.BuildingType == "" {
 		return
 	}
 	m := pm.TMX
@@ -20,8 +20,8 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 		log.Printf("Error fetching asset %v: %v", sourcePath, err)
 		return
 	}
-	switch building.Type { // Also works for building.BuildingType = Deluxe Coop
-	case "Coop":
+	switch {
+	case building.Type == "Coop": // Also works for building.BuildingType = Deluxe Coop
 		sr := xnaRect(16, 112, 16, 16)
 		r := sr.Sub(sr.Min).Add(image.Point{
 			(building.TileX + building.AnimalDoor.X) * m.TileWidth,
@@ -44,7 +44,7 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			building.TileY*m.TileHeight + building.TilesHigh*m.TileHeight,
 		}
 		sb.Draw(img, topLeftAlign(sr, dp), src, sr.Min, houseLayer)
-	case "Barn":
+	case building.Type == "Barn": // Also works for building.BuildingType == Deluxe Barn
 		// Door. TODO: open or closed.
 		sr := xnaRect(0, 112, 32, 16)
 		r := sr.Sub(sr.Min).Add(image.Point{
@@ -66,6 +66,13 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			building.TileY*m.TileHeight + building.TilesHigh*m.TileHeight,
 		}
 		sb.Draw(img, topLeftAlign(sr, dp), src, sr.Min, houseLayer)
+	case building.BuildingType == "Silo":
+		sr := xnaRect(0, 0, 48, 128)
+		dp := image.Point{
+			building.TileX * m.TileWidth,
+			(building.TileY - 1) * m.TileHeight,
+		}
+		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
 
 	default:
 		return
