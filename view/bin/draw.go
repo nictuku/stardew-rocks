@@ -1,3 +1,5 @@
+// This program looks at all save games stored in the database and generates
+// new screenshots with the latest renderer.
 package main
 
 import (
@@ -9,12 +11,15 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 3 {
-		log.Fatalf("Expected `%v <xml save file> <output.png>`", os.Args[0])
+	if len(os.Args) != 2 {
+		log.Fatalf("Expected `%v <farmer regexp>`", os.Args[0])
 	}
 	farm := parser.LoadFarmMap()
 
 	log.Printf("Processing %v", os.Args[1])
+
+
+
 	sg, err := os.Open(os.Args[1])
 	if err != nil {
 		log.Fatal(err)

@@ -1,6 +1,7 @@
 package stardb
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -17,9 +18,11 @@ func TestSearch(t *testing.T) {
 
 func TestAllFarms(t *testing.T) {
 	count := 0
-	c := AllFarms()
+	c := AllFarms("k")
 	for farm := range c {
-		t.Logf("AllFarms seen %v", farm.Name)
+		if !strings.Contains(farm.Farmer, "k") {
+			t.Errorf("Got unexpected farm that does not match the farmer name search criteria 'k': %v", farm.Farmer)
+		}
 		count++
 	}
 	if count < 1 {
