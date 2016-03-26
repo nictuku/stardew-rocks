@@ -67,7 +67,11 @@ class Home extends ReactCSS.Component {
   render () {
     return (
       <div style={this.styles().home}>
-        <SearchBar filter={this.props.filter} filters={this.props.filters}
+        <SearchBar
+          getFarms={this.props.getFarms}
+          searchFarms={this.props.searchFarms}
+          filter={this.props.filter}
+          filters={this.props.filters}
           changeFilter={this.props.onChangeFilter}
         />
         <div style={this.styles().listWrapper}>
@@ -106,6 +110,7 @@ Home.propTypes = {
 export default connect(
   state => ({
     farms: state.farms.farms,
+    query: state.farms.query,
     filter: state.farmFilter.filter,
     filters: state.farmFilter.filters
   }),
@@ -115,6 +120,9 @@ export default connect(
     },
     getFarms () {
       dispatch(farmActions.getFarms());
+    },
+    searchFarms (query) {
+      dispatch(farmActions.searchFarms(query));
     }
   })
 )(Home);

@@ -14,6 +14,7 @@ export const getFarm = (id) => {
 
 export const searchFarms = (query) => {
   return new Promise(resolve => {
-    fetch(`api/search/farm?q=${query}`).then(res => resolve(res.json()));
+    fetch(`api/search/farm?q=${query}`)
+      .then(res => resolve(res.json()));
   });
 };
