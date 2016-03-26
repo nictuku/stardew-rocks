@@ -7,6 +7,7 @@ import GridTile from 'material-ui/lib/grid-list/grid-tile';
 import * as _ from 'lodash';
 
 import SearchBar from './SearchBar';
+import {changeFilter} from '../actions/farmFilterActions';
 import farms from '../reducers/farms';
 
 class Home extends ReactCSS.Component {
@@ -15,18 +16,12 @@ class Home extends ReactCSS.Component {
   };
 
   componentDidMount() {
-    this.props.dispatch(farms.actions.farms.sync());
+    this.props.getFarms();
   };
 
   classes () {
     return {
       default: {
-        title: {
-          fontFamily: 'Roboto'
-        },
-        subTitle: {
-          fontFamily: 'Roboto'
-        }
       }
     };
   };
@@ -34,13 +29,15 @@ class Home extends ReactCSS.Component {
   render () {
     return (
       <div>
-        <SearchBar />
+        <SearchBar filter={this.props.filter} filters={this.props.filters}
+          changeFilter={this.props.onChangeFilter}
+        />
         <GridList cellHeight={284}>
           {_.get(this.props.farms.data, 'data', []).map(farm => (
             <Link to={`/${farm.ID}`} key={farm.ID}>
               <GridTile
-                title={<span style={this.styles().title}>{farm.Name}</span>}
-                subtitle={<span style={this.styles().subTitle}>by {farm.Farmer}</span>}
+                title={farm.Name}
+                subtitle={`by ${farm.Farmer}`}
               >
                 <img src={`${farm.Thumbnail}?w=350`} />
               </GridTile>
@@ -57,9 +54,23 @@ Home.propTypes = {
     data: React.PropTypes.shape({
       data: React.PropTypes.array
     }).isRequired
-  }).isRequired
+  }).isRequired,
+  filter: React.PropTypes.number.isRequired,
+  filters: React.PropTypes.array.isRequired
 }
 
-export default connect(state => ({
-  farms: state.farms
-}))(Home);
+export default connect(
+  state => ({
+    farms: state.farms,
+    filter: state.farmFilter.filter,
+    filters: state.farmFilter.filters
+  }),
+  dispatch => ({
+    onChangeFilter (event, index, value) {
+      dispatch(changeFilter(event, index, value));
+    },
+    getFarms () {
+      dispatch(farms.actions.farms.sync());
+    }
+  })
+)(Home);
