@@ -1,6 +1,7 @@
 package view
 
 import (
+	"log"
 	"math/rand"
 	"os"
 	"testing"
@@ -47,6 +48,7 @@ func TestLoadTile(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
+		log.Printf("Writing screenshot at %v", mf)
 		WriteImage(farm, gameSave, f)
 		f.Close()
 		t.Log("Wrote map", mf)
