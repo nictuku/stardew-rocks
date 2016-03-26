@@ -1,7 +1,3 @@
 node_modules/
-bower_components/
 jspm_packages/
-typings/
-dist/
-app/*.js
 build.js*

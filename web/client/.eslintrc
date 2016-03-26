@@ -1,0 +1,40 @@
+{
+  "extends": "eslint:recommended",
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    },
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react"
+  ],
+  "globals": {
+    "SystemJS": true
+  },
+  "rules": {
+    "no-console": 1,
+    "no-unused-vars": 1,
+    "dot-notation": 2,
+    "no-magic-numbers": 2,
+    "eqeqeq": 2,
+    "curly": 2,
+    "semi": [2, "always"],
+    "array-bracket-spacing": 2,
+    "comma-spacing": [2, {"before": false, "after": true}],
+    "brace-style": 2,
+    "camelcase": 2,
+    "newline-after-var": 2,
+    "space-before-function-paren": 2,
+    "space-infix-ops": 2,
+    "spaced-comment": 2,
+    "indent": [2, 2, {"VariableDeclarator": 2}],
+    "func-style": [2, "expression"],
+    "comma-style": 2
+  }
+}

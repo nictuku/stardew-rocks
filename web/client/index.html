@@ -7,21 +7,30 @@
     <base href="/">
     <link rel="icon" href="favicon.ico" sizes="16x16 32x32">
     <link rel="apple-touch-icon-precomposed" href="favicon-152.png">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-      html, body, app {
+      html, body, #app {
         height: 100%;
         width: 100%;
+        margin: initial;
+        font-family: 'Roboto';
+        overflow: hidden;
+      }
+      #react-image-lightbox-portal .toolbar {
+        top: initial !important;
+        bottom: 0;
       }
     </style>
   </head>
   <body>
-    <app></app>
+    <div id="app"></div>
     <script src="jspm_packages/system.js"></script>
-    <script src="config.js"></script>
+    <script src="jspm.browser.js"></script>
+    <script src="jspm.config.js"></script>
     <script src="build.js"></script>
     <script>
-      System.import('main.js');
+      System.import('src/main.js');
     </script>
   </body>
 </html>

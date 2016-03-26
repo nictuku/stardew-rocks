@@ -27,3 +27,4 @@ _testmain.go
 
 client/client.exe
 view/bin/out.png
+.remote-sync.json
