@@ -21,7 +21,8 @@
       "react-tap-event-plugin": "npm:react-tap-event-plugin@^0.2.2",
       "reactcss": "npm:reactcss@^0.4.5",
       "redux": "npm:redux@^3.3.1",
-      "redux-api": "npm:redux-api@^0.9.0",
+      "redux-actions": "npm:redux-actions@^0.9.1",
+      "redux-promise": "npm:redux-promise@^0.5.3",
       "redux-thunk": "npm:redux-thunk@^2.0.1"
     },
     "devDependencies": {

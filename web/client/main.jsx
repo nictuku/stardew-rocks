@@ -1,5 +1,6 @@
 // Import global stuff
 import 'font-awesome/css/font-awesome.min.css!';
+import 'lodash';
 
 // Bootstrap react
 import ReactDom from 'react-dom';

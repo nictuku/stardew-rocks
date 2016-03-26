@@ -8,12 +8,15 @@ import CardActions from 'material-ui/lib/card/card-actions';
 import FlatButton from 'material-ui/lib/flat-button';
 import Lightbox from 'react-image-lightbox';
 
-import farms from '../reducers/farms';
+import * as farmActions from '../actions/farmActions';
 import * as lightBoxActions from '../actions/farmLightBoxActions';
 
 class Farm extends ReactCSS.Component {
   constructor (props) {
     super(props);
+    this.setLightBoxSources = _.debounce(this.props.setLightBoxSources, 1000, {
+      leading: true, trailing: false
+    });
   };
 
   componentDidMount () {
@@ -49,21 +52,20 @@ class Farm extends ReactCSS.Component {
   };
 
   componentWillReceiveProps (nextProps) {
-    if (!_.isEmpty(nextProps.farm.data) && _.isEmpty(this.props.farm.data)) {
-      _.invoke(nextProps, 'setLightBoxSources', nextProps.farm.sources);
+    if (!_.isEqual(nextProps.farm.sources, this.props.farm.sources)) {
+      this.setLightBoxSources(nextProps.farm.sources);
     }
   };
 
   render () {
-    const farm = _.get(this.props.farm, 'data', null);
     return (
       <div style={this.styles().farm}>
         <CardTitle
-          title={farm.Name}
-          subtitle={`by ${farm.Farmer}`}
+          title={this.props.farm.Name}
+          subtitle={`by ${this.props.farm.Farmer}`}
         />
         <div style={this.styles().cardMedia} onClick={this.props.openLightBox}>
-          <img src={farm.Thumbnail} style={this.styles().image}/>
+          <img src={this.props.farm.Thumbnail} style={this.styles().image}/>
         </div>
         {this.props.lightBox.isOpen ?
           <Lightbox
@@ -86,23 +88,21 @@ Farm.contextTypes = {
 };
 
 Farm.propTypes = {
-  farm: React.PropTypes.shape({
-    data: React.PropTypes.object.isRequired
-  }).isRequired,
+  farm: React.PropTypes.object.isRequired,
   getFarm: React.PropTypes.func.isRequired
 };
 
 export default connect(
   state => ({
     farm: {
-      ...state.farm,
-      sources: _.map(state.farm.data.History, image => `/screenshot/${state.farm.data.ID}/${image}.png`)
+      ...state.farms.farm,
+      sources: _.map(state.farms.farm.History, image => `/screenshot/${state.farms.farm.ID}/${image}.png`)
     },
     lightBox: state.farmLightBox
   }),
   dispatch => ({
     getFarm (id) {
-      dispatch(farms.actions.farm({id}));
+      dispatch(farmActions.getFarm(id));
     },
     nextSrc () {
       dispatch(lightBoxActions.nextSrc());

@@ -1,3 +1,6 @@
+export const GET_FARMS = "GET_FARMS";
+export const GET_FARM = "GET_FARM";
+export const SEARCH_FARMS = "SEARCH_FARMS";
 export const CHANGE_FARM_FILTER = "CHANGE_FARM_FILTER";
 export const OPEN_FARM_LIGHTBOX = "OPEN_FARM_LIGHTBOX";
 export const CLOSE_FARM_LIGHTBOX = "CLOSE_FARM_LIGHTBOX";

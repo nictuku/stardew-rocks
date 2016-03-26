@@ -5,7 +5,7 @@ import farmFilter from './farmFilter';
 import farmLightBox from './farmLightBox';
 
 const mainReducer = combineReducers({
-  ...farms.reducers,
+  farms,
   farmFilter,
   farmLightBox
 });

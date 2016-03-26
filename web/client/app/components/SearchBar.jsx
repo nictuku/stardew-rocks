@@ -16,18 +16,10 @@ class SearchBar extends ReactCSS.Component {
 
   render () {
     return (
-      <Toolbar>
+      <Toolbar noGutter>
         <ToolbarGroup>
           <FontIcon className="material-icons">search</FontIcon>
           <TextField hintText="Search for farms or farmers" />
-        </ToolbarGroup>
-        <ToolbarGroup float="right">
-          <ToolbarTitle text="Filter:" />
-          <SelectField value={this.props.filter} onChange={this.props.changeFilter}>
-            {this.props.filters.map(filter => (
-              <MenuItem key={filter.id} value={filter.id} primaryText={filter.name} />
-            ))}
-          </SelectField>
         </ToolbarGroup>
       </Toolbar>
     );

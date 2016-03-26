@@ -1,10 +1,27 @@
-import 'isomorphic-fetch';
-import reduxApi, {transformers} from 'redux-api';
-import adapterFetch from 'redux-api/lib/adapters/fetch';
+import {handleActions} from 'redux-actions';
 
-const farms = reduxApi({
-  farms: 'api/farms',
-  farm: 'api/farm/:id'
-}).use("fetch", adapterFetch(fetch));
+import {
+  GET_FARMS, GET_FARM, SEARCH_FARMS
+} from '../actionTypes';
+
+const initialState = {
+  farm: {},
+  farms: []
+};
+
+const farms = handleActions({
+  GET_FARMS: (state, action) => ({
+    ...state,
+    farms: action.payload
+  }),
+  GET_FARM: (state, action) => ({
+    ...state,
+    farm: action.payload
+  }),
+  SEARCH_FARMS: (state, action) => ({
+    ...state,
+    farms: action.payload
+  })
+}, initialState);
 
 export default farms;

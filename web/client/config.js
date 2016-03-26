@@ -49,7 +49,9 @@ System.config({
     "react-tap-event-plugin": "npm:react-tap-event-plugin@0.2.2",
     "reactcss": "npm:reactcss@0.4.5",
     "redux": "npm:redux@3.3.1",
+    "redux-actions": "npm:redux-actions@0.9.1",
     "redux-api": "npm:redux-api@0.9.0",
+    "redux-promise": "npm:redux-promise@0.5.3",
     "redux-thunk": "npm:redux-thunk@2.0.1",
     "reflect-metadata": "npm:reflect-metadata@0.1.3",
     "rxjs": "npm:rxjs@5.0.0-beta.2",
@@ -371,6 +373,9 @@ System.config({
       "promise": "npm:promise@7.1.1",
       "ua-parser-js": "npm:ua-parser-js@0.7.10"
     },
+    "npm:flux-standard-action@0.6.1": {
+      "lodash.isplainobject": "npm:lodash.isplainobject@3.2.0"
+    },
     "npm:font-awesome@4.5.0": {
       "css": "github:systemjs/plugin-css@0.1.20"
     },
@@ -500,6 +505,15 @@ System.config({
     },
     "npm:lodash.debounce@4.0.3": {
       "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:lodash.isplainobject@3.2.0": {
+      "lodash._basefor": "npm:lodash._basefor@3.0.3",
+      "lodash.isarguments": "npm:lodash.isarguments@3.0.8",
+      "lodash.keysin": "npm:lodash.keysin@3.0.8"
+    },
+    "npm:lodash.keysin@3.0.8": {
+      "lodash.isarguments": "npm:lodash.isarguments@3.0.8",
+      "lodash.isarray": "npm:lodash.isarray@3.0.4"
     },
     "npm:lodash.merge@4.3.2": {
       "lodash._baseclone": "npm:lodash._baseclone@4.5.3",
@@ -767,11 +781,18 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "react": "npm:react@0.14.7"
     },
+    "npm:redux-actions@0.9.1": {
+      "flux-standard-action": "npm:flux-standard-action@0.6.1",
+      "reduce-reducers": "npm:reduce-reducers@0.1.2"
+    },
     "npm:redux-api@0.9.0": {
       "fast-apply": "npm:fast-apply@0.0.3",
       "lodash": "npm:lodash@3.10.1",
       "qs": "npm:qs@5.2.0",
       "url": "github:jspm/nodelibs-url@0.1.0"
+    },
+    "npm:redux-promise@0.5.3": {
+      "flux-standard-action": "npm:flux-standard-action@0.6.1"
     },
     "npm:redux@3.3.1": {
       "lodash": "npm:lodash@4.6.1",

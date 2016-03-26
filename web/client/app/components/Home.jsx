@@ -2,13 +2,13 @@ import React from 'react';
 import ReactCSS from 'reactcss';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
-import GridList from 'material-ui/lib/grid-list/grid-list';
-import GridTile from 'material-ui/lib/grid-list/grid-tile';
-import * as _ from 'lodash';
-
+import Card from 'material-ui/lib/card/card';
+import CardMedia from 'material-ui/lib/card/card-media';
+import CardTitle from 'material-ui/lib/card/card-title';
+import Paper from 'material-ui/lib/paper';
 import SearchBar from './SearchBar';
 import {changeFilter} from '../actions/farmFilterActions';
-import farms from '../reducers/farms';
+import * as farmActions from '../actions/farmActions';
 
 class Home extends ReactCSS.Component {
   constructor (props) {
@@ -27,18 +27,38 @@ class Home extends ReactCSS.Component {
           display: 'flex',
           flexDirection: 'column'
         },
-        list: {
+        listWrapper: {
           overflowY: 'auto',
           overflowX: 'hidden',
           flex: '1',
           position: 'relative'
         },
-        gridList: {
+        list: {
           position: 'absolute',
           bottom: '0',
           left: '0',
           right: '0',
-          top: '0'
+          top: '0',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center'
+        },
+        link: {
+          overflow: 'hidden'
+        },
+        card: {
+          display: 'inline-block',
+          margin: '.5rem',
+          maxWidth: '100%'
+        },
+        cell: {
+          height: '284px',
+          width: '350px'
+        },
+        panel: {
+          width: '100%',
+          padding: '1rem 2rem',
+          height: '3rem'
         }
       }
     };
@@ -50,19 +70,27 @@ class Home extends ReactCSS.Component {
         <SearchBar filter={this.props.filter} filters={this.props.filters}
           changeFilter={this.props.onChangeFilter}
         />
-        <div style={this.styles().list}>
-          <GridList cellHeight={284} style={this.styles().gridList}>
-            {_.get(this.props.farms.data, 'data', []).map(farm => (
-              <Link to={`/${farm.ID}`} key={farm.ID}>
-                <GridTile
-                  title={farm.Name}
-                  subtitle={`by ${farm.Farmer}`}
-                >
-                  <img src={`${farm.Thumbnail}?w=350`} />
-                </GridTile>
-              </Link>
-            ))}
-          </GridList>
+        <div style={this.styles().listWrapper}>
+          <div style={this.styles().list}>
+            {!_.isEmpty(this.props.farms)
+              ? this.props.farms.map(farm => (
+                <Card style={this.styles().card} key={farm.ID}>
+                  <Link to={`/${farm.ID}`} key={farm.ID} style={this.styles().link}>
+                    <CardMedia style={this.styles().cell}
+                      overlay={<CardTitle title={farm.Name} subtitle={`by ${farm.Farmer}`} />}
+                    >
+                      <img src={`${farm.Thumbnail}?w=350`} />
+                    </CardMedia>
+                  </Link>
+                </Card>
+              ))
+              : (
+                <Paper style={this.styles().panel}>
+                  No results found
+                </Paper>
+              )
+            }
+          </div>
         </div>
       </div>
     );
@@ -70,18 +98,14 @@ class Home extends ReactCSS.Component {
 };
 
 Home.propTypes = {
-  farms: React.PropTypes.shape({
-    data: React.PropTypes.shape({
-      data: React.PropTypes.array
-    }).isRequired
-  }).isRequired,
+  farms: React.PropTypes.array.isRequired,
   filter: React.PropTypes.number.isRequired,
   filters: React.PropTypes.array.isRequired
 }
 
 export default connect(
   state => ({
-    farms: state.farms,
+    farms: state.farms.farms,
     filter: state.farmFilter.filter,
     filters: state.farmFilter.filters
   }),
@@ -90,7 +114,7 @@ export default connect(
       dispatch(changeFilter(event, index, value));
     },
     getFarms () {
-      dispatch(farms.actions.farms.sync());
+      dispatch(farmActions.getFarms());
     }
   })
 )(Home);

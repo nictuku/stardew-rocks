@@ -2,6 +2,7 @@ import React from "react";
 import {Router, Route, Link, browserHistory, IndexRoute} from 'react-router';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
+import promiseMiddleware from 'redux-promise';
 import {createStore, applyMiddleware} from 'redux';
 
 import mainReducer from "./reducers/mainReducer";
@@ -10,8 +11,9 @@ import Home from "./components/Home";
 import Farm from "./components/Farm";
 
 // Redux store stuff
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-const store = createStoreWithMiddleware(mainReducer);
+const store = createStore(mainReducer, applyMiddleware(
+  thunk, promiseMiddleware
+));
 
 const routes = (
   <Provider store={store}>
