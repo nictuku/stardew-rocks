@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 
 	"gopkg.in/mgo.v2"
@@ -28,32 +31,79 @@ type Farm struct {
 }
 
 func (f *Farm) ScreenshotPath() string {
-	return fmt.Sprintf("/screenshot/%v/%d.png", f.InternalID.Hex(), f.LastUpdate.Unix())
+	return f.ScreenshotPathByTime(int(f.LastUpdate.Unix()))
+}
+
+func (f *Farm) ScreenshotPathByTime(ts int) string {
+	return fmt.Sprintf("/screenshot/%v/%d.png", f.InternalID.Hex(), ts)
 }
 
 func (f *Farm) saveGamePath() string {
 	return SaveGamePath(f.InternalID.Hex(), f.LastUpdate)
 }
 
+func saveGameToSaveTime(s string) (int, error) {
+	// input: /saveGames/56f34dd6f48e3e520cea687b/1458795576.xml
+	// output: 1458795576
+	base := filepath.Base(s)
+	noExt := strings.TrimSuffix(base, filepath.Ext(base))
+	return strconv.Atoi(noExt)
+}
+
+// SaveTimes returns the timestamp for which a certain farm has had save games.
+// The save times are obtained from the save file XML filenames.
+func (f *Farm) SaveTimes() []int {
+	// TODO: Use a metadata field instead in case this proves to be too slow.
+	var filenames []struct {
+		FileName string `bson:"filename"`
+	}
+	var saveTimes []int
+
+	prefix := fmt.Sprintf("^/saveGames/%v", f.InternalID.Hex())
+	if err := DB.C("sdr.files").Find(bson.M{
+		"filename": bson.M{"$regex": prefix}}).Sort("filename").Select(bson.M{"filename": 1}).All(&filenames); err != nil {
+		log.Printf("SaveTimes error: %v", err)
+		return nil
+	}
+	saveTimes = make([]int, 0, len(filenames))
+
+	for _, k := range filenames {
+		tt, err := saveGameToSaveTime(k.FileName)
+		if err != nil {
+			log.Printf("convering savegame to time format %v", err)
+			return nil
+		}
+		saveTimes = append(saveTimes, tt)
+	}
+	return saveTimes
+}
+
+func SaveGamePathInt(id string, ts int) string {
+	return fmt.Sprintf("/saveGames/%v/%d.xml", id, ts)
+}
+
 func SaveGamePath(id string, ts time.Time) string {
-	return fmt.Sprintf("/saveGames/%v/%d.xml", id, ts.Unix())
+	return SaveGamePathInt(id, int(ts.Unix()))
 }
 
 // AllFarms iterates over all farms and sends them over c until it's done, then it closes the
 // channel.  There is no cancellation here so the caller *must* read everything from c until it's
 // closed, otherwise the goroutine will leak out.
 // Future implementations should consider allowing the client to abort the reads properly.
-func AllFarms(farmerRE string) (c chan Farm) {
-	c = make(chan Farm)
+func AllFarms(farmerRE string) (c chan *Farm) {
+	c = make(chan *Farm)
 
 	go func() {
 		defer close(c)
 
-		var farm Farm
 		iter := FarmCollection.Find(bson.M{"farmer": bson.M{"$regex": farmerRE}}).Sort("-lastupdate").Iter()
 
-		for iter.Next(&farm) {
-			c <- farm
+		for {
+			var next *Farm // Need a separate point for every farm.
+			if ok := iter.Next(&next); !ok {
+				break
+			}
+			c <- next
 		}
 
 		if err := iter.Close(); err != nil {
