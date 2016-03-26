@@ -15,15 +15,19 @@ const store = createStore(mainReducer, applyMiddleware(
   thunk, promiseMiddleware
 ));
 
-const routes = (
-  <Provider store={store}>
-    <Router history={browserHistory}>
-      <Route path="/" component={App}>
-        <IndexRoute component={Home} />
-        <Route path=":id" component={Farm} />
-      </Route>
-    </Router>
-  </Provider>
-);
+class Routes extends React.Component {
+  render () {
+    return (
+      <Provider store={store}>
+        <Router history={browserHistory}>
+          <Route path="/" component={App}>
+            <IndexRoute component={Home} />
+            <Route path=":id" component={Farm} />
+          </Route>
+        </Router>
+      </Provider>
+    );
+  };
+};
 
-export default routes;
+export default Routes;
