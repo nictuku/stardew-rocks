@@ -78,6 +78,11 @@ func Root(w http.ResponseWriter, r *http.Request) {
 	http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
 }
 
+func StaticFiles(w http.ResponseWriter, r *http.Request) {
+	dir := wwwDir()
+	http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
+}
+
 // SearchFarms searches for farms or farmers. It looks for a query paramater "q".
 func SearchFarms(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
@@ -152,8 +157,8 @@ func main() {
 	http.Handle("/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Root))))
 
 	// Useful during development.
-	http.Handle("/src/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Root))))
-	http.Handle("/jspm_packages/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Root))))
+	http.Handle("/src/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(StaticFiles))))
+	http.Handle("/jspm_packages/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(StaticFiles))))
 
 	RunHTTPServer()
 }
