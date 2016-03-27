@@ -1,16 +1,16 @@
-# stardew-rocks
+# stardew.farm
 
-Stardew Rocks is a tool for Stardew Valley that collects saved games and shares them with the community at http://stardew.rocks. 
+Stardew Farm is a tool for Stardew Valley that collects saved games and shares them with the community at http://stardew.farm. 
 
 We create and share screenshots of your game with everyone - no complicated setup needed!
 
-Discord server for stardew.rocks chat: https://discord.gg/0tpEyZrnOVQKA93b
+Discord server for stardew.farm chat: https://discord.gg/0tpEyZrnOVQKA93b
 
 # For Farmers
 
-Install the Stardew Rocks client to share your farm state with the rest of the community! Farm screenshots will automatically appear here every time your game is saved: http://stardew.rocks (website is work in progress, hehe).
+Install the Stardew Farm client to share your farm state with the rest of the community! Farm screenshots will automatically appear here every time your game is saved: http://stardew.rocks (website is work in progress, hehe).
 
- - [Download Stardew Rocks!](https://github.com/nictuku/stardew-rocks/releases/download/v0.6/stardew_rocks.exe)
+ - [Download Stardew Farm!](https://github.com/nictuku/stardew-rocks/releases/download/v0.6/stardew_rocks.exe)
 
 WARNING: 64-bit executable only for now. Sorry. See issue #2 for details.
 
