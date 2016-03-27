@@ -7,7 +7,9 @@ SystemJS.config({
       "meta": {
         "*.js": {
           "babelOptions": {
-            "plugins": ["babel-plugin-transform-react-jsx"]
+            "plugins": [
+              "babel-plugin-transform-react-jsx"
+            ]
           }
         }
       }
@@ -47,6 +49,7 @@ SystemJS.config({
     "process": "github:jspm/nodelibs-process@0.2.0-alpha",
     "react": "npm:react@0.14.7",
     "react-dom": "npm:react-dom@0.14.7",
+    "react-ga": "npm:react-ga@1.2.1",
     "react-image-lightbox": "npm:react-image-lightbox@1.1.1",
     "react-redux": "npm:react-redux@4.4.1",
     "react-router": "npm:react-router@2.0.1",
