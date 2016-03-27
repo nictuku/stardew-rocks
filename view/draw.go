@@ -159,7 +159,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 			drawObject(pm, object, img, objects)
 		}
 		for _, item := range items[y] {
-			drawGrass(pm, item, img)
+			drawGrass(pm, sg.CurrentSeason, item, img)
 			drawFlooring(pm, item, img, items)
 			drawHoeDirt(pm, sg.CurrentSeason, item, img, items)
 		}
