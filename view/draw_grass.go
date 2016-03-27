@@ -9,10 +9,17 @@ import (
 	"github.com/nictuku/stardew-rocks/parser"
 )
 
-func grassOffset(grassType int) int {
-	// TODO: other seasons
+func grassOffset(grassType int, season string) int {
 	switch grassType {
 	case 1:
+		switch season {
+		case "spring":
+			return 0
+		case "summer":
+			return 20
+		case "fall":
+			return 40
+		}
 		return 0
 	case 2:
 		return 60
@@ -24,11 +31,11 @@ func grassOffset(grassType int) int {
 	return 0
 }
 
-func grassRect(idx, grassType int) image.Rectangle {
-	return xnaRect(idx, grassOffset(grassType), 15, 20)
+func grassRect(idx, grassType int, season string) image.Rectangle {
+	return xnaRect(idx, grassOffset(grassType, season), 15, 20)
 }
 
-func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
+func drawGrass(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
 	if item.Value.TerrainFeature.Type != "Grass" {
 		return
 	}
@@ -61,7 +68,7 @@ func drawGrass(pm *parser.Map, item *parser.TerrainItem, img draw.Image) {
 		if weed > 0 && weed < len(whichWeed) {
 			idx = whichWeed[weed] * 15
 		}
-		sr := grassRect(idx, item.Value.TerrainFeature.GrassType)
+		sr := grassRect(idx, item.Value.TerrainFeature.GrassType, season)
 		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth + (offsetWeeds[2][i]),
 			item.Key.Vector2.Y*m.TileHeight - i%2*m.TileHeight/2 + offsetWeeds[3][i],
 		})
