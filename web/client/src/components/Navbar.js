@@ -53,7 +53,7 @@ class Navbar extends ReactCSS.Component {
         <ToolbarGroup firstChild>
         <Link to="/" style={this.styles().brand}>
           <object style={this.styles().logo} type="image/svg+xml" data="content/logo.svg" />
-          <ToolbarTitle style={this.styles().title} text="StardewRocks" />
+          <ToolbarTitle style={this.styles().title} text="Stardew.Farm" />
         </Link>
         </ToolbarGroup>
         <ToolbarGroup float="right">
