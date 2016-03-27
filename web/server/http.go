@@ -15,6 +15,7 @@ import (
 
 	logging "github.com/op/go-logging"
 
+	"github.com/NYTimes/gziphandler"
 	hs "github.com/gorilla/handlers"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -148,11 +149,11 @@ func main() {
 	http.Handle("/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Index)))
 
 	// This is served from the filesystem, but / goes to index.html which has our web app.
-	http.Handle("/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Root)))
+	http.Handle("/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Root))))
 
 	// Useful during development.
-	http.Handle("/src/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Root)))
-	http.Handle("/jspm_packages/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Root)))
+	http.Handle("/src/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Root))))
+	http.Handle("/jspm_packages/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Root))))
 
 	RunHTTPServer()
 }
