@@ -32,12 +32,14 @@ The screenshots are not perfect yet, but we're working on it as fast as possible
 
 ## Renderer development
 
-The rendered is in the view/ directory. To test it, try:
+The renderer is in the view/ directory. To test it, try:
 
-  cd view
-  go get .  # to fetch the dependencies
-  go test 
-  
+<pre>
+cd view
+go get .  # to fetch the dependencies
+go test 
+</pre>
+ 
 If all goes well, this will re-generate the .png's in the current directory. Make changes to the renderer then run "go test" again to see the results.
 
 Reference screenshots are available in the assets/img/ directory - they were produced in-game and serve as a target for the renderer development.
@@ -48,15 +50,14 @@ The ampq URL is: `amqp://guest:guest@amqp.stardew.rocks:5672/`
 
 We currently publish the following exchanges:
 
- - "SaveGameInfo-1" receives raw uncompressed XML files with contributors' SaveGameInfo.
+ - "SaveGameInfo-1" receives raw uncompressed XML files with SaveGameInfo.
  - "OtherFiles-1" receives raw uncompressed XML files with the super-large file saves.
  
 # Planned features
 
 - Authentication of some fashion
-- Prettier farm maps
-- A slick website showing people's farms!
+- Finish implementing all missing 
 
 # Thanks to our testers!
 
-freaky-m0, Beener, Kylindra, Dristan
+freaky-m0, Beener, Kylindra, Dristan, Syndlig
