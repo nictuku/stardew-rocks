@@ -39,15 +39,23 @@ func drawGrass(pm *parser.Map, season string, item *parser.TerrainItem, img draw
 	if item.Value.TerrainFeature.Type != "Grass" {
 		return
 	}
-	whichWeed := rand.Perm(5)
-	if item.Value.TerrainFeature.NumberOfWeeds >= len(whichWeed) {
+	var whichWeed [4]int
+
+	if item.Value.TerrainFeature.NumberOfWeeds > len(whichWeed) {
+		log.Printf("Too many NumberOfWeeds with value %d", item.Value.TerrainFeature.NumberOfWeeds)
 		return
 	}
-	offsetWeeds := [4][]int{
-		rand.Perm(5),
-		rand.Perm(5),
-		rand.Perm(5),
-		rand.Perm(5),
+
+	for i, _ := range whichWeed {
+		whichWeed[i] = rand.Intn(3)
+	}
+
+	var offsetWeeds [4][4]int
+
+	for i, b := range offsetWeeds {
+		for j, _ := range b {
+			offsetWeeds[i][j] = rand.Intn(5) - 2
+		}
 	}
 	flipWeed := [4]bool{
 		rand.Float32() < 0.5,
@@ -55,22 +63,21 @@ func drawGrass(pm *parser.Map, season string, item *parser.TerrainItem, img draw
 		rand.Float32() < 0.5,
 		rand.Float32() < 0.5,
 	}
+
 	m := pm.TMX
 	src, err := pm.FetchSource("../TerrainFeatures/grass.png")
 	if err != nil {
 		log.Fatalf("Error fetching image asset %v", err)
 	}
 	for i, weed := range whichWeed[0:item.Value.TerrainFeature.NumberOfWeeds] {
+
 		if i >= len(flipWeed) {
 			continue
 		}
-		idx := 0
-		if weed > 0 && weed < len(whichWeed) {
-			idx = whichWeed[weed] * 15
-		}
-		sr := grassRect(idx, item.Value.TerrainFeature.GrassType, season)
-		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth + (offsetWeeds[2][i]),
-			item.Key.Vector2.Y*m.TileHeight - i%2*m.TileHeight/2 + offsetWeeds[3][i],
+
+		sr := grassRect(weed * 15, item.Value.TerrainFeature.GrassType, season)
+		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth + int(float32((i % 2) * m.TileWidth) / 2 + (float32(offsetWeeds[i][2]) - 6.5)),
+			item.Key.Vector2.Y*m.TileHeight - i/2*m.TileHeight/2 + offsetWeeds[i][3] + 10.,
 		})
 		if flipWeed[i] {
 			sr = xnaRect(0, 0, m.TileWidth, m.TileHeight)
