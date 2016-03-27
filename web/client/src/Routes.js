@@ -15,9 +15,9 @@ import Farm from "./components/Farm";
 // google analytics
 ga.initialize('UA-75597006-1');
 
-const logPageView = () => {
+function logPageView () { // eslint-disable-line
   ga.pageview(this.state.location.pathname);
-};
+}
 
 // Redux store stuff
 const store = createStore(mainReducer, applyMiddleware(
