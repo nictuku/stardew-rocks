@@ -149,5 +149,10 @@ func main() {
 
 	// This is served from the filesystem, but / goes to index.html which has our web app.
 	http.Handle("/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Root)))
+
+	// Useful during development.
+	http.Handle("/src/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Root)))
+	http.Handle("/jspm_packages/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Root)))
+
 	RunHTTPServer()
 }
