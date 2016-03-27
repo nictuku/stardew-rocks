@@ -28,7 +28,7 @@ type Farm struct {
 	// TODO: stop omitting this once the web client understands it.
 	LastUpdate time.Time `json:"-"`
 	Thumbnail  string
-	History    []int `json:",omitempty"`
+	History    []int
 }
 
 func (f *Farm) ScreenshotPath() string {
