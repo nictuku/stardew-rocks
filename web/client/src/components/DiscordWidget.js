@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactCSS from 'reactcss';
+import _ from 'lodash';
 import {connect} from 'react-redux';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
@@ -92,9 +93,7 @@ class DiscordWidget extends ReactCSS.Component {
 }
 
 DiscordWidget.propTypes = {
-  discord: React.PropTypes.shape({
-    members: React.PropTypes.array.isRequired
-  }).isRequired,
+  discord: React.PropTypes.object.isRequired,
   update: React.PropTypes.func
 };
 

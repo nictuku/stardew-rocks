@@ -87,6 +87,24 @@ SystemJS.config({
     "zlib": "github:jspm/nodelibs-zlib@0.2.0-alpha"
   },
   packages: {
+    "npm:httpplease@0.16.4": {
+      "map": {
+        "urllite": "npm:urllite@0.5.0",
+        "xmlhttprequest": "npm:xmlhttprequest@1.8.0",
+        "xtend": "npm:xtend@3.0.0"
+      }
+    },
+    "npm:react-inlinesvg@0.4.2": {
+      "map": {
+        "httpplease": "npm:httpplease@0.16.4",
+        "once": "npm:once@1.3.3"
+      }
+    },
+    "npm:urllite@0.5.0": {
+      "map": {
+        "xtend": "npm:xtend@4.0.1"
+      }
+    },
     "npm:color-string@0.3.0": {
       "map": {
         "color-name": "npm:color-name@1.1.1"

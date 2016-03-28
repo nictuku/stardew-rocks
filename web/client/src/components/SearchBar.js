@@ -1,13 +1,10 @@
 import React from 'react';
 import ReactCSS from 'reactcss';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
-import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 import TextField from 'material-ui/lib/text-field';
 import FontIcon from 'material-ui/lib/font-icon';
-import SelectField from 'material-ui/lib/select-field';
-import MenuItem from 'material-ui/lib/menus/menu-item';
 
 class SearchBar extends ReactCSS.Component {
   constructor (props) {
@@ -18,10 +15,10 @@ class SearchBar extends ReactCSS.Component {
       } else {
         this.props.getFarms();
       }
-    }, 500);
-  };
+    }, 500); // eslint-disable-line no-magic-numbers
+  }
 
-  classes() {
+  classes () {
     return {
       default: {
         group: {
@@ -54,8 +51,8 @@ class SearchBar extends ReactCSS.Component {
         </ToolbarGroup>
       </Toolbar>
     );
-  };
-};
+  }
+}
 
 SearchBar.propTypes = {
   getFarms: React.PropTypes.func.isRequired,

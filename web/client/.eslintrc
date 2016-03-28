@@ -18,7 +18,6 @@
     "babel"
   ],
   "globals": {
-    "_": true,
     "SystemJS": true
   },
   "rules": {

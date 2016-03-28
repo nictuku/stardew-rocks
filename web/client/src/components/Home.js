@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactCSS from 'reactcss';
+import _ from 'lodash';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import Card from 'material-ui/lib/card/card';
 import CardMedia from 'material-ui/lib/card/card-media';
 import CardTitle from 'material-ui/lib/card/card-title';
 import Paper from 'material-ui/lib/paper';
+
 import SearchBar from './SearchBar';
 import {changeFilter} from '../actions/farmFilterActions';
 import * as farmActions from '../actions/farmActions';

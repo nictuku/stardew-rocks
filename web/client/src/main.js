@@ -8,10 +8,8 @@ export function __reload(m) { // eslint-disable-line
 }
 
 // Import global stuff
-import 'font-awesome/css/font-awesome.min.css!';
-import 'lodash';
-// import injectTapEventPlugin from 'react-tap-event-plugin';
-// injectTapEventPlugin();
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
 
 // Bootstrap web app
 import Routes from './Routes';
