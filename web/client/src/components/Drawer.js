@@ -4,9 +4,12 @@ import Sidebar from 'react-sidebar';
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import IconButton from 'material-ui/lib/icon-button';
+import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 import Menu from 'material-ui/lib/menus/menu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import FontIcon from 'material-ui/lib/font-icon';
+
+import DiscordWidget from './DiscordWidget';
 
 class Drawer extends ReactCSS.Component {
   constructor (props, context) {
@@ -20,10 +23,14 @@ class Drawer extends ReactCSS.Component {
           textDecoration: 'none'
         },
         toolbar:  {
+          padding: '0 1rem',
           backgroundColor: this.context.muiTheme.palette.accent1Color
         },
         iconButton: {
           margin: 'auto'
+        },
+        iconButtonIcon: {
+          color: `#ffffff`
         },
         drawer: {
           backgroundColor: '#ffffff'
@@ -37,6 +44,9 @@ class Drawer extends ReactCSS.Component {
           border: 'initial',
           backgroundColor: 'initial',
           width: '100%'
+        },
+        white: {
+          color: `#ffffff`
         }
       }
     };
@@ -47,13 +57,19 @@ class Drawer extends ReactCSS.Component {
       <Sidebar styles={{sidebar: this.styles().drawer, content: this.styles().content}}
         sidebar={
           <div>
-            <Toolbar style={this.styles().toolbar}>
-              <ToolbarTitle text={this.props.isDocked ? 'Undock Drawer' : 'Dock Drawer'} />
-              <IconButton iconClassName="material-icons" style={this.styles().iconButton}
-                onClick={this.props.isDocked ? this.props.undockDrawer : this.props.dockDrawer}
-              >
-                {this.props.isDocked ? 'fullscreen_exit' : 'fullscreen'}
-              </IconButton>
+            <Toolbar style={this.styles().toolbar} noGutter>
+              <ToolbarGroup>
+                <ToolbarTitle style={this.styles().white}
+                  text={this.props.isDocked ? 'Undock Drawer' : 'Dock Drawer'} />
+              </ToolbarGroup>
+              <ToolbarGroup float="right">
+                <IconButton iconClassName="material-icons" style={this.styles().iconButton}
+                  iconStyle={this.styles().iconButtonIcon}
+                  onClick={this.props.isDocked ? this.props.undockDrawer : this.props.dockDrawer}
+                >
+                  {this.props.isDocked ? 'fullscreen_exit' : 'fullscreen'}
+                </IconButton>
+              </ToolbarGroup>
             </Toolbar>
             <Menu>
               <MenuItem primaryText="Download Client"
@@ -70,12 +86,7 @@ class Drawer extends ReactCSS.Component {
                   />
                 </button>
               </form>
-              <MenuItem primaryText="Discord"
-                href="https://discord.gg/0tpEyZrnOVQKA93b"
-                leftIcon={
-                  <object type="image/svg+xml" data="content/discord.svg" />
-                }
-              />
+              <DiscordWidget />
             </Menu>
           </div>
         }
