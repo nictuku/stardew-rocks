@@ -19,6 +19,7 @@
   ],
   "globals": {
     "_": true,
+    "SystemJS": true
   },
   "rules": {
     "no-console": 1,

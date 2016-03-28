@@ -27,6 +27,10 @@ class Drawer extends ReactCSS.Component {
         },
         drawer: {
           backgroundColor: '#ffffff'
+        },
+        content: {
+          display: 'flex',
+          flexDirection: 'column'
         }
       }
     };
@@ -34,7 +38,7 @@ class Drawer extends ReactCSS.Component {
 
   render () {
     return (
-      <Sidebar styles={{sidebar: this.styles().drawer}}
+      <Sidebar styles={{sidebar: this.styles().drawer, content: this.styles().content}}
         sidebar={
           <div>
             <Toolbar style={this.styles().toolbar}>

@@ -28,6 +28,9 @@ class Home extends ReactCSS.Component {
           flexDirection: 'column'
         },
         listWrapper: {
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          flex: '1',
           position: 'relative'
         },
         list: {

@@ -1,11 +1,7 @@
 import React from 'react';
 import ReactCSS from 'reactcss';
 import {connect} from 'react-redux';
-import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
-import CardMedia from 'material-ui/lib/card/card-media';
-import CardActions from 'material-ui/lib/card/card-actions';
-import FlatButton from 'material-ui/lib/flat-button';
 import Lightbox from 'react-image-lightbox';
 
 import * as farmActions from '../actions/farmActions';
@@ -33,18 +29,23 @@ class Farm extends ReactCSS.Component {
         },
         cardMedia: {
           flex: '1',
+          position: 'relative',
           display: 'flex',
           flexDirection: 'row',
-          marginBottom: '1rem',
-          backgroundColor: this.context.muiTheme.palette.accent3Color
+          marginBottom: '1rem'
         },
-        image: {
+        imageWrapper: {
+          backgroundColor: this.context.muiTheme.palette.accent3Color,
           position: 'absolute',
-          maxHeight: '100%',
-          maxWidth: '100%',
           left: '0',
           right: '0',
-          margin: '0 auto'
+          top: '0',
+          bottom: '0',
+          textAlign: 'center'
+        },
+        image: {
+          maxHeight: '100%',
+          maxWidth: '100%'
         }
       }
     };
@@ -64,7 +65,9 @@ class Farm extends ReactCSS.Component {
           subtitle={`by ${this.props.farm.Farmer}`}
         />
         <div style={this.styles().cardMedia} onClick={this.props.openLightBox}>
-          <img src={this.props.farm.Thumbnail} style={this.styles().image}/>
+          <div style={this.styles().imageWrapper}>
+            <img src={this.props.farm.Thumbnail} style={this.styles().image}/>
+          </div>
         </div>
         {this.props.lightBox.isOpen ?
           <Lightbox
