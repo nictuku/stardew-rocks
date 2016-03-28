@@ -4,8 +4,11 @@ import {
   CLOSE_DRAWER,
   DOCK_DRAWER,
   UNDOCK_DRAWER,
-  TOGGLE_DRAWER
+  TOGGLE_DRAWER,
+  UPDATE_AUTODOCK_DRAWER
 } from '../actionTypes';
+
+const mql = window.matchMedia(`(min-width: 800px)`);
 
 const drawer = handleActions({
   [OPEN_DRAWER]: (state) => ({
@@ -27,10 +30,15 @@ const drawer = handleActions({
   [TOGGLE_DRAWER]: (state) => ({
     ...state,
     isOpen: !state.isOpen
+  }),
+  [UPDATE_AUTODOCK_DRAWER]: (state) => ({
+    ...state,
+    isDocked: state.mql.matches
   })
 }, {
   isOpen: false,
-  isDocked: true
+  isDocked: mql.matches,
+  mql
 });
 
 export default drawer;

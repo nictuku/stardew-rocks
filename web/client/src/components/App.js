@@ -19,6 +19,14 @@ class App extends ReactCSS.Component {
     };
   }
 
+  componentWillMount () {
+    this.props.drawer.mql.addListener(this.props.updateAutoDock);
+  }
+
+  componentWillUnmount () {
+    this.props.drawer.mql.removeListener(this.props.updateAutoDock);
+  }
+
   classes () {
     return {
       default: {
@@ -78,7 +86,8 @@ App.propTypes = {
   }).isRequired,
   dockDrawer: React.PropTypes.func,
   undockDrawer: React.PropTypes.func,
-  toggleDrawer: React.PropTypes.func
+  toggleDrawer: React.PropTypes.func,
+  updateAutoDock: React.PropTypes.func
 };
 
 export default connect(
@@ -94,6 +103,9 @@ export default connect(
     },
     undockDrawer: () => {
       dispatch(drawerActions.undockDrawer());
+    },
+    updateAutoDock: () => {
+      dispatch(drawerActions.updateAutoDock());
     }
   })
 )(App);
