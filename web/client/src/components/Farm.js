@@ -14,14 +14,14 @@ import * as lightBoxActions from '../actions/farmLightBoxActions';
 class Farm extends ReactCSS.Component {
   constructor (props) {
     super(props);
-    this.setLightBoxSources = _.debounce(this.props.setLightBoxSources, 1000, {
+    this.setLightBoxSources = _.debounce(this.props.setLightBoxSources, 1000, { // eslint-disable-line no-magic-numbers
       leading: true, trailing: false
     });
-  };
+  }
 
   componentDidMount () {
     this.props.getFarm(this.props.routeParams.id);
-  };
+  }
 
   classes () {
     return {
@@ -33,7 +33,6 @@ class Farm extends ReactCSS.Component {
         },
         cardMedia: {
           flex: '1',
-          position: 'relative',
           display: 'flex',
           flexDirection: 'row',
           marginBottom: '1rem',
@@ -48,14 +47,14 @@ class Farm extends ReactCSS.Component {
           margin: '0 auto'
         }
       }
-    }
-  };
+    };
+  }
 
   componentWillReceiveProps (nextProps) {
     if (!_.isEqual(nextProps.farm.sources, this.props.farm.sources)) {
       this.setLightBoxSources(nextProps.farm.sources);
     }
-  };
+  }
 
   render () {
     return (
@@ -80,8 +79,8 @@ class Farm extends ReactCSS.Component {
         : null}
       </div>
     );
-  };
-};
+  }
+}
 
 Farm.contextTypes = {
   muiTheme: React.PropTypes.object

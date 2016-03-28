@@ -11,7 +11,7 @@ const intialState = {
   }]
 };
 
-const farmFilter = (state=intialState, action) => {
+const farmFilter = (state = intialState, action) => {
   switch(action.type) {
   case CHANGE_FARM_FILTER:
     return {
@@ -20,7 +20,7 @@ const farmFilter = (state=intialState, action) => {
     };
   default:
     return state;
-  };
+  }
 };
 
 export default farmFilter;

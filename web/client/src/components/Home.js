@@ -13,11 +13,11 @@ import * as farmActions from '../actions/farmActions';
 class Home extends ReactCSS.Component {
   constructor (props) {
     super(props);
-  };
+  }
 
-  componentDidMount() {
+  componentDidMount () {
     this.props.getFarms();
-  };
+  }
 
   classes () {
     return {
@@ -28,9 +28,6 @@ class Home extends ReactCSS.Component {
           flexDirection: 'column'
         },
         listWrapper: {
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          flex: '1',
           position: 'relative'
         },
         list: {
@@ -62,7 +59,7 @@ class Home extends ReactCSS.Component {
         }
       }
     };
-  };
+  }
 
   render () {
     return (
@@ -99,13 +96,13 @@ class Home extends ReactCSS.Component {
       </div>
     );
   }
-};
+}
 
 Home.propTypes = {
   farms: React.PropTypes.array.isRequired,
   filter: React.PropTypes.number.isRequired,
   filters: React.PropTypes.array.isRequired
-}
+};
 
 export default connect(
   state => ({
