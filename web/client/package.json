@@ -14,7 +14,6 @@
     "name": "stardew-rocks-web-client",
     "dependencies": {
       "color": "npm:color@^0.11.1",
-      "font-awesome": "npm:font-awesome@^4.5.0",
       "isomorphic-fetch": "npm:isomorphic-fetch@^2.2.1",
       "lodash": "npm:lodash@^4.6.1",
       "material-ui": "npm:material-ui@^0.15.0-alpha.2",
@@ -98,14 +97,6 @@
       },
       "npm:fbjs@0.6.1": {
         "dependencies": {}
-      },
-      "npm:font-awesome@4.5.0": {
-        "main": "css/font-awesome.css!",
-        "jspmNodeConversion": false,
-        "registry": "jspm",
-        "dependencies": {
-          "css": "0.1"
-        }
       },
       "npm:inherits@2.0.1": {
         "ignore": [
