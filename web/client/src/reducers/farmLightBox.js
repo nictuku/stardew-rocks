@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import {
   CLOSE_FARM_LIGHTBOX,
   OPEN_FARM_LIGHTBOX,
@@ -15,10 +16,11 @@ const initialState = {
   isOpen: false
 };
 
+
 const nextIndex = (index, length) => ((index + 1) % length);
 const prevIndex = (index, length) => ((index + length - 1) % length);
 
-const farmLightBox = (state=initialState, action) => {
+const farmLightBox = (state = initialState, action) => {
   const next = nextIndex(state.index, state.sources.length);
   const prev = prevIndex(state.index, state.sources.length);
 
@@ -39,7 +41,7 @@ const farmLightBox = (state=initialState, action) => {
       index: next,
       prevSrc: state.sources[state.index],
       mainSrc: state.sources[next],
-      nextSrc: state.sources[nextIndex(next, state.sources.length)],
+      nextSrc: state.sources[nextIndex(next, state.sources.length)]
     };
   case FARM_LIGHTBOX_PREV:
     return {

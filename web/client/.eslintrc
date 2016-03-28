@@ -1,9 +1,11 @@
 {
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "commonjs": true
   },
+  "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true,
@@ -12,9 +14,11 @@
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "react",
+    "babel"
   ],
   "globals": {
+    "_": true,
     "SystemJS": true
   },
   "rules": {
