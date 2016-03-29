@@ -13,6 +13,9 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 	if building.Type == "" && building.BuildingType == "" {
 		return
 	}
+
+	// TODO: add gradient shadow.
+
 	m := pm.TMX
 	sourcePath := fmt.Sprintf("../Buildings/%v.png", building.BuildingType)
 	src, err := pm.FetchSource(sourcePath)
@@ -71,6 +74,13 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 		dp := image.Point{
 			building.TileX * m.TileWidth,
 			(building.TileY - 1) * m.TileHeight,
+		}
+		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
+	case building.BuildingType == "Well":
+		sr := xnaRect(0, 0, 48, 80)
+		dp := image.Point{
+			building.TileX * m.TileWidth,
+			(building.TileY+1)*m.TileHeight - 8,
 		}
 		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
 
