@@ -2,7 +2,7 @@
 
 set -eu
 
-release_env="${DEST:-dev}"
+release_env="${1:-dev}"
 rootdir="${HOME}/www-${release_env}"
 
 ts="$(date +%s)"
