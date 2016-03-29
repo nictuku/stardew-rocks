@@ -1,5 +1,5 @@
 // hot reload stuff
-import 'systemjs-hot-reloader/default-listener.js';
+// import 'systemjs-hot-reloader/default-listener.js';
 
 export function __reload(m) { // eslint-disable-line
   if (m.component.state) {
