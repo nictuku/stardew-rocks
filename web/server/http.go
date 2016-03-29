@@ -106,7 +106,11 @@ func SearchFarms(w http.ResponseWriter, r *http.Request) {
 }
 
 func RunHTTPServer() {
-	err := http.ListenAndServe(":8080", nil)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Error("Error starting www server:", err)
 		// os.IsPermission doesn't match.
