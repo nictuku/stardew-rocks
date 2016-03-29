@@ -19,6 +19,11 @@ tmpdest="$(mktemp -d)"
 # "content" is currently using an absolute directory, so don't copy it.
 cp -R index.html src/ jspm_packages/ jspm.config.js jspm.browser.js build.js build.js.map "${tmpdest}"
 
+# "content" is currently using an absolute directory
+# This changes the live stuff.
+# TODO: use versioning for the entire www directory.
+cp content/* "${rootdir}/content"
+
 sed -e "s#src=\"#src=\"assets/${ts}/#"  -i ${tmpdest}/*html
 sed -e "s#baseURL: \"/\"#baseURL: \"/assets/${ts}/\"#" -i "${tmpdest}/jspm.browser.js"
 
