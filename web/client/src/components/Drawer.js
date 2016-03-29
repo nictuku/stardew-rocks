@@ -47,6 +47,9 @@ class Drawer extends ReactCSS.Component {
         },
         white: {
           color: `#ffffff`
+        },
+        icon:  {
+          fill: '#ffffff'
         }
       }
     };
@@ -82,7 +85,7 @@ class Drawer extends ReactCSS.Component {
                 " />
                 <button type="submit" style={this.styles().badButton}>
                   <MenuItem primaryText="Donate"
-                    leftIcon={<FontIcon className="fa fa-paypal" />}
+                    leftIcon={<object style={this.styles().icon} type="image/svg+xml" data="content/paypal.svg" />}
                   />
                 </button>
               </form>
