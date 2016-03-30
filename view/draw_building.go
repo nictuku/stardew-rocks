@@ -90,6 +90,13 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			(building.TileY+1)*m.TileHeight + m.TileHeight/2,
 		}
 		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
+	case building.BuildingType == "Stable":
+		sr := xnaRect(0, 0, 64, 96)
+		dp := image.Point{
+			building.TileX * m.TileWidth,
+			(building.TileY - 1) * m.TileHeight,
+		}
+		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
 
 	default:
 		return

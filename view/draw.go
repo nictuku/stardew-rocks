@@ -23,13 +23,14 @@ const (
 	buildingsLayer = 0.02
 	flooringLayer  = 0.02
 	pathsLayer     = 0.03
-	grassLayer     = 0.5
-	treeLayer      = 0.5
+	frontLayer     = 0.4
 
-	objectLayer      = 0.5
-	greenHouseLayer  = 0.5
-	frontLayer       = 0.4
-	houseLayer       = 0.5 // after front, same as objects
+	grassLayer      = 0.5
+	treeLayer       = 0.5
+	objectLayer     = 0.5
+	greenHouseLayer = 0.5
+	houseLayer      = 0.5 // after front, same as objects
+
 	alwaysFrontLayer = 1.0
 )
 
@@ -101,10 +102,10 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	for i := range farm.Buildings {
 		building := farm.Buildings[i]
 		y := building.TileY
-		if building.Type != "" {
-			// For Coop, Barn, etc.
-			y += building.AnimalDoor.Y
-		}
+		// For this value, the each "Tile High" represents 32 pixels, or 2 real tiles.
+		// Most likely the game considers 32 pixel per map tile, but works with map coordinates of 16 pixel units.
+		y += (building.TilesHigh * 2)
+
 		if y >= len(buildings) || y < 0 {
 			continue
 		}
