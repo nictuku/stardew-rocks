@@ -102,10 +102,12 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	for i := range farm.Buildings {
 		building := farm.Buildings[i]
 		y := building.TileY
-		// For this value, the each "Tile High" represents 32 pixels, or 2 real tiles.
-		// Most likely the game considers 32 pixel per map tile, but works with map coordinates of 16 pixel units.
-		y += (building.TilesHigh * 2)
-
+		// TODO: write more robust and general code for this.
+		if building.BuildingType == "Stable" {
+			// For this value, the each "Tile High" represents 32 pixels, or 2 real tiles.
+			// Most likely the game considers 32 pixel per map tile, but works with map coordinates of 16 pixel units.
+			y += (building.TilesHigh * 2)
+		}
 		if y >= len(buildings) || y < 0 {
 			continue
 		}
