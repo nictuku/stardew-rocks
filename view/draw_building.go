@@ -80,7 +80,14 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 		sr := xnaRect(0, 0, 48, 80)
 		dp := image.Point{
 			building.TileX * m.TileWidth,
-			(building.TileY+1)*m.TileHeight - 8,
+			(building.TileY)*m.TileHeight + m.TileHeight/2,
+		}
+		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
+	case building.BuildingType == "Slime Hutch":
+		sr := xnaRect(0, 0, 176, 144)
+		dp := image.Point{
+			building.TileX * m.TileWidth,
+			(building.TileY+1)*m.TileHeight + m.TileHeight/2,
 		}
 		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
 
