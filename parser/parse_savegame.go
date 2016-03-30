@@ -23,6 +23,7 @@ type Player struct {
 	HouseUpgradeLevel int      `xml:"houseUpgradeLevel"`
 	MailReceived      []string `xml:"mailReceived>string"`
 	FarmName          string   `xml:"farmName"`
+	Money             int      `xml:"money"`
 }
 
 type Locations struct {
