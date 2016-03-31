@@ -11,6 +11,7 @@ var sb = &SpriteBatch{}
 type drawSprite struct {
 	f     func()
 	layer float32
+	y     int
 }
 
 type SpriteBatch struct {
@@ -19,6 +20,9 @@ type SpriteBatch struct {
 
 func (s *SpriteBatch) Len() int { return len(s.batch) }
 func (s *SpriteBatch) Less(i, j int) bool {
+	if s.batch[i].layer == s.batch[j].layer {
+		return s.batch[i].y < s.batch[j].y
+	}
 	return s.batch[i].layer < s.batch[j].layer
 }
 func (s *SpriteBatch) Swap(i, j int) {
@@ -39,6 +43,7 @@ func (s *SpriteBatch) Draw(dst draw.Image, r image.Rectangle, src image.Image, s
 		f: func() {
 			draw.DrawMask(dst, r, src, sp, mask, sp, draw.Over)
 		},
+		y: r.Max.Y,
 	})
 }
 
