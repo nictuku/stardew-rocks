@@ -20,11 +20,11 @@ class App extends ReactCSS.Component {
   }
 
   componentWillMount () {
-    this.props.drawer.mql.addListener(this.props.updateAutoDock);
+    // this.props.drawer.mql.addListener(this.props.updateAutoDock);
   }
 
   componentWillUnmount () {
-    this.props.drawer.mql.removeListener(this.props.updateAutoDock);
+    // this.props.drawer.mql.removeListener(this.props.updateAutoDock);
   }
 
   classes () {
