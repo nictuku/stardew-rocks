@@ -28,9 +28,9 @@ func TestLoadTile(t *testing.T) {
 	farm := parser.LoadFarmMap()
 
 	for _, name := range []string{
+		"'JackyBreak'_1459385994",
 		"Aerlia_1458278945",
 		"Dristan_1458278710",
-		"MsJake_116822164",
 		"Jack_1458408909",
 	} {
 
