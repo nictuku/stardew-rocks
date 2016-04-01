@@ -7,3 +7,8 @@
 
 # The windowsgui option avoids opening a console.
 GOARCH=amd64 go build -ldflags -H=windowsgui -o stardew_rocks.exe
+
+# rcedit can be downloaded from:
+# https://github.com/atom/rcedit/releases
+rcedit.exe stardew_rocks.exe --set-icon ../assets/img/farm.ico
+
