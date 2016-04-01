@@ -17,30 +17,48 @@ var treeRects = map[int]image.Rectangle{
 	4: xnaRect(0, 96, 16, 32),
 }
 
-func treeAsset(treeType int, season string) string {
-	if treeType == 3 && season == "summer" {
-		season = "spring"
-	} else if treeType == 6 {
-		return "../TerrainFeatures/tree_palm.png"
-	} else if treeType == 7 {
-		return "../TerrainFeatures/mushroom_tree.png"
+func treeAsset(terrainType string, treeType int, season string) string {
+
+	if terrainType == "Tree" {
+		if treeType == 3 && season == "summer" {
+			season = "spring"
+		} else if treeType == 6 {
+			return "../TerrainFeatures/tree_palm.png"
+		} else if treeType == 7 {
+			return "../TerrainFeatures/mushroom_tree.png"
+		}
+		return fmt.Sprintf("../TerrainFeatures/tree%d_%v.png", treeType, season)
+	} else if terrainType == "FruitTree" {
+		return "../TileSheets/fruitTrees.png"
+	} else {
+		return "" // error?
 	}
-	return fmt.Sprintf("../TerrainFeatures/tree%d_%v.png", treeType, season)
+
 }
 
 func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
-	m := pm.TMX
 
-	if item.Value.TerrainFeature.Type != "Tree" {
+	if item.Value.TerrainFeature.Type != "Tree" && item.Value.TerrainFeature.Type != "FruitTree" {
 		return
 	}
-	p := treeAsset(item.Value.TerrainFeature.TreeType, season)
+	p := treeAsset(item.Value.TerrainFeature.Type, item.Value.TerrainFeature.TreeType, season)
 	src, err := pm.FetchSource(p)
 	if err != nil {
 		log.Printf("Error fetching terrain asset %v: %v", p, err)
 		return
 	}
 	stage := item.Value.TerrainFeature.GrowthStage
+
+	if item.Value.TerrainFeature.Type == "Tree" {
+		drawRegularTree(pm, season, item, img, src, stage)
+	} else if item.Value.TerrainFeature.Type == "FruitTree" {
+		drawFruitTree(pm, season, item, img, src, stage)
+	}
+
+	return
+}
+func drawRegularTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image, src image.Image, stage int) {
+	m := pm.TMX
 	if stage < 5 {
 		sr, ok := treeRects[stage]
 		if !ok {
@@ -90,4 +108,40 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 				treeLayer)
 		}
 	}
+}
+
+func drawFruitTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image, src image.Image, stage int) {
+	m := pm.TMX
+
+	stump := false
+	col := 4
+
+	if stage < 4 {
+		col = stage
+	} else if !stump {
+		var season_num_map = map[string]int{
+			"spring": 0,
+			"summer": 1,
+			"fall":   2,
+			"winter": 3,
+		}
+		season_num, ok := season_num_map[season]
+		if !ok {
+			log.Printf("Unknown season for %v", season)
+			return
+		}
+		col = 4 + season_num
+	} else {
+		// A stump.  Draw a winter tree for now.
+		col = 7
+	}
+	row := item.Value.TerrainFeature.TreeType
+
+	// Rectangle around the tree.  This is only valid for live trees.
+	sr := xnaRect(col*m.TileWidth*3, row*m.TileHeight*5, m.TileWidth*3, m.TileHeight*5)
+
+	// Tree rects are all 3 tiles wide by 5 tiles tall, but the center tile on the bottom is the footprint of the tree's tile.
+	var r image.Rectangle = sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight}).Sub(image.Point{m.TileWidth, m.TileHeight * 4})
+
+	sb.Draw(img, r, src, sr.Min, treeLayer)
 }
