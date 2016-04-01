@@ -10,7 +10,7 @@ Discord server for stardew.farm chat: https://discord.gg/0tpEyZrnOVQKA93b
 
 Install the Stardew Farm client to share your farm state with the rest of the community! Farm screenshots will automatically appear here every time your game is saved: http://stardew.farm (website is work in progress, hehe).
 
- - [Download Stardew Farm!](https://github.com/nictuku/stardew-rocks/releases/download/v0.6/stardew_rocks.exe)
+ - [Download Stardew Farm!](https://github.com/nictuku/stardew-rocks/releases/download/v0.7/stardew_rocks.exe)
 
 WARNING: 64-bit executable only for now. Sorry. See issue #2 for details.
 
