@@ -46,14 +46,14 @@ func drawGrass(pm *parser.Map, season string, item *parser.TerrainItem, img draw
 		return
 	}
 
-	for i, _ := range whichWeed {
+	for i := range whichWeed {
 		whichWeed[i] = rand.Intn(3)
 	}
 
 	var offsetWeeds [4][4]int
 
 	for i, b := range offsetWeeds {
-		for j, _ := range b {
+		for j := range b {
 			offsetWeeds[i][j] = rand.Intn(5) - 2
 		}
 	}
@@ -79,9 +79,11 @@ func drawGrass(pm *parser.Map, season string, item *parser.TerrainItem, img draw
 		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth + int(float32((i % 2) * m.TileWidth) / 2 + (float32(offsetWeeds[i][2]) - 6.5)),
 			item.Key.Vector2.Y*m.TileHeight - i/2*m.TileHeight/2 + offsetWeeds[i][3] + 10.,
 		})
+
 		if flipWeed[i] {
-			sr = xnaRect(0, 0, m.TileWidth, m.TileHeight)
+			sb.Draw(img, r, maybeFlip(flipWeed[i], src, sr), image.Point{0, 0}, grassLayer)
+		} else {
+			sb.Draw(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, grassLayer)
 		}
-		sb.Draw(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, grassLayer)
 	}
 }
