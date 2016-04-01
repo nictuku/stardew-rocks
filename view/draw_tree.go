@@ -103,8 +103,8 @@ func drawRegularTree(pm *parser.Map, season string, item *parser.TerrainItem, im
 			})
 
 			sb.Draw(img, r,
-				maybeFlip(item.Value.TerrainFeature.Flipped, src, sr),
-				sr.Min,
+				cropAndMaybeFlip(item.Value.TerrainFeature.Flipped, src, sr),
+				image.ZP,
 				treeLayer)
 		}
 	}
