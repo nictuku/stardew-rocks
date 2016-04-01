@@ -75,15 +75,10 @@ func drawGrass(pm *parser.Map, season string, item *parser.TerrainItem, img draw
 			continue
 		}
 
-		sr := grassRect(weed * 15, item.Value.TerrainFeature.GrassType, season)
-		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth + int(float32((i % 2) * m.TileWidth) / 2 + (float32(offsetWeeds[i][2]) - 6.5)),
+		sr := grassRect(weed*15, item.Value.TerrainFeature.GrassType, season)
+		r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth + int(float32((i%2)*m.TileWidth)/2+(float32(offsetWeeds[i][2])-6.5)),
 			item.Key.Vector2.Y*m.TileHeight - i/2*m.TileHeight/2 + offsetWeeds[i][3] + 10.,
 		})
-
-		if flipWeed[i] {
-			sb.Draw(img, r, maybeFlip(flipWeed[i], src, sr), image.Point{0, 0}, grassLayer)
-		} else {
-			sb.Draw(img, r, maybeFlip(flipWeed[i], src, sr), sr.Min, grassLayer)
-		}
+		sb.Draw(img, r, cropAndMaybeFlip(flipWeed[i], src, sr), image.ZP, grassLayer)
 	}
 }

@@ -47,9 +47,10 @@ func tileCoordinates(id int, tileWidth, tileHeight, tilemapWidth int) (x0, y0 in
 
 var mask = image.NewUniform(color.Alpha{255})
 
-func maybeFlip(flip bool, img image.Image, r image.Rectangle) image.Image {
+func cropAndMaybeFlip(flip bool, img image.Image, r image.Rectangle) image.Image {
+	img = imaging.Crop(img, r)
 	if flip {
-		return imaging.FlipH(imaging.Crop(img, r))
+		return imaging.FlipH(img)
 	}
 	return img
 }
