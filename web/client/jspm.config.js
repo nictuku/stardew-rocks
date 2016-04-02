@@ -52,7 +52,6 @@ SystemJS.config({
     "react-dom": "npm:react-dom@0.14.7",
     "react-ga": "npm:react-ga@1.2.1",
     "react-image-lightbox": "npm:react-image-lightbox@1.1.1",
-    "react-infinite": "npm:react-infinite@0.9.0",
     "react-redux": "npm:react-redux@4.4.1",
     "react-router": "npm:react-router@2.0.1",
     "react-sidebar": "npm:react-sidebar@2.1.1",
@@ -72,13 +71,6 @@ SystemJS.config({
     "zlib": "github:jspm/nodelibs-zlib@0.2.0-alpha"
   },
   packages: {
-    "npm:react-infinite@0.9.0": {
-      "map": {
-        "lodash.isarray": "npm:lodash.isarray@3.0.4",
-        "lodash.isfinite": "npm:lodash.isfinite@3.2.0",
-        "object-assign": "npm:object-assign@4.0.1"
-      }
-    },
     "npm:radium@0.17.1": {
       "map": {
         "array-find": "npm:array-find@1.0.0",
