@@ -42,7 +42,10 @@ func init() {
 		log.Printf("Failed to create a FarmCollection index: %v", err)
 		os.Exit(1)
 	}
-
+	if err := FarmCollection.EnsureIndexKey("-lastupdate"); err != nil {
+		log.Printf("Failed to create a FarmCollection index: %v", err)
+		os.Exit(1)
+	}
 	if err := DB.C("sdr.files").EnsureIndexKey("filename"); err != nil {
 		log.Printf("Failed to create a GFS index: %v", err)
 		os.Exit(1)
