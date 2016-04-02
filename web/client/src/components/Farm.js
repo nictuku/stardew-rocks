@@ -1,15 +1,15 @@
-import React from 'react';
-import ReactCSS from 'reactcss';
+import React, {PropTypes} from 'react';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import CardTitle from 'material-ui/lib/card/card-title';
 import Lightbox from 'react-image-lightbox';
 import LinearProgress from 'material-ui/lib/linear-progress';
 
 import * as farmActions from '../actions/farmActions';
 import * as lightBoxActions from '../actions/farmLightBoxActions';
 
-class Farm extends ReactCSS.Component {
+import FarmMeta from './FarmMeta';
+
+class Farm extends React.Component {
   constructor (props) {
     super(props);
     this.setLightBoxSources = _.debounce(this.props.setLightBoxSources, 1000, { // eslint-disable-line no-magic-numbers
@@ -25,34 +25,33 @@ class Farm extends ReactCSS.Component {
     this.props.clearFarm();
   }
 
-  classes () {
+  styles () {
     return {
-      default: {
-        farm: {
-          display: "flex",
-          flexDirection: "column",
-          flex: '1'
-        },
-        cardMedia: {
-          flex: '1',
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'row',
-          marginBottom: '1rem'
-        },
-        imageWrapper: {
-          backgroundColor: this.context.muiTheme.palette.accent3Color,
-          position: 'absolute',
-          left: '0',
-          right: '0',
-          top: '0',
-          bottom: '0',
-          textAlign: 'center'
-        },
-        image: {
-          maxHeight: '100%',
-          maxWidth: '100%'
-        }
+      farm: {
+        display: "flex",
+        flexDirection: "column",
+        flex: '1'
+      },
+      cardMedia: {
+        flex: '1',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'row',
+        marginBottom: '1rem'
+      },
+      imageWrapper: {
+        backgroundColor: this.context.muiTheme.palette.accent3Color,
+        position: 'absolute',
+        left: '0',
+        right: '0',
+        top: '0',
+        bottom: '0',
+        textAlign: 'center',
+        cursor: 'pointer'
+      },
+      image: {
+        maxHeight: '100%',
+        maxWidth: '100%'
       }
     };
   }
@@ -68,10 +67,7 @@ class Farm extends ReactCSS.Component {
       <div style={this.styles().farm}>
         {_.has(this.props.farm, 'Farmer') ?
           <div style={this.styles().farm}>
-            <CardTitle
-              title={this.props.farm.Name}
-              subtitle={`by ${this.props.farm.Farmer}`}
-            />
+            <FarmMeta farm={this.props.farm} />
             <div style={this.styles().cardMedia} onClick={this.props.openLightBox}>
               <div style={this.styles().imageWrapper}>
                 <img src={this.props.farm.Thumbnail} style={this.styles().image}/>
@@ -96,12 +92,20 @@ class Farm extends ReactCSS.Component {
 }
 
 Farm.contextTypes = {
-  muiTheme: React.PropTypes.object
+  muiTheme: PropTypes.object
 };
 
 Farm.propTypes = {
-  farm: React.PropTypes.object.isRequired,
-  getFarm: React.PropTypes.func.isRequired
+  routeParams: PropTypes.object.isRequired,
+  lightBox: PropTypes.object.isRequired,
+  nextSrc: PropTypes.func.isRequired,
+  prevSrc: PropTypes.func.isRequired,
+  farm: PropTypes.object.isRequired,
+  getFarm: PropTypes.func.isRequired,
+  openLightBox: PropTypes.func.isRequired,
+  closeLightBox: PropTypes.func.isRequired,
+  setLightBoxSources: PropTypes.func.isRequired,
+  clearFarm: PropTypes.func.isRequired
 };
 
 export default connect(
