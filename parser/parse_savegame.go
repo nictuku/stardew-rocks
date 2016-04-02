@@ -126,6 +126,7 @@ type Crop struct {
 	RowInSpriteSheet   int   `xml:"rowInSpriteSheet"`
 	IndexOfHarvest     int   `xml:"indexOfHarvest"`
 	CurrentPhase       int   `xml:"currentPhase"`
+	Flip               bool  `xml:"flip"`
 	FullyGrown         bool  `xml:"fullyGrown"`
 	DaysOfCurrentPhase int   `xml:"dayOfCurrentPhase"`
 	RaisedSeeds        bool  `xml:"raisedSeeds"`
