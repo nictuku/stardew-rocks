@@ -73,6 +73,6 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 			item.Key.Vector2.X * m.TileWidth,
 			item.Key.Vector2.Y*m.TileHeight - 16, // because using tile height 32 above
 		})
-		sb.Draw(img, r, src, sr.Min, objectLayer)
+		sb.Draw(img, r, cropAndMaybeFlip(crop.Flip, src, sr), image.ZP, objectLayer)
 	}
 }
