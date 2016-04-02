@@ -9,10 +9,11 @@ import (
 )
 
 var (
-	Session        *mgo.Session
-	DB             *mgo.Database
-	FarmCollection *mgo.Collection
-	GFS            *mgo.GridFS
+	Session            *mgo.Session
+	DB                 *mgo.Database
+	FarmCollection     *mgo.Collection
+	FarmInfoCollection *mgo.Collection
+	GFS                *mgo.GridFS
 )
 
 func dbName() string {
@@ -32,6 +33,10 @@ func init() {
 	// Session.Close()
 	DB = Session.DB(dbName())
 	FarmCollection = DB.C("farms")
+
+	// farminfo is updated more often and has extended information about the farm.
+	FarmInfoCollection = DB.C("farminfo")
+
 	GFS = DB.GridFS("sdr")
 
 	if err := FarmCollection.EnsureIndexKey("name", "farmer"); err != nil {
