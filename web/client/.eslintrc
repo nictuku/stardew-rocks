@@ -32,7 +32,6 @@
     "comma-spacing": [2, {"before": false, "after": true}],
     "brace-style": 2,
     "camelcase": 2,
-    "newline-after-var": 2,
     "space-before-function-paren": 2,
     "space-infix-ops": 2,
     "spaced-comment": 2,

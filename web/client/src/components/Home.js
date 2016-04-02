@@ -3,6 +3,7 @@ import ReactCSS from 'reactcss';
 import _ from 'lodash';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
+import Waypoint from 'react-waypoint';
 import Card from 'material-ui/lib/card/card';
 import CardMedia from 'material-ui/lib/card/card-media';
 import CardTitle from 'material-ui/lib/card/card-title';
@@ -19,6 +20,10 @@ class Home extends ReactCSS.Component {
 
   componentDidMount () {
     this.props.getFarms();
+  }
+
+  componentWillUnmount () {
+    this.props.resetFarmsAmount();
   }
 
   classes () {
@@ -51,7 +56,8 @@ class Home extends ReactCSS.Component {
         card: {
           display: 'inline-block',
           margin: '.5rem',
-          maxWidth: '100%'
+          maxWidth: '100%',
+          height: '284px'
         },
         cell: {
           height: '284px',
@@ -79,17 +85,31 @@ class Home extends ReactCSS.Component {
         <div style={this.styles().listWrapper}>
           <div style={this.styles().list}>
             {!_.isEmpty(this.props.farms)
-              ? this.props.farms.map(farm => (
-                <Card style={this.styles().card} key={farm.ID}>
-                  <Link to={`/${farm.ID}`} key={farm.ID} style={this.styles().link}>
-                    <CardMedia style={this.styles().cell}
-                      overlay={<CardTitle title={farm.Name} subtitle={`by ${farm.Farmer}`} />}
-                    >
-                      <img src={`${farm.Thumbnail}?w=350`} />
-                    </CardMedia>
-                  </Link>
-                </Card>
-              ))
+              ? _(this.props.farms)
+                .take(this.props.pages * this.props.farmsPerPage)
+                .map(farm => {
+                  const thumb = _.split(farm.Thumbnail, '.');
+                  /* eslint-disable no-magic-numbers */
+                  return (
+                    <Card style={this.styles().card} key={farm.ID}>
+                      <Link to={`/${farm.ID}`} key={farm.ID} style={this.styles().link}>
+                        <CardMedia style={this.styles().cell}
+                          overlay={<CardTitle title={farm.Name} subtitle={`by ${farm.Farmer}`} />}
+                        >
+                          <img src={`${thumb[0]}w350.${thumb[1]}`} />
+                        </CardMedia>
+                      </Link>
+                    </Card>
+                  );
+                  /* eslint-enable */
+                })
+                .thru(farms => (
+                  <div>
+                    {farms}
+                    <Waypoint onEnter={this.props.getMoreFarms} />
+                  </div>
+                ))
+                .value()
               : (
                 <Paper style={this.styles().panel}>
                   No results found
@@ -114,7 +134,9 @@ export default connect(
     farms: state.farms.farms,
     query: state.farms.query,
     filter: state.farmFilter.filter,
-    filters: state.farmFilter.filters
+    filters: state.farmFilter.filters,
+    pages: state.farms.pages,
+    farmsPerPage: state.farms.farmsPerPage
   }),
   dispatch => ({
     onChangeFilter (event, index, value) {
@@ -125,6 +147,12 @@ export default connect(
     },
     searchFarms (query) {
       dispatch(farmActions.searchFarms(query));
+    },
+    getMoreFarms () {
+      dispatch(farmActions.increaseAmount());
+    },
+    resetFarmsAmount () {
+      dispatch(farmActions.resetAmount());
     }
   })
 )(Home);

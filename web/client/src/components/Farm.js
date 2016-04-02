@@ -4,6 +4,7 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import CardTitle from 'material-ui/lib/card/card-title';
 import Lightbox from 'react-image-lightbox';
+import LinearProgress from 'material-ui/lib/linear-progress';
 
 import * as farmActions from '../actions/farmActions';
 import * as lightBoxActions from '../actions/farmLightBoxActions';
@@ -18,6 +19,10 @@ class Farm extends ReactCSS.Component {
 
   componentDidMount () {
     this.props.getFarm(this.props.routeParams.id);
+  }
+
+  componentWillUnmount () {
+    this.props.clearFarm();
   }
 
   classes () {
@@ -61,26 +66,30 @@ class Farm extends ReactCSS.Component {
   render () {
     return (
       <div style={this.styles().farm}>
-        <CardTitle
-          title={this.props.farm.Name}
-          subtitle={`by ${this.props.farm.Farmer}`}
-        />
-        <div style={this.styles().cardMedia} onClick={this.props.openLightBox}>
-          <div style={this.styles().imageWrapper}>
-            <img src={this.props.farm.Thumbnail} style={this.styles().image}/>
+        {_.has(this.props.farm, 'Farmer') ?
+          <div style={this.styles().farm}>
+            <CardTitle
+              title={this.props.farm.Name}
+              subtitle={`by ${this.props.farm.Farmer}`}
+            />
+            <div style={this.styles().cardMedia} onClick={this.props.openLightBox}>
+              <div style={this.styles().imageWrapper}>
+                <img src={this.props.farm.Thumbnail} style={this.styles().image}/>
+              </div>
+            </div>
+            {this.props.lightBox.isOpen ?
+              <Lightbox
+                mainSrc={this.props.lightBox.mainSrc}
+                nextSrc={this.props.lightBox.nextSrc}
+                prevSrc={this.props.lightBox.prevSrc}
+                onMoveNextRequest={this.props.nextSrc}
+                onMovePrevRequest={this.props.prevSrc}
+                onCloseRequest={this.props.closeLightBox}
+                animationDisabled={true}
+              />
+            : null}
           </div>
-        </div>
-        {this.props.lightBox.isOpen ?
-          <Lightbox
-            mainSrc={this.props.lightBox.mainSrc}
-            nextSrc={this.props.lightBox.nextSrc}
-            prevSrc={this.props.lightBox.prevSrc}
-            onMoveNextRequest={this.props.nextSrc}
-            onMovePrevRequest={this.props.prevSrc}
-            onCloseRequest={this.props.closeLightBox}
-            animationDisabled={true}
-          />
-        : null}
+      : <LinearProgress mode="indeterminate" />}
       </div>
     );
   }
@@ -106,6 +115,9 @@ export default connect(
   dispatch => ({
     getFarm (id) {
       dispatch(farmActions.getFarm(id));
+    },
+    clearFarm () {
+      dispatch(farmActions.clearFarm());
     },
     nextSrc () {
       dispatch(lightBoxActions.nextSrc());

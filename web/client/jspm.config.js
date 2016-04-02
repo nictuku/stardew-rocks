@@ -7,7 +7,9 @@ SystemJS.config({
       "meta": {
         "*.js": {
           "babelOptions": {
-            "plugins": ["babel-plugin-transform-react-jsx"]
+            "plugins": [
+              "babel-plugin-transform-react-jsx"
+            ]
           }
         }
       }
@@ -45,14 +47,17 @@ SystemJS.config({
     "path": "github:jspm/nodelibs-path@0.2.0-alpha",
     "plugin-babel": "npm:systemjs-plugin-babel@0.0.8",
     "process": "github:jspm/nodelibs-process@0.2.0-alpha",
+    "radium": "npm:radium@0.17.1",
     "react": "npm:react@0.14.7",
     "react-dom": "npm:react-dom@0.14.7",
     "react-ga": "npm:react-ga@1.2.1",
     "react-image-lightbox": "npm:react-image-lightbox@1.1.1",
+    "react-infinite": "npm:react-infinite@0.9.0",
     "react-redux": "npm:react-redux@4.4.1",
     "react-router": "npm:react-router@2.0.1",
     "react-sidebar": "npm:react-sidebar@2.1.1",
     "react-tap-event-plugin": "npm:react-tap-event-plugin@0.2.2",
+    "react-waypoint": "npm:react-waypoint@1.3.1",
     "reactcss": "npm:reactcss@0.4.5",
     "redux": "npm:redux@3.3.1",
     "redux-actions": "npm:redux-actions@0.9.1",
@@ -67,6 +72,21 @@ SystemJS.config({
     "zlib": "github:jspm/nodelibs-zlib@0.2.0-alpha"
   },
   packages: {
+    "npm:react-infinite@0.9.0": {
+      "map": {
+        "lodash.isarray": "npm:lodash.isarray@3.0.4",
+        "lodash.isfinite": "npm:lodash.isfinite@3.2.0",
+        "object-assign": "npm:object-assign@4.0.1"
+      }
+    },
+    "npm:radium@0.17.1": {
+      "map": {
+        "array-find": "npm:array-find@1.0.0",
+        "exenv": "npm:exenv@1.2.0",
+        "inline-style-prefixer": "npm:inline-style-prefixer@1.0.3",
+        "rimraf": "npm:rimraf@2.5.2"
+      }
+    },
     "github:capaj/systemjs-hot-reloader@0.5.6": {
       "map": {
         "debug": "npm:debug@2.2.0",
