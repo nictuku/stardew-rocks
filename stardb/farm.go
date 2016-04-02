@@ -29,6 +29,7 @@ type Farm struct {
 	LastUpdate time.Time `json:"-"`
 	Thumbnail  string
 	History    []int
+	Money      int
 }
 
 func (f *Farm) ScreenshotPath() string {
@@ -116,8 +117,8 @@ func AllFarms(farmerRE string) (c chan *Farm) {
 
 func FarmsJSON() ([]byte, error) {
 	var farms []*Farm
-
-	if err := FarmCollection.Find(nil).Sort("-lastupdate").Limit(20).All(&farms); err != nil {
+	// TODO: implement paging on the server side instead of returning a very large result.
+	if err := FarmCollection.Find(nil).Sort("-lastupdate").Limit(500).All(&farms); err != nil {
 		return nil, err
 	}
 	for _, farm := range farms {
