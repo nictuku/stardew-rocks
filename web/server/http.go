@@ -64,6 +64,22 @@ func GetFarm(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func GetFarmInfo(w http.ResponseWriter, r *http.Request) {
+	farmid := strings.TrimPrefix(r.URL.Path, "/api/farminfo/")
+
+	b, err := stardb.FarmInfoJSON(farmid)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	return
+}
+
 func Root(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, "/map") {
 		LegacyMap(w, r)
@@ -149,6 +165,7 @@ func main() {
 	log.Infof("Serving files from %v", dir)
 	http.Handle("/api/farms", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarms)))
 	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarm)))
+	http.Handle("/api/farminfo/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarmInfo)))
 	http.Handle("/api/search/farm", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(SearchFarms)))
 
 	http.Handle("/screenshot/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeScreenshot)))
