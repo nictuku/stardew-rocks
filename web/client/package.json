@@ -2,13 +2,47 @@
   "name": "stardew-rocks-web-client",
   "main": "main.js",
   "version": "0.0.0",
+  "scripts": {
+    "test": "jest"
+  },
   "devDependencies": {
     "babel-eslint": "^6.0.0",
+    "babel-jest": "^10.0.1",
+    "babel-polyfill": "^6.7.4",
     "chokidar-socket-emitter": "^0.5.0",
     "eslint": "^2.5.1",
     "eslint-plugin-babel": "^3.1.0",
     "eslint-plugin-react": "^4.2.3",
+    "jest-cli": "^0.10.0",
     "jspm": "^0.17.0-beta.11"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "jspm_packages/",
+      "node_modules/"
+    ],
+    "unmockedModulePathPatterns": [
+      "react",
+      "react-dom",
+      "react-addons-test-utils",
+      "material-ui",
+      "lodash",
+      "recompose"
+    ],
+    "modulePathIgnorePatterns": [
+      "jspm_packages/npm/fbjs@0.2.1/",
+      "jspm_packages/npm/inline-style-prefixer@1.0.3",
+      "jspm_packages/npm/lodash.isarray@3.0.4",
+      "jspm_packages/npm/lodash.isplainobject@3.2.0",
+      "jspm_packages/npm/lodash.keysin@3.0.8",
+      "jspm_packages/npm/lodash@3.10.1",
+      "jspm_packages/npm/radium@0.16.6",
+      "jspm_packages/npm/invariant@2.2.1",
+      "jspm_packages/npm/warning@2.1.0",
+      "jspm_packages/npm/react-tap-event-plugin@0.2.2",
+      "jspm_packages/npm/base62@0.1.1",
+      "jspm_packages/npm/source-map@0.1.31"
+    ]
   },
   "jspm": {
     "name": "stardew-rocks-web-client",
@@ -20,8 +54,8 @@
       "moment": "npm:moment@^2.12.0",
       "numeral": "npm:numeral@^1.5.3",
       "radium": "npm:radium@^0.17.1",
-      "react": "npm:react@^0.14.7",
-      "react-dom": "npm:react-dom@^0.14.7",
+      "react": "npm:react@^0.14.8",
+      "react-dom": "npm:react-dom@^0.14.8",
       "react-ga": "npm:react-ga@^1.2.1",
       "react-image-lightbox": "npm:react-image-lightbox@^1.1.1",
       "react-redux": "npm:react-redux@^4.4.1",
@@ -40,6 +74,7 @@
       "plugin-babel": "npm:systemjs-plugin-babel@^0.0.8",
       "clean-css": "npm:clean-css@^3.4.10",
       "css": "github:systemjs/plugin-css@^0.1.20",
+      "react-addons-test-utils": "npm:react-addons-test-utils@^0.14.8",
       "systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@^0.5.6"
     },
     "peerDependencies": {
@@ -65,6 +100,37 @@
       "zlib": "github:jspm/nodelibs-zlib@^0.2.0-alpha"
     },
     "overrides": {
+      "github:capaj/systemjs-hot-reloader@0.5.6": {
+        "format": "detect",
+        "meta": {}
+      },
+      "github:jspm/nodelibs-assert@0.2.0-alpha": {
+        "format": "detect",
+        "meta": {}
+      },
+      "github:jspm/nodelibs-http@0.2.0-alpha": {
+        "format": "detect",
+        "meta": {}
+      },
+      "github:jspm/nodelibs-os@0.2.0-alpha": {
+        "format": "detect",
+        "meta": {}
+      },
+      "github:jspm/nodelibs-util@0.2.0-alpha": {
+        "format": "detect",
+        "meta": {}
+      },
+      "npm:babel-plugin-syntax-jsx@6.5.0": {
+        "format": "cjs",
+        "meta": {
+          "*.json": {
+            "format": "json"
+          }
+        },
+        "map": {
+          "./lib.js": "./lib/index.js"
+        }
+      },
       "npm:babel-runtime@5.8.38": {
         "main": false,
         "dependencies": {},
@@ -79,17 +145,133 @@
         },
         "map": {
           "_stream_transform": "readable-stream/transform"
+        },
+        "format": "cjs",
+        "meta": {
+          "*": {
+            "globals": {
+              "process": "process"
+            }
+          },
+          "*.json": {
+            "format": "json"
+          },
+          "src/*": {
+            "globals": {
+              "Buffer": "buffer/global"
+            }
+          }
+        }
+      },
+      "npm:clean-css@3.4.10": {
+        "format": "cjs",
+        "meta": {
+          "*": {
+            "globals": {
+              "process": "process"
+            }
+          },
+          "*.json": {
+            "format": "json"
+          },
+          "lib/utils/input-source-map-tracker.js": {
+            "globals": {
+              "Buffer": "buffer/global"
+            }
+          },
+          "lib/utils/source-reader.js": {
+            "globals": {
+              "Buffer": "buffer/global"
+            }
+          }
+        },
+        "map": {}
+      },
+      "npm:debug@2.2.0": {
+        "main": "node.js",
+        "format": "cjs",
+        "meta": {
+          "*": {
+            "globals": {
+              "process": "process"
+            }
+          },
+          "*.json": {
+            "format": "json"
+          }
+        },
+        "map": {
+          "./node.js": {
+            "browser": "./browser.js"
+          }
+        }
+      },
+      "npm:domain-browser@1.1.7": {
+        "main": "index.js",
+        "format": "cjs",
+        "meta": {
+          "*.json": {
+            "format": "json"
+          }
         }
       },
       "npm:fbjs@0.6.1": {
         "dependencies": {}
+      },
+      "npm:hoist-non-react-statics@1.0.5": {
+        "format": "cjs",
+        "meta": {
+          "*.json": {
+            "format": "json"
+          }
+        },
+        "map": {}
       },
       "npm:inherits@2.0.1": {
         "ignore": [
           "test.js"
         ]
       },
-      "npm:react@0.14.7": {
+      "npm:inline-style-prefixer@1.0.3": {
+        "format": "cjs",
+        "meta": {
+          "*.json": {
+            "format": "json"
+          },
+          "dist/prefixer.js": {
+            "cjsRequireDetection": false
+          }
+        },
+        "map": {}
+      },
+      "npm:numeral@1.5.3": {
+        "main": "numeral.js",
+        "format": "cjs",
+        "meta": {
+          "*.json": {
+            "format": "json"
+          }
+        },
+        "map": {}
+      },
+      "npm:radium@0.17.1": {
+        "format": "cjs",
+        "meta": {
+          "*": {
+            "globals": {
+              "process": "process"
+            }
+          },
+          "*.json": {
+            "format": "json"
+          }
+        },
+        "map": {
+          "./lib.js": "./lib/index.js",
+          "./lib/plugins.js": "./lib/plugins/index.js"
+        }
+      },
+      "npm:react@0.14.8": {
         "dependencies": {
           "fbjs": "^0.6.1"
         },
@@ -112,6 +294,9 @@
             "production": "@empty"
           }
         }
+      },
+      "npm:systemjs-plugin-babel@0.0.8": {
+        "format": "detect"
       }
     }
   }

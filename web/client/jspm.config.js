@@ -49,7 +49,8 @@ SystemJS.config({
     "plugin-babel": "npm:systemjs-plugin-babel@0.0.8",
     "process": "github:jspm/nodelibs-process@0.2.0-alpha",
     "radium": "npm:radium@0.17.1",
-    "react": "npm:react@0.14.7",
+    "react": "npm:react@0.14.8",
+    "react-addons-test-utils": "npm:react-addons-test-utils@0.14.8",
     "react-dom": "npm:react-dom@0.14.7",
     "react-ga": "npm:react-ga@1.2.1",
     "react-image-lightbox": "npm:react-image-lightbox@1.1.1",
@@ -72,6 +73,30 @@ SystemJS.config({
     "zlib": "github:jspm/nodelibs-zlib@0.2.0-alpha"
   },
   packages: {
+    "npm:envify@3.4.0": {
+      "map": {
+        "jstransform": "npm:jstransform@10.1.0",
+        "through": "npm:through@2.3.8"
+      }
+    },
+    "npm:jstransform@10.1.0": {
+      "map": {
+        "base62": "npm:base62@0.1.1",
+        "esprima-fb": "npm:esprima-fb@13001.1001.0-dev-harmony-fb",
+        "source-map": "npm:source-map@0.1.31"
+      }
+    },
+    "npm:react@0.14.8": {
+      "map": {
+        "envify": "npm:envify@3.4.0",
+        "fbjs": "npm:fbjs@0.6.1"
+      }
+    },
+    "npm:source-map@0.1.31": {
+      "map": {
+        "amdefine": "npm:amdefine@1.0.0"
+      }
+    },
     "npm:radium@0.17.1": {
       "map": {
         "array-find": "npm:array-find@1.0.0",
@@ -424,17 +449,12 @@ SystemJS.config({
         "fbjs": "npm:fbjs@0.2.1"
       }
     },
-    "npm:react@0.14.7": {
-      "map": {
-        "fbjs": "npm:fbjs@0.6.1"
-      }
-    },
     "npm:reactcss@0.4.5": {
       "map": {
         "lodash.isarray": "npm:lodash.isarray@4.0.0",
         "lodash.isobject": "npm:lodash.isobject@3.0.2",
         "merge": "npm:merge@1.2.0",
-        "react": "npm:react@0.14.7"
+        "react": "npm:react@0.14.8"
       }
     },
     "npm:readable-stream@2.0.6": {
