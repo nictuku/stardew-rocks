@@ -1,11 +1,5 @@
-'use strict';
-
-jest.unmock('../../src/components/DiscordWidget');
-
-import React from 'react';
-import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
-import DiscordWidget from '../../src/components/DiscordWidget';
+var System = require('jspm').Loader();
+var expect = require('chai').expect;
 
 /* eslint-disable camelcase */
 const discord = {
@@ -29,14 +23,23 @@ const discord = {
 };
 /* eslint-enable */
 
-describe('DiscordWidget', () => {
-  it('is visible', () => {
+describe('DiscordWidget', function () {
+  let React, ReactDOM, TestUtils, DiscordWidget;
+  before(function () {
+    return Promise.all([
+      System.import('react').then(module => React = module),
+      System.import('react-dom').then(module => ReactDOM = module),
+      System.import('react-addons-test-utils').then(module => TestUtils = module),
+      System.import('src/components/DiscordWidget').then(module => DiscordWidget = module.component)
+    ]);
+  });
+  it('is visible', function () {
     const discordWidget = TestUtils.renderIntoDocument(
-      <DiscordWidget discord={discord} />
+      <DiscordWidget discord={discord} update={() => {}} />
     );
 
     const discordWidgetNode = ReactDOM.findDOMNode(discordWidget);
 
-    expect(discordWidgetNode).toExist();
+    expect(discordWidgetNode).to.exist;
   });
 });

@@ -13,7 +13,27 @@ SystemJS.config({
           }
         }
       }
+    },
+    "npm:encoding@0.1.12": {
+      "map": {
+        "iconv-lite": "npm:iconv-lite@0.4.13"
+      }
+    },
+    "npm:isomorphic-fetch@2.2.1": {
+      "map": {
+        "node-fetch": "npm:node-fetch@1.4.1",
+        "whatwg-fetch": "npm:whatwg-fetch@0.9.0"
+      }
+    },
+    "npm:node-fetch@1.4.1": {
+      "map": {
+        "encoding": "npm:encoding@0.1.12",
+        "is-stream": "npm:is-stream@1.0.1"
+      }
     }
+  },
+  map: {
+    "isomorphic-fetch": "npm:isomorphic-fetch@2.2.1"
   }
 });
 
@@ -37,7 +57,6 @@ SystemJS.config({
     "fs": "github:jspm/nodelibs-fs@0.2.0-alpha",
     "http": "github:jspm/nodelibs-http@0.2.0-alpha",
     "https": "github:jspm/nodelibs-https@0.2.0-alpha",
-    "isomorphic-fetch": "npm:isomorphic-fetch@2.2.1",
     "lodash": "npm:lodash@4.6.1",
     "material-ui": "npm:material-ui@0.15.0-alpha.2",
     "module": "github:jspm/nodelibs-module@0.2.0-alpha",
@@ -70,6 +89,7 @@ SystemJS.config({
     "tty": "github:jspm/nodelibs-tty@0.2.0-alpha",
     "url": "github:jspm/nodelibs-url@0.2.0-alpha",
     "util": "github:jspm/nodelibs-util@0.2.0-alpha",
+    "whatwg-fetch": "npm:whatwg-fetch@0.11.0",
     "zlib": "github:jspm/nodelibs-zlib@0.2.0-alpha"
   },
   packages: {
@@ -269,11 +289,6 @@ SystemJS.config({
         "ms": "npm:ms@0.7.1"
       }
     },
-    "npm:encoding@0.1.12": {
-      "map": {
-        "iconv-lite": "npm:iconv-lite@0.4.13"
-      }
-    },
     "npm:fbjs@0.2.1": {
       "map": {
         "core-js": "npm:core-js@1.2.6",
@@ -335,12 +350,6 @@ SystemJS.config({
         "number-is-nan": "npm:number-is-nan@1.0.0"
       }
     },
-    "npm:isomorphic-fetch@2.2.1": {
-      "map": {
-        "node-fetch": "npm:node-fetch@1.4.1",
-        "whatwg-fetch": "npm:whatwg-fetch@0.9.0"
-      }
-    },
     "npm:lodash.isplainobject@3.2.0": {
       "map": {
         "lodash._basefor": "npm:lodash._basefor@3.0.3",
@@ -393,12 +402,6 @@ SystemJS.config({
     "npm:minimatch@3.0.0": {
       "map": {
         "brace-expansion": "npm:brace-expansion@1.1.3"
-      }
-    },
-    "npm:node-fetch@1.4.1": {
-      "map": {
-        "encoding": "npm:encoding@0.1.12",
-        "is-stream": "npm:is-stream@1.0.1"
       }
     },
     "npm:once@1.3.3": {
