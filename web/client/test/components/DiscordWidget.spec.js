@@ -1,4 +1,5 @@
-var System = require('jspm').Loader();
+/* eslint-disable no-magic-numbers */
+
 var expect = require('chai').expect;
 
 /* eslint-disable camelcase */
@@ -24,22 +25,29 @@ const discord = {
 /* eslint-enable */
 
 describe('DiscordWidget', function () {
-  let React, ReactDOM, TestUtils, DiscordWidget;
-  before(function () {
-    return Promise.all([
+  let React, ReactDOM, TestUtils, DiscordWidget, discordWidget, discordWidgetNode;
+
+  before(function (done) {
+    Promise.all([
       System.import('react').then(module => React = module),
       System.import('react-dom').then(module => ReactDOM = module),
       System.import('react-addons-test-utils').then(module => TestUtils = module),
       System.import('src/components/DiscordWidget').then(module => DiscordWidget = module.component)
-    ]);
+    ]).then(() => {
+      discordWidget = TestUtils.renderIntoDocument(
+        <DiscordWidget discord={discord} update={() => {}} />
+      );
+      discordWidgetNode = ReactDOM.findDOMNode(discordWidget);
+      done();
+    });
   });
-  it('is visible', function () {
-    const discordWidget = TestUtils.renderIntoDocument(
-      <DiscordWidget discord={discord} update={() => {}} />
-    );
 
-    const discordWidgetNode = ReactDOM.findDOMNode(discordWidget);
-
+  it('exists', function () {
     expect(discordWidgetNode).to.exist;
+  });
+
+  it('shows a list of online users', function () {
+    expect(TestUtils.scryRenderedDOMComponentsWithClass(discordWidget, 'discord-user'))
+      .to.have.length(2);
   });
 });

@@ -6,3 +6,4 @@ global.$traceurRuntime = require('traceur-runtime');
 global.navigator = {
   userAgent: 'node.js'
 };
+global.System = require('jspm').Loader();

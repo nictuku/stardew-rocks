@@ -76,6 +76,7 @@ class DiscordWidget extends React.Component {
         <List>
           {_.get(this.props.discord, 'members', []).map(member => (
             <ListItem key={member.id}
+              className="discord-user"
               leftAvatar={
                 <Avatar src={member.avatar_url} />
               }
@@ -89,12 +90,13 @@ class DiscordWidget extends React.Component {
   }
 }
 
-export const component = DiscordWidget;
 
 DiscordWidget.propTypes = {
   discord: React.PropTypes.object.isRequired,
   update: React.PropTypes.func
 };
+
+export const component = DiscordWidget;
 
 export default connect(
   state => ({
