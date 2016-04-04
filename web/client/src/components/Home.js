@@ -67,6 +67,12 @@ class Home extends ReactCSS.Component {
           width: '100%',
           padding: '1rem 2rem',
           height: '3rem'
+        },
+        unlimitedWrapper: {
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'center'
         }
       }
     };
@@ -104,7 +110,7 @@ class Home extends ReactCSS.Component {
                   /* eslint-enable */
                 })
                 .thru(farms => (
-                  <div>
+                  <div style={this.styles().unlimitedWrapper}>
                     {farms}
                     <Waypoint onEnter={this.props.getMoreFarms} />
                   </div>
