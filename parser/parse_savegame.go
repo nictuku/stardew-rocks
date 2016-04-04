@@ -13,29 +13,52 @@ type Document struct {
 
 type SaveGame struct {
 	Player              Player    `xml:"player"`
-	Locations           Locations `xml:"locations"`
+	Locations           Locations `xml:"locations" json:"-" bson:"-"`
 	CurrentSeason       string    `xml:"currentSeason"`
-	UniqueIDForThisGame int       `xml:"uniqueIDForThisGame"`
+	UniqueIDForThisGame int       `xml:"uniqueIDForThisGame" json:"-" bson:"-"`
 }
 
 type Player struct {
 	Name              string   `xml:"name"`
 	HouseUpgradeLevel int      `xml:"houseUpgradeLevel"`
-	MailReceived      []string `xml:"mailReceived>string"`
+	MailReceived      []string `xml:"mailReceived>string" json:"-" bson:"-"`
 	FarmName          string   `xml:"farmName"`
-	Money             int      `xml:"money"`
+
+	DateStringForSaveGame string `xml:"dateStringForSaveGame"`
+	FavoreThing           string `xml:"favoriteThing"`
+	Shirt                 int    `xml:"shirt"`
+	Hair                  int    `xml:"hair"`
+	Skin                  int    `xml:"skin"`
+	Accessory             int    `xml:"accessory"`
+	FacialHair            int    `xml:"facialHair"`
+
+	FarmingLevel  int `xml:"farmingLevel"`
+	MiningLevel   int `xml:"miningLevel"`
+	CombatLevel   int `xml:"combatLevel"`
+	ForagingLevel int `xml:"foragingLevel"`
+	FishingLevel  int `xml:"fishingLevel"`
+	LuckLevel     int `xml:"luckLevel"`
+
+	MaxStamina int `xml:"maxStamina"`
+	MaxItems   int `xml:"maxItems"`
+
+	Money              int `xml:"money"`
+	TotalMoneyEarned   int `xml:"totalMoneyEarned"`
+	MillisecondsPlayed int `xml:"millisecondsPlayed"`
+
+	IsMale bool `xml:"isMale"`
 }
 
 type Locations struct {
 	GameLocations []GameLocation `xml:"GameLocation"`
-	XML           string         `xml:",innerxml"`
+	//	XML           string         `xml:",innerxml"`
 }
 
 type GameLocation struct {
 	Name            string          `xml:"name"`
 	Objects         Objects         `xml:"objects"`
 	TerrainFeatures TerrainFeatures `xml:"terrainFeatures"`
-	XML             string          `xml:",innerxml"`
+	//	XML             string          `xml:",innerxml"`
 
 	Buildings []Building `xml:"buildings>Building"`
 }
@@ -57,7 +80,7 @@ type Objects struct {
 
 type TerrainFeatures struct {
 	Items []TerrainItem `xml:"item"`
-	XML   string        `xml:",innerxml"`
+	//	XML   string        `xml:",innerxml"`
 }
 
 type TerrainItem struct {
@@ -126,6 +149,7 @@ type Crop struct {
 	RowInSpriteSheet   int   `xml:"rowInSpriteSheet"`
 	IndexOfHarvest     int   `xml:"indexOfHarvest"`
 	CurrentPhase       int   `xml:"currentPhase"`
+	Flip               bool  `xml:"flip"`
 	FullyGrown         bool  `xml:"fullyGrown"`
 	DaysOfCurrentPhase int   `xml:"dayOfCurrentPhase"`
 	RaisedSeeds        bool  `xml:"raisedSeeds"`
@@ -148,7 +172,7 @@ type Object struct {
 	XSIType   string `xml:"type,attr"` // the xsi:type is used by e.g: Fences
 	WhichType int    `xml:"whichType"` // used by Fences
 
-	XML string `xml:",innerxml"`
+	// XML string `xml:",innerxml"`
 }
 
 type ItemKey struct {

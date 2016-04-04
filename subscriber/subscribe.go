@@ -141,6 +141,15 @@ func main() {
 				log.Print("update farm time:", err)
 				continue
 			}
+			if fi, err := stardb.FarmInfoFromSaveGame(saveGame); err != nil {
+				log.Print("farm info from save game:", err)
+				continue
+			} else {
+				if err := stardb.UpdateFarmInfo(farm.InternalID, fi); err != nil {
+					log.Print("update farm info:", err)
+					continue
+				}
+			}
 
 			// DEPRECATED filesystem write.
 			mapFile := path.Join(wwwDir(), fmt.Sprintf("map-%v-%d.png", name, ts.Unix()))

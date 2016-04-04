@@ -56,7 +56,8 @@ We currently publish the following exchanges:
 # Planned features
 
 - Authentication of some fashion
-- Finish implementing all missing 
+- Finish implementing all missing tiles
+- Let people upload their save games manually without installing the client
 
 # Thanks to our testers!
 

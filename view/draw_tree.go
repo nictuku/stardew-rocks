@@ -92,7 +92,7 @@ func drawRegularTree(pm *parser.Map, season string, item *parser.TerrainItem, im
 			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth,
 				item.Key.Vector2.Y*m.TileHeight - m.TileHeight, // stump offset
 			})
-			sb.Draw(img, r, src, sr.Min, treeLayer)
+			sb.Draw(img, r, cropAndMaybeFlip(item.Value.TerrainFeature.Flipped, src, sr), image.ZP, treeLayer)
 		}
 		{
 			// tree
