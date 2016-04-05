@@ -106,7 +106,7 @@ func main() {
 
 			ts := time.Now()
 
-			farm, _, err := stardb.FindFarm(stardb.FarmCollection, saveGame.UniqueIDForThisGame, saveGame.Player.Name, saveGame.Player.FarmName)
+			farm, _, err := stardb.FindOrCreateFarm(stardb.FarmCollection, saveGame.UniqueIDForThisGame, saveGame.Player.Name, saveGame.Player.FarmName)
 			if err != nil {
 				log.Print("Error fetching farm ID:", err)
 				continue

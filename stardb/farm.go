@@ -177,7 +177,7 @@ func UpdateFarmTime(id bson.ObjectId, ts time.Time) error {
 	return FarmCollection.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"lastupdate": ts}})
 }
 
-func FindFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName string) (ret *Farm, existing bool, err error) {
+func FindOrCreateFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName string) (ret *Farm, existing bool, err error) {
 	ret = &Farm{}
 	q := c.Find(bson.M{
 		"name":     farmName,
