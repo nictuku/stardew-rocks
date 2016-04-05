@@ -1,6 +1,8 @@
 // hot reload stuff
 // import 'systemjs-hot-reloader/default-listener.js';
 
+import 'whatwg-fetch';
+
 export function __reload(m) { // eslint-disable-line
   if (m.component.state) {
     component.setState(m.component.state);

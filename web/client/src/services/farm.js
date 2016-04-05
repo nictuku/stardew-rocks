@@ -1,4 +1,3 @@
-import 'isomorphic-fetch';
 import _ from 'lodash';
 
 export const getFarms = () => {
