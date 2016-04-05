@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -40,6 +41,10 @@ func (f *Farm) ScreenshotPathByTime(ts int) string {
 	return fmt.Sprintf("/screenshot/%v/%d.png", f.InternalID.Hex(), ts)
 }
 
+func (f *Farm) AnimatedHistoryPath() string {
+	return fmt.Sprintf("/history/%v.gifv", f.InternalID.Hex())
+}
+
 func (f *Farm) saveGamePath() string {
 	return SaveGamePath(f.InternalID.Hex(), f.LastUpdate)
 }
@@ -52,7 +57,7 @@ func saveGameToSaveTime(s string) (int, error) {
 	return strconv.Atoi(noExt)
 }
 
-// SaveTimes returns the timestamp for which a certain farm has had save games.
+// SaveTimes returns the sorted timestamps for which a certain farm has had save games.
 // The save times are obtained from the save file XML filenames.
 func (f *Farm) SaveTimes() []int {
 	// TODO: Use a metadata field instead in case this proves to be too slow.
@@ -77,6 +82,7 @@ func (f *Farm) SaveTimes() []int {
 		}
 		saveTimes = append(saveTimes, tt)
 	}
+	sort.Ints(saveTimes)
 	return saveTimes
 }
 
