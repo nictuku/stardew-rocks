@@ -134,6 +134,16 @@ func FarmsJSON() ([]byte, error) {
 	return json.Marshal(farms)
 }
 
+func FindFarm(id string) (*Farm, error) {
+	if !bson.IsObjectIdHex(id) {
+		return nil, fmt.Errorf("invalid farm id")
+	}
+	var farm *Farm
+	err := FarmCollection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&farm)
+	farm.ID = farm.InternalID.Hex()
+	return farm, err
+}
+
 func FarmJSON(id string) ([]byte, error) {
 	if !bson.IsObjectIdHex(id) {
 		return nil, fmt.Errorf("invalid farm id")

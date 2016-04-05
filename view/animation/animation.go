@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 
 	"github.com/nictuku/stardew-rocks/stardb"
@@ -38,9 +39,13 @@ func main() {
 
 		dirCreated := false
 
+		// ffmpeg for windows does not support glob patterns, so we use a simple sequence for the file names.
+		// http://stackoverflow.com/questions/31201164/ffmpeg-error-pattern-type-glob-was-selected-but-globbing-is-not-support-ed-by
+		i := 0
 		for _, savetime := range saves {
 			ss := farm.ScreenshotPathByTime(savetime)
-			p := filepath.Join(tmp, ss)
+			p := filepath.Join(tmp, fmt.Sprintf("%04d.png", i))
+			i++
 			if !dirCreated {
 				if err := os.MkdirAll(filepath.Dir(p), 0600); err != nil {
 					log.Println("mkdir error:", err)
@@ -74,6 +79,26 @@ func main() {
 		for _, s := range tmpScreenshotPaths {
 			fmt.Println(s)
 		}
+		dest := filepath.Join(tmp, "output.webm")
+		cmd := exec.Command("ffmpeg",
+			"-nostats", "-hide_banner",
+			"-an", "-pix_fmt", "yuv420p", "-r", "1",
+			"-i", filepath.Join(tmp, "%04d.png"), "-c:v", "libvpx", "-b:v", "2M", "-crf", "4",
+			// draw a text + box:
+			/*
+				                "-vf", "format=yuv444p,"+
+								"drawbox=y=900:color=black@0.4:width=iw:height=48:t=max,"+
+								"drawtext=fontfile=/Windows/Fonts/arial.ttf:text='Title of this Video':fontcolor=white:fontsize=24:x=(w-tw)/2:y=910,"+
+								"format=yuv420p",
+			*/
+			dest)
+		fmt.Printf("%q\n", cmd.Args)
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			log.Printf("command failed: %v %v", err, string(out))
+		}
+		log.Println("wrote file to", dest)
+
 	}
 
 }

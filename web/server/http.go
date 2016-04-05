@@ -169,6 +169,8 @@ func main() {
 	http.Handle("/api/search/farm", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(SearchFarms)))
 
 	http.Handle("/screenshot/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeScreenshot)))
+	http.Handle("/history/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeAnimation)))
+
 	//http.Handle("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))
 
 	// This is served by the web app.
