@@ -17,8 +17,8 @@ class Navbar extends ReactCSS.Component {
     return {
       default: {
         toolbar: {
-          backgroundColor: this.context.muiTheme.palette.primary1Color,
-          color: this.context.muiTheme.palette.alternateTextColor
+          backgroundColor: this.context.muiTheme.rawTheme.palette.primary1Color,
+          color: this.context.muiTheme.rawTheme.palette.alternateTextColor
         },
         logo: {
           height: "40px",
@@ -31,13 +31,13 @@ class Navbar extends ReactCSS.Component {
           whiteSpace: 'nowrap',
           cursor: "pointer",
           textDecoration: "none",
-          color: this.context.muiTheme.palette.alternateTextColor
+          color: this.context.muiTheme.rawTheme.palette.alternateTextColor
         },
         title: {
           display: 'inline-block'
         },
         color: {
-          color: this.context.muiTheme.palette.alternateTextColor
+          color: this.context.muiTheme.rawTheme.palette.alternateTextColor
         },
         flex: {
           display: 'flex'
@@ -46,7 +46,7 @@ class Navbar extends ReactCSS.Component {
           margin: 'auto'
         },
         icon: {
-          color: this.context.muiTheme.palette.alternateTextColor
+          color: this.context.muiTheme.rawTheme.palette.alternateTextColor
         }
       },
       drawerIsDocked: {

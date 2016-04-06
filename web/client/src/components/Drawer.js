@@ -24,7 +24,7 @@ class Drawer extends ReactCSS.Component {
         },
         toolbar:  {
           padding: '0 1rem',
-          backgroundColor: this.context.muiTheme.palette.accent1Color
+          backgroundColor: this.context.muiTheme.rawTheme.palette.accent1Color
         },
         iconButton: {
           margin: 'auto'
