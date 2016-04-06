@@ -1,2 +1,3 @@
 node_modules/
-bundle.js
+jspm_packages/
+build.js*

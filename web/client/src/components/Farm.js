@@ -40,7 +40,7 @@ class Farm extends React.Component {
         marginBottom: '1rem'
       },
       imageWrapper: {
-        backgroundColor: this.context.muiTheme.rawTheme.palette.accent3Color,
+        backgroundColor: this.context.muiTheme.palette.accent3Color,
         position: 'absolute',
         left: '0',
         right: '0',
