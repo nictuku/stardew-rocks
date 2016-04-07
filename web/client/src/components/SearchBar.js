@@ -18,13 +18,17 @@ class SearchBar extends React.Component {
 
   constructor (props) {
     super(props);
-    this.searchFarms = _.debounce((event, query) => {
+    this.searchFarms  = _.debounce(query => {
       if (!_.isEmpty(query)) {
         this.props.searchFarms(query);
       } else {
         this.props.getFarms();
       }
     }, 500); // eslint-disable-line no-magic-numbers
+    this.query = event => {
+      const query = event.target.value;
+      this.searchFarms(query);
+    };
   }
 
   styles () {
@@ -57,7 +61,7 @@ class SearchBar extends React.Component {
           </FontIcon>
           <TextField style={this.styles().input}
             hintText="Search for farms or farmers"
-            onChange={this.searchFarms}
+            onChange={this.query}
           />
         </ToolbarGroup>
       </Toolbar>
