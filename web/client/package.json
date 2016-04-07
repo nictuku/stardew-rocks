@@ -3,7 +3,7 @@
   "main": "main.js",
   "version": "0.0.0",
   "scripts": {
-    "test": "karma",
+    "test": "karma start",
     "start": "webpack-dev-server --progress --inline --hot --config=webpack.dev.config.js"
   },
   "devDependencies": {
@@ -30,6 +30,7 @@
     "jspm": "^0.17.0-beta.11",
     "karma": "^0.13.22",
     "karma-nyan-reporter": "^0.2.4",
+    "karma-sinon": "^1.0.4",
     "karma-webpack": "^1.7.0",
     "legacy-loader": "0.0.2",
     "mocha": "^2.4.5",

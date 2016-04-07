@@ -19,7 +19,7 @@
     "babel"
   ],
   "globals": {
-    "SystemJS": true
+    "sinon"
   },
   "rules": {
     "no-console": 1,
