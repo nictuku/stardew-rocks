@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "scripts": {
     "test": "karma",
-    "build": "webpack",
     "start": "webpack-dev-server --progress --inline --hot --config=webpack.dev.config.js"
   },
   "devDependencies": {

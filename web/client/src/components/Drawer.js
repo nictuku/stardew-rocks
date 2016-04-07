@@ -56,6 +56,7 @@ class Drawer extends React.Component {
         padding: 'initial',
         border: 'initial',
         backgroundColor: 'initial',
+        textAlign: 'left',
         width: '100%'
       },
       white: {

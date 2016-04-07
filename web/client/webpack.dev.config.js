@@ -4,6 +4,7 @@ module.exports = {
   entry: [
     './src/main.js'
   ],
+  devtool: 'inline-source-map',
   output: {path: __dirname, filename: 'bundle.js'},
   module: {
     loaders: [{
