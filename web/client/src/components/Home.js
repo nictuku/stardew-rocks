@@ -57,7 +57,8 @@ class Home extends ReactCSS.Component {
           display: 'inline-block',
           margin: '.5rem',
           maxWidth: '100%',
-          height: '284px'
+          height: '284px',
+          zIndex: 'initial'
         },
         cell: {
           height: '284px',
