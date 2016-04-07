@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactCSS from 'reactcss';
 import Sidebar from 'react-sidebar';
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
@@ -11,46 +10,59 @@ import FontIcon from 'material-ui/lib/font-icon';
 
 import DiscordWidget from './DiscordWidget';
 
-class Drawer extends ReactCSS.Component {
-  constructor (props, context) {
-    super(props, context);
-  }
+class Drawer extends React.Component {
+  static propTypes = {
+    isOpen: React.PropTypes.bool.isRequired,
+    isDocked: React.PropTypes.bool.isRequired,
+    toggleDrawer: React.PropTypes.func.isRequired,
+    dockDrawer: React.PropTypes.func,
+    undockDrawer: React.PropTypes.func,
+    children: React.PropTypes.array
+  };
 
-  classes () {
+  static contextTypes = {
+    muiTheme: React.PropTypes.object
+  };
+
+  styles () {
     return {
-      default: {
-        link: {
-          textDecoration: 'none'
-        },
-        toolbar:  {
-          padding: '0 1rem',
-          backgroundColor: this.context.muiTheme.rawTheme.palette.accent1Color
-        },
-        iconButton: {
-          margin: 'auto'
-        },
-        iconButtonIcon: {
-          color: `#ffffff`
-        },
-        drawer: {
-          backgroundColor: '#ffffff'
-        },
-        content: {
-          display: 'flex',
-          flexDirection: 'column'
-        },
-        badButton: {
-          padding: 'initial',
-          border: 'initial',
-          backgroundColor: 'initial',
-          width: '100%'
-        },
-        white: {
-          color: `#ffffff`
-        },
-        icon:  {
-          fill: '#ffffff'
-        }
+      link: {
+        textDecoration: 'none'
+      },
+      toolbar:  {
+        display: 'flex',
+        padding: '0 1rem',
+        backgroundColor: this.context.muiTheme.rawTheme.palette.accent1Color,
+        justifyContent: 'space-between'
+      },
+      toolbarGroup: {
+        alignItems: 'center',
+        display: 'flex'
+      },
+      iconButton: {
+        margin: 'auto'
+      },
+      iconButtonIcon: {
+        color: `#ffffff`
+      },
+      drawer: {
+        backgroundColor: '#ffffff'
+      },
+      content: {
+        display: 'flex',
+        flexDirection: 'column'
+      },
+      badButton: {
+        padding: 'initial',
+        border: 'initial',
+        backgroundColor: 'initial',
+        width: '100%'
+      },
+      white: {
+        color: `#ffffff`
+      },
+      icon:  {
+        fill: '#ffffff'
       }
     };
   }
@@ -61,11 +73,11 @@ class Drawer extends ReactCSS.Component {
         sidebar={
           <div>
             <Toolbar style={this.styles().toolbar} noGutter>
-              <ToolbarGroup>
+              <ToolbarGroup style={this.styles().toolbarGroup}>
                 <ToolbarTitle style={this.styles().white}
                   text={this.props.isDocked ? 'Undock Drawer' : 'Dock Drawer'} />
               </ToolbarGroup>
-              <ToolbarGroup float="right">
+              <ToolbarGroup style={this.styles().toolbarGroup}>
                 <IconButton iconClassName="material-icons" style={this.styles().iconButton}
                   iconStyle={this.styles().iconButtonIcon}
                   onClick={this.props.isDocked ? this.props.undockDrawer : this.props.dockDrawer}
@@ -102,18 +114,5 @@ class Drawer extends ReactCSS.Component {
     );
   }
 }
-
-Drawer.contextTypes = {
-  muiTheme: React.PropTypes.object
-};
-
-Drawer.propTypes = {
-  isOpen: React.PropTypes.bool.isRequired,
-  isDocked: React.PropTypes.bool.isRequired,
-  toggleDrawer: React.PropTypes.func.isRequired,
-  dockDrawer: React.PropTypes.func,
-  undockDrawer: React.PropTypes.func,
-  children: React.PropTypes.array
-};
 
 export default Drawer;

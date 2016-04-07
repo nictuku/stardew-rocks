@@ -5,7 +5,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
 // Bootstrap web app
-import React from 'react';
+import React from 'react'; // eslint-disable-line no-unused-vars
 import ReactDom from 'react-dom';
 
 import Router from './Router';
