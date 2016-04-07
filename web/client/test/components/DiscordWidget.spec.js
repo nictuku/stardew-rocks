@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers, camelcase */
 import React from 'react';
+import _ from 'lodash';
 import {mount} from 'enzyme';
 import chai, {expect} from 'chai';
 import faker from 'faker';
@@ -10,13 +11,13 @@ chai.use(require('chai-enzyme')());
 import {component} from '../../src/components/DiscordWidget';
 const DiscordWidget = component;
 
-const randomUser = () => ({
+const randomUser = (isIdle) => ({
   avatar: null,
   avatar_url: "https://cdn.discordapp.com/embed/avatars/0.png",
   discriminator: faker.random.uuid(),
   id: faker.random.uuid(),
-  status: "online",
-  username: "new user"
+  status: !isIdle ? 'online' : 'idle',
+  username: faker.internet.userName()
 });
 
 describe('DiscordWidget', function () {
@@ -52,6 +53,15 @@ describe('DiscordWidget', function () {
     expect(wrapper).to.have.exactly(2).descendants('.discord-user');
   });
 
+  it ('updates on start', function () {
+    const updateSpy = sinon.spy();
+    mount(
+      <DiscordWidget discord={discord} update={updateSpy} />
+    );
+
+    expect(updateSpy).to.have.been.calledOnce;
+  });
+
   it('updates when update btn is clicked', function () {
     const updateSpy = sinon.spy(() => discord.members.push(randomUser()));
     const wrapper = mount(
@@ -64,9 +74,31 @@ describe('DiscordWidget', function () {
     expect(wrapper).to.have.exactly(4).descendants('.discord-user');
   });
 
-  it('only hows online users');
+  it('only shows online users', function () {
+    _.times(2, () => discord.members.push(randomUser(true)));
+    const wrapper = mount(
+      <DiscordWidget discord={discord} update={() => {}} />
+    );
 
-  it('shows a message on no users');
+    expect(discord.members).to.have.length(4);
+    expect(wrapper).to.have.exactly(2).descendants('.discord-user');
+  });
 
-  it('shows a error message when discord api fails');
+  it('shows a message on no users', function () {
+    discord.members = [];
+    const wrapper = mount(
+      <DiscordWidget discord={discord} update={() => {}} />
+    );
+
+    expect(wrapper).to.not.have.descendants('.discord-user');
+    expect(wrapper).to.have.exactly(1).descendants('.discord-error-users');
+  });
+
+  it('shows a error message when discord api fails', function () {
+    const wrapper = mount(
+      <DiscordWidget discord={{}} update={() => {}} />
+    );
+
+    expect(wrapper).to.have.exactly(1).descendants('.discord-error');
+  });
 });

@@ -57,6 +57,37 @@ class DiscordWidget extends React.Component {
   }
 
   render () {
+    let listContent;
+    if (_.has(this.props.discord, 'members')) {
+      listContent = _(this.props.discord.members)
+        .filter({status: 'online'})
+        .map(member => (
+          <ListItem key={member.id}
+            className="discord-user"
+            leftAvatar={
+              <Avatar src={member.avatar_url} />
+            }
+          >
+            {member.username}
+          </ListItem>
+        ))
+        .thru(members => {
+          return !_.isEmpty(members) ? members
+            : (
+              <ListItem className="discord-error-users">
+                No users online
+              </ListItem>
+            );
+        })
+        .value();
+    } else {
+      listContent = (
+        <ListItem className="discord-error">
+          Couldn't fetch discord info
+        </ListItem>
+      );
+    }
+
     return (
       <div>
         <Toolbar style={this.styles().toolbar} noGutter>
@@ -81,21 +112,7 @@ class DiscordWidget extends React.Component {
           </ToolbarGroup>
         </Toolbar>
         <List>
-          {_.has(this.props.discord, 'members') ?
-            _(this.props.discord.members)
-              .filter({status: 'online'})
-              .map(member => (
-                <ListItem key={member.id}
-                  className="discord-user"
-                  leftAvatar={
-                    <Avatar src={member.avatar_url} />
-                  }
-                >
-                  {member.username}
-                </ListItem>
-              ))
-              .value()
-          : null}
+          {listContent}
         </List>
       </div>
     );
