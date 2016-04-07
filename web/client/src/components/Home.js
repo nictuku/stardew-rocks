@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactCSS from 'reactcss';
+import React, {PropTypes} from 'react';
+import Radium from 'radium';
 import _ from 'lodash';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
@@ -13,9 +13,19 @@ import SearchBar from './SearchBar';
 import {changeFilter} from '../actions/farmFilterActions';
 import * as farmActions from '../actions/farmActions';
 
-class Home extends ReactCSS.Component {
-  constructor (props) {
-    super(props);
+@Radium
+class Home extends React.Component {
+  static propTypes = {
+    farms: PropTypes.array.isRequired,
+    filter: PropTypes.number.isRequired,
+    filters: PropTypes.array.isRequired,
+    pages: PropTypes.number.isRequired,
+    farmsPerPage: PropTypes.number.isRequired,
+    getFarms: PropTypes.func.isRequired,
+    resetFarmsAmount: PropTypes.func.isRequired,
+    searchFarms: PropTypes.func.isRequired,
+    onChangeFilter: PropTypes.func.isRequired,
+    getMoreFarms: PropTypes.func.isRequired
   }
 
   componentDidMount () {
@@ -26,55 +36,53 @@ class Home extends ReactCSS.Component {
     this.props.resetFarmsAmount();
   }
 
-  classes () {
+  styles () {
     return {
-      default: {
-        home: {
-          flex: '1',
-          display: 'flex',
-          flexDirection: 'column'
-        },
-        listWrapper: {
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          flex: '1',
-          position: 'relative'
-        },
-        list: {
-          position: 'absolute',
-          bottom: '0',
-          left: '0',
-          right: '0',
-          top: '0',
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center'
-        },
-        link: {
-          overflow: 'hidden'
-        },
-        card: {
-          display: 'inline-block',
-          margin: '.5rem',
-          maxWidth: '100%',
-          height: '284px',
-          zIndex: 'initial'
-        },
-        cell: {
-          height: '284px',
-          width: '350px'
-        },
-        panel: {
-          width: '100%',
-          padding: '1rem 2rem',
-          height: '3rem'
-        },
-        unlimitedWrapper: {
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'center'
-        }
+      home: {
+        flex: '1',
+        display: 'flex',
+        flexDirection: 'column'
+      },
+      listWrapper: {
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        flex: '1',
+        position: 'relative'
+      },
+      list: {
+        position: 'absolute',
+        bottom: '0',
+        left: '0',
+        right: '0',
+        top: '0',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center'
+      },
+      link: {
+        overflow: 'hidden'
+      },
+      card: {
+        display: 'inline-block',
+        margin: '.5rem',
+        maxWidth: '100%',
+        height: '284px',
+        zIndex: 'initial'
+      },
+      cell: {
+        height: '284px',
+        width: '350px'
+      },
+      panel: {
+        width: '100%',
+        padding: '1rem 2rem',
+        height: '3rem'
+      },
+      unlimitedWrapper: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center'
       }
     };
   }
@@ -129,12 +137,6 @@ class Home extends ReactCSS.Component {
     );
   }
 }
-
-Home.propTypes = {
-  farms: React.PropTypes.array.isRequired,
-  filter: React.PropTypes.number.isRequired,
-  filters: React.PropTypes.array.isRequired
-};
 
 export default connect(
   state => ({

@@ -63,4 +63,10 @@ describe('DiscordWidget', function () {
     wrapper.setProps({discord});
     expect(wrapper).to.have.exactly(4).descendants('.discord-user');
   });
+
+  it('only hows online users');
+
+  it('shows a message on no users');
+
+  it('shows a error message when discord api fails');
 });

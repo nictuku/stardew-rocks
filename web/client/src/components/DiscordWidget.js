@@ -81,16 +81,21 @@ class DiscordWidget extends React.Component {
           </ToolbarGroup>
         </Toolbar>
         <List>
-          {_.get(this.props.discord, 'members', []).map(member => (
-            <ListItem key={member.id}
-              className="discord-user"
-              leftAvatar={
-                <Avatar src={member.avatar_url} />
-              }
-            >
-              {member.username}
-            </ListItem>
-          ))}
+          {_.has(this.props.discord, 'members') ?
+            _(this.props.discord.members)
+              .filter({status: 'online'})
+              .map(member => (
+                <ListItem key={member.id}
+                  className="discord-user"
+                  leftAvatar={
+                    <Avatar src={member.avatar_url} />
+                  }
+                >
+                  {member.username}
+                </ListItem>
+              ))
+              .value()
+          : null}
         </List>
       </div>
     );
