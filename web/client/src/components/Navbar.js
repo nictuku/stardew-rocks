@@ -4,13 +4,11 @@ import {Link} from 'react-router';
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
-import FlatButton from 'material-ui/lib/flat-button';
-import FontIcon from 'material-ui/lib/font-icon';
 import IconButton from 'material-ui/lib/icon-button';
 
 class Navbar extends ReactCSS.Component {
-  constructor (props) {
-    super(props);
+  constructor (props, context) {
+    super(props, context);
   }
 
   classes () {
@@ -18,7 +16,8 @@ class Navbar extends ReactCSS.Component {
       default: {
         toolbar: {
           backgroundColor: this.context.muiTheme.rawTheme.palette.primary1Color,
-          color: this.context.muiTheme.rawTheme.palette.alternateTextColor
+          color: this.context.muiTheme.rawTheme.palette.alternateTextColor,
+          display: 'flex'
         },
         logo: {
           height: "40px",

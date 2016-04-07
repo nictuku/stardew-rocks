@@ -62,6 +62,7 @@ class DiscordWidget extends React.Component {
           </ToolbarGroup>
           <ToolbarGroup float="right" style={this.styles().iconGroup}>
             <IconButton iconClassName="material-icons"
+              className="discord-refresh"
               style={this.styles().iconButon}
               onClick={this.props.update}
               iconStyle={this.styles().iconButtonIcon}>refresh</IconButton>

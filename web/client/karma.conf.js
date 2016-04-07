@@ -12,7 +12,15 @@ module.exports = function (config) {
     },
     webpack: {
       devtool: 'inline-source-map',
+      resolve: {
+        alias: {
+          sinon: 'sinon/pkg/sinon'
+        }
+      },
       module: {
+        noParse: [
+          /\/sinon\.js/
+        ],
         loaders: [{
           test: /\.jsx?$/,
           exclude: /(node_modules|bower_components)/,
