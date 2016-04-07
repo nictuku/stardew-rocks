@@ -17,7 +17,7 @@ mkdir -p "${dest}"
 tmpdest="$(mktemp -d)"
 
 # "content" is currently using an absolute directory, so don't copy it.
-cp -R index.html bundle.js favicon.ico favicon-152.png "${tmpdest}"
+cp -R index.html bundle.js bundle.js.map favicon.ico favicon-152.png "${tmpdest}"
 
 # "content" is currently using an absolute directory
 # This changes the live stuff.
