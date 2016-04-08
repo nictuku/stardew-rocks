@@ -1,6 +1,16 @@
 /* eslint-disable no-magic-numbers */
+import React from 'react';
+import {mount} from 'enzyme';
+import chai, {expect} from 'chai';
+const sinon = require('sinon');
+import sinonChai from 'sinon-chai';
+import chaiEnzyme from 'chai-enzyme';
 
-var expect = require('chai').expect;
+chai.use(sinonChai);
+chai.use(chaiEnzyme());
+
+import {component} from '../../src/components/DiscordWidget';
+const DiscordWidget = component;
 
 /* eslint-disable camelcase */
 const discord = {
@@ -22,32 +32,34 @@ const discord = {
     username: "stardew.bot"
   }]
 };
+const update = () => {
+  discord.members.push({
+    avatar: null,
+    avatar_url: "https://cdn.discordapp.com/embed/avatars/0.png",
+    discriminator: "9999",
+    id: "00000000000000000",
+    status: "online",
+    username: "new user"
+  });
+};
 /* eslint-enable */
 
 describe('DiscordWidget', function () {
-  let React, ReactDOM, TestUtils, DiscordWidget, discordWidget, discordWidgetNode;
-
-  before(function (done) {
-    Promise.all([
-      System.import('react').then(module => React = module),
-      System.import('react-dom').then(module => ReactDOM = module),
-      System.import('react-addons-test-utils').then(module => TestUtils = module),
-      System.import('src/components/DiscordWidget').then(module => DiscordWidget = module.component)
-    ]).then(() => {
-      discordWidget = TestUtils.renderIntoDocument(
-        <DiscordWidget discord={discord} update={() => {}} />
-      );
-      discordWidgetNode = ReactDOM.findDOMNode(discordWidget);
-      done();
-    });
-  });
-
-  it('exists', function () {
-    expect(discordWidgetNode).to.exist;
-  });
-
   it('shows a list of online users', function () {
-    expect(TestUtils.scryRenderedDOMComponentsWithClass(discordWidget, 'discord-user'))
-      .to.have.length(2);
+    const wrapper = mount(
+      <DiscordWidget discord={discord} update={() => {}} />
+    );
+    expect(wrapper).to.have.exactly(2).descendants('.discord-user');
+  });
+
+  it('updates when update btn is clicked', function () {
+    const updateSpy = sinon.spy(update);
+    const wrapper = mount(
+      <DiscordWidget discord={discord} update={updateSpy} />
+    );
+    wrapper.find('.discord-refresh').simulate('click');
+    expect(updateSpy).to.have.been.calledOnce;
+    wrapper.setProps({discord});
+    expect(wrapper).to.have.exactly(3).descendants('.discord-user');
   });
 });

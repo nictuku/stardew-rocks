@@ -58,7 +58,7 @@ class App extends ReactCSS.Component {
           dockDrawer={this.props.dockDrawer}
           undockDrawer={this.props.undockDrawer}
         >
-          <header className="navbar-fixed">
+          <header>
             <Navbar
               toggleDrawer={this.props.toggleDrawer}
               drawerIsDocked={this.props.drawer.isDocked}

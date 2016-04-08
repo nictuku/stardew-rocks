@@ -1,4 +1,5 @@
 import React from 'react';
+import Radium from 'radium';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import List from 'material-ui/lib/lists/list';
@@ -9,13 +10,14 @@ import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 import IconButton from 'material-ui/lib/icon-button';
 
-
 import {updateDiscord} from '../actions/discordActions';
 
+@Radium
 class DiscordWidget extends React.Component {
-  constructor (props) {
-    super(props);
-  }
+  static propTypes = {
+    discord: React.PropTypes.object.isRequired,
+    update: React.PropTypes.func
+  };
 
   componentDidMount () {
     this.props.update();
@@ -24,21 +26,23 @@ class DiscordWidget extends React.Component {
   styles () {
     return {
       toolbar: {
+        display: 'flex',
         backgroundColor: '#7289DA',
-        color: '#ffffff'
+        padding: '0 1rem',
+        color: '#ffffff',
+        justifyContent: 'space-between'
+      },
+      toolbarGroup: {
+        alignItems: 'center',
+        display: 'flex'
       },
       icon: {
         height: '40px',
         width: '40px',
-        margin: 'auto',
-        marginLeft: '1rem',
         marginRight: '1rem'
       },
       white: {
         color: '#ffffff'
-      },
-      iconGroup: {
-        marginRight: '1rem'
       },
       iconButtonLink: {
         margin: 'auto'
@@ -56,12 +60,15 @@ class DiscordWidget extends React.Component {
     return (
       <div>
         <Toolbar style={this.styles().toolbar} noGutter>
-          <ToolbarGroup>
+          <ToolbarGroup style={this.styles().toolbarGroup}>
             <object style={this.styles().icon} type="image/svg+xml" data="content/discord.svg" />
             <ToolbarTitle text="Discord" style={this.styles().white} />
           </ToolbarGroup>
-          <ToolbarGroup float="right" style={this.styles().iconGroup}>
+          <ToolbarGroup
+            style={this.styles().toolbarGroup}
+          >
             <IconButton iconClassName="material-icons"
+              className="discord-refresh"
               style={this.styles().iconButon}
               onClick={this.props.update}
               iconStyle={this.styles().iconButtonIcon}>refresh</IconButton>
@@ -89,12 +96,6 @@ class DiscordWidget extends React.Component {
     );
   }
 }
-
-
-DiscordWidget.propTypes = {
-  discord: React.PropTypes.object.isRequired,
-  update: React.PropTypes.func
-};
 
 export const component = DiscordWidget;
 

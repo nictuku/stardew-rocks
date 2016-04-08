@@ -1,29 +1,25 @@
 # Usage
 ## Prerequisites
 - Install [Nodejs](https://nodejs.org/en/)
-- Install non-jspm dev dependencies
+- Install dependencies
 ```
 $ npm install
 ```
-- Install jspm 0.17 beta
-```
-$ npm install -g jspm@beta
-```
 
 ## Building
-- Install project's jspm packages (do this every pull)
+- Install dependencies
 ```
-$ jspm install
+$ npm install
 ```
 - Minify and make bundle
 ```
-$ jspm bundle src/main.js -m
+$ webpack
 ```
 
 # Running Locally
 - Make sure you've gotten the dependencies
 ```
-$ jspm install
+$ npm install
 ```
 - Run the go server
 ```
@@ -31,10 +27,11 @@ $ go get ../server
 $ go build ../server
 $ go ../server/server
 ```
+- Run the webpack-dev-server
+```
+$ npm start
+```
 
 # Required things for app to run
 - index.html
-- src/
-- jspm_packages/
-- jspm.config.js
-- jspm.browser.js
+- bundle.js
