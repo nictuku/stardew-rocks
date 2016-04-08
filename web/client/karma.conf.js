@@ -4,6 +4,9 @@ module.exports = function (config) {
     frameworks: ['mocha', 'sinon'],
     browsers: ['jsdom'],
     reporters: ['nyan'],
+    nyanReporter: {
+      renderOnRunCompleteOnly: true
+    },
     files: [
       'test/index.js'
     ],

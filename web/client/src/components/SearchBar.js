@@ -12,8 +12,8 @@ class SearchBar extends React.Component {
     getFarms: React.PropTypes.func.isRequired,
     searchFarms: React.PropTypes.func.isRequired,
     changeFilter: React.PropTypes.func,
-    filter: React.PropTypes.number.isRequired,
-    filters: React.PropTypes.array.isRequired
+    filter: React.PropTypes.number,
+    filters: React.PropTypes.array
   };
 
   constructor (props) {
@@ -60,6 +60,7 @@ class SearchBar extends React.Component {
             search
           </FontIcon>
           <TextField style={this.styles().input}
+            className="search-input"
             hintText="Search for farms or farmers"
             onChange={this.query}
           />
