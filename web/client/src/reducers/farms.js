@@ -4,6 +4,14 @@ import {
   GET_FARMS, GET_FARM, SEARCH_FARMS, INCREASE_FARMS_AMOUNT, RESET_FARMS_AMOUNT, CLEAR_FARM
 } from '../actionTypes';
 
+const initialState = {
+  farm: {},
+  farms: [],
+  pages: 1,
+  farmsPerPage: 20,
+  query: ''
+};
+
 const farms = handleActions({
   [GET_FARMS]: (state, action) => ({
     ...state,
@@ -30,12 +38,10 @@ const farms = handleActions({
     ...state,
     pages: 1
   })
-}, {
-  farm: {},
-  farms: [],
-  pages: 1,
-  farmsPerPage: 20,
-  query: ''
-});
+}, initialState);
+
+export {
+  initialState
+};
 
 export default farms;

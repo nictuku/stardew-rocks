@@ -8,8 +8,7 @@ import faker from 'faker';
 chai.use(require('sinon-chai'));
 chai.use(require('chai-enzyme')());
 
-import {component} from '../../src/components/DiscordWidget';
-const DiscordWidget = component;
+import {component as DiscordWidget} from '../../src/components/DiscordWidget';
 
 const randomUser = (isIdle) => ({
   avatar: null,

@@ -4,12 +4,11 @@ import _ from 'lodash';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import Waypoint from 'react-waypoint';
-import Card from 'material-ui/lib/card/card';
-import CardMedia from 'material-ui/lib/card/card-media';
-import CardTitle from 'material-ui/lib/card/card-title';
+
 import Paper from 'material-ui/lib/paper';
 
 import SearchBar from './SearchBar';
+import FarmCard from './FarmCard';
 import {changeFilter} from '../actions/farmFilterActions';
 import * as farmActions from '../actions/farmActions';
 
@@ -17,8 +16,8 @@ import * as farmActions from '../actions/farmActions';
 class Home extends React.Component {
   static propTypes = {
     farms: PropTypes.array.isRequired,
-    filter: PropTypes.number.isRequired,
-    filters: PropTypes.array.isRequired,
+    filter: PropTypes.number,
+    filters: PropTypes.array,
     pages: PropTypes.number.isRequired,
     farmsPerPage: PropTypes.number.isRequired,
     getFarms: PropTypes.func.isRequired,
@@ -59,20 +58,6 @@ class Home extends React.Component {
         flexWrap: 'wrap',
         justifyContent: 'center'
       },
-      link: {
-        overflow: 'hidden'
-      },
-      card: {
-        display: 'inline-block',
-        margin: '.5rem',
-        maxWidth: '100%',
-        height: '284px',
-        zIndex: 'initial'
-      },
-      cell: {
-        height: '284px',
-        width: '350px'
-      },
       panel: {
         width: '100%',
         padding: '1rem 2rem',
@@ -98,26 +83,13 @@ class Home extends React.Component {
           changeFilter={this.props.onChangeFilter}
         />
         <div style={this.styles().listWrapper}>
-          <div style={this.styles().list}>
+          <div style={this.styles().list} className="home-farm-list">
             {!_.isEmpty(this.props.farms)
               ? _(this.props.farms)
                 .take(this.props.pages * this.props.farmsPerPage)
-                .map(farm => {
-                  const thumb = _.split(farm.Thumbnail, '.');
-                  /* eslint-disable no-magic-numbers */
-                  return (
-                    <Card style={this.styles().card} key={farm.ID}>
-                      <Link to={`/${farm.ID}`} key={farm.ID} style={this.styles().link}>
-                        <CardMedia style={this.styles().cell}
-                          overlay={<CardTitle title={farm.Name} subtitle={`by ${farm.Farmer}`} />}
-                        >
-                          <img src={`${thumb[0]}w350.${thumb[1]}`} />
-                        </CardMedia>
-                      </Link>
-                    </Card>
-                  );
-                  /* eslint-enable */
-                })
+                .map(farm => (
+                  <FarmCard farm={farm} key={farm.ID} />
+                ))
                 .thru(farms => (
                   <div style={this.styles().unlimitedWrapper}>
                     {farms}
@@ -126,7 +98,10 @@ class Home extends React.Component {
                 ))
                 .value()
               : (
-                <Paper style={this.styles().panel}>
+                <Paper
+                  className="home-error-no-farms"
+                  style={this.styles().panel}
+                >
                   No results found
                 </Paper>
               )
@@ -137,6 +112,8 @@ class Home extends React.Component {
     );
   }
 }
+
+export const component = Home;
 
 export default connect(
   state => ({

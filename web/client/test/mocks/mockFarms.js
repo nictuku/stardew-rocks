@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import faker from 'faker';
 
-class farms {
+class mockFarms {
   static generateFarms (amount) {
-    return _.times(amount, this.generateFarm());
+    return _.times(amount, mockFarms.generateFarm);
   }
 
   static generateFarm () {
@@ -19,4 +19,4 @@ class farms {
   }
 }
 
-export default farms;
+export default mockFarms;

@@ -19,6 +19,7 @@ describe('SearchBar', function () {
 
     wrapper.find('.search-input').simulate('change', _.set({}, 'target.value', 'pomegranate'));
 
+    expect(searchFarmsSpy).to.have.not.been.called;
     setTimeout(() => {
       expect(getFarmsSpy).to.have.not.been.called;
       expect(searchFarmsSpy).to.have.been.calledOnce;
@@ -32,6 +33,7 @@ describe('SearchBar', function () {
       <SearchBar searchFarms={searchFarmsSpy} getFarms={getFarmsSpy}/>
     );
 
+    expect(getFarmsSpy).to.have.not.been.called;
     wrapper.find('.search-input').simulate('change', _.set({}, 'target.value', ''));
     setTimeout(() => {
       expect(getFarmsSpy).to.have.been.calledOnce;
