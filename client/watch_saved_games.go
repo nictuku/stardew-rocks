@@ -49,7 +49,7 @@ func ignoreFile(p string) bool {
 	if filepath.Ext(p) != "" {
 		return true
 	}
-	return false
+	return strings.HasSuffix(p, "_old")
 }
 
 func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
@@ -111,7 +111,7 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 				} else if !watched[filename] {
 					watcher.Add(filename)
 					watched[filename] = true
-					log.Debug("Watching %v", relPath(filename))
+					log.Debugf("Watching %v", relPath(filename))
 				}
 				if event.Op&fsnotify.Create == fsnotify.Create || event.Op&fsnotify.Rename == fsnotify.Rename || event.Op&fsnotify.Write == fsnotify.Write {
 					log.Debug("Found modified file:", relPath(filename))
@@ -119,7 +119,8 @@ func watchAndPublish(topic *amqp.Channel, cancel chan *amqp.Error) {
 					case isDir(filename):
 						continue
 					case strings.Contains(path.Base(filename), "SAVETMP"):
-						// Ignore the TMP file, only read after it's renamed. This avoid crashes.
+					case strings.HasSuffix(path.Base(filename), "_old"):
+						// Ignore the temp and backup files, only read after it's renamed. This avoids crashes.
 						continue
 					case strings.Contains(path.Base(filename), "SaveGameInfo"):
 						if err := publishSavedGame(topic, filename); err != nil {
