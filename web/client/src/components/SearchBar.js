@@ -1,9 +1,8 @@
 import React from 'react';
-import Radium from 'radium';
+import Radium, {Style} from 'radium';
 import _ from 'lodash';
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
-import TextField from 'material-ui/lib/text-field';
 import FontIcon from 'material-ui/lib/font-icon';
 
 @Radium
@@ -34,7 +33,8 @@ class SearchBar extends React.Component {
   styles () {
     return {
       toolbar: {
-        display: 'flex'
+        display: 'flex',
+        backgroundImage: 'url("content/dirt.png")'
       },
       group: {
         display: 'flex',
@@ -42,26 +42,46 @@ class SearchBar extends React.Component {
         margin: '0 2rem'
       },
       icon: {
-        paddingLeft: 'initial'
+        paddingLeft: 'initial',
+        margin: 'auto',
+        color: '#fff',
+        textShadow: '-1px 1px 2px #666'
       },
       input: {
-        flex: '1'
+        marginLeft: '.5rem',
+        flex: '1',
+        background: 'initial',
+        border: 'initial',
+        outline: 'none'
+      },
+      inputText: {
+        color: '#fff',
+        fontSize: '1rem',
+        textShadow: '-1px 1px 2px #666'
       }
     };
   }
 
   render () {
     return (
-      <Toolbar noGutter style={this.styles().toolbar}>
+      <Toolbar noGutter style={this.styles().toolbar} className="search">
+        <Style scopeSelector=".search"
+          rules={{
+            '::-webkit-input-placeholder': this.styles().inputText,
+            ':-moz-placeholder': this.styles().inputText,
+            '::-moz-placeholder': this.styles().inputText,
+            ':-ms-input-placeholder': this.styles().inputText
+          }}
+        />
         <ToolbarGroup style={this.styles().group}>
-          <FontIcon style={this.styles().icon}
+          <i
+            style={this.styles().icon}
             className="material-icons"
-          >
-            search
-          </FontIcon>
-          <TextField style={this.styles().input}
+          >search</i>
+          <input type="test"
+            style={[this.styles().input, this.styles().inputText]}
             className="search-input"
-            hintText="Search for farms or farmers"
+            placeholder="Search for farms or farmers..."
             onChange={this.query}
           />
         </ToolbarGroup>

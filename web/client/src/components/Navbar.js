@@ -128,7 +128,9 @@ class Navbar extends React.Component {
                 &nbsp;Support Us
               </button>
             </form>
-            <a style={[this.styles().btn, this.styles().clientBtn]}>
+            <a style={[this.styles().btn, this.styles().clientBtn]}
+              href="https://github.com/nictuku/stardew-rocks"
+            >
               <i className="material-icons">file_download</i>
               &nbsp;Get the Client
             </a>

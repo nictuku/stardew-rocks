@@ -27,6 +27,7 @@ class FarmCard extends React.Component {
         border: `solid 2px ${colors.brown}`,
         backgroundColor: colors.tan,
         overflow: 'hidden',
+        maxHeight: '370px',
         boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
         ':hover': {
           boxShadow: '0 8px 17px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)'
@@ -34,7 +35,10 @@ class FarmCard extends React.Component {
       },
       image: {
         height: '284px',
-        width: '350px'
+        width: '350px',
+        backgroundImage: 'url("content/logo.svg")',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center'
       },
       meta: {
         borderTop: `solid 2px ${colors.brown}`,
