@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactCSS from 'reactcss';
+import React, {PropTypes} from 'react';
+import Radium from 'radium';
 import {connect} from 'react-redux';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 
@@ -8,42 +8,54 @@ import Navbar from './Navbar';
 import Drawer from './Drawer';
 import theme from '../theme';
 
-class App extends ReactCSS.Component {
-  constructor (props) {
-    super(props);
-  }
-
+@Radium
+class App extends React.Component {
   getChildContext () {
     return {
       muiTheme: getMuiTheme(theme)
     };
   }
 
+  static propTypes = {
+    children: PropTypes.object.isRequired,
+    drawer: PropTypes.shape({
+      isOpen: PropTypes.bool.isRequired,
+      isDocked: PropTypes.bool.isRequired,
+      mql: PropTypes.object.isRequired
+    }).isRequired,
+    dockDrawer: PropTypes.func.isRequired,
+    undockDrawer: PropTypes.func.isRequired,
+    toggleDrawer: PropTypes.func.isRequired,
+    updateAutoDock: PropTypes.func.isRequired
+  };
+
+  static childContextTypes = {
+    muiTheme: PropTypes.object
+  };
+
   componentWillMount () {
-    // this.props.drawer.mql.addListener(this.props.updateAutoDock);
+    this.props.drawer.mql.addListener(this.props.updateAutoDock);
   }
 
   componentWillUnmount () {
-    // this.props.drawer.mql.removeListener(this.props.updateAutoDock);
+    this.props.drawer.mql.removeListener(this.props.updateAutoDock);
   }
 
-  classes () {
+  styles () {
     return {
-      default: {
-        app: {
-          minHeight: "100%",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden"
-        },
-        main: {
-          flex: "1",
-          display: "flex",
-          flexDirection: "column"
-        },
-        leftNavOverlay: {
-          position: 'relative'
-        }
+      app: {
+        minHeight: "100%",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden"
+      },
+      main: {
+        flex: "1",
+        display: "flex",
+        flexDirection: "column"
+      },
+      leftNavOverlay: {
+        position: 'relative'
       }
     };
   }
@@ -51,19 +63,22 @@ class App extends ReactCSS.Component {
   render () {
     return (
       <div style={this.styles().app}>
+        <header>
+          <Navbar
+            isMobile={!this.props.drawer.mql.matches}
+            toggleDrawer={this.props.toggleDrawer}
+            drawerIsDocked={this.props.drawer.isDocked}
+          />
+        </header>
         <Drawer
+          isMobile={!this.props.drawer.mql.matches}
           isOpen={this.props.drawer.isOpen}
           isDocked={this.props.drawer.isDocked}
           toggleDrawer={this.props.toggleDrawer}
           dockDrawer={this.props.dockDrawer}
           undockDrawer={this.props.undockDrawer}
         >
-          <header>
-            <Navbar
-              toggleDrawer={this.props.toggleDrawer}
-              drawerIsDocked={this.props.drawer.isDocked}
-            />
-          </header>
+
           <main style={this.styles().main}>
               {this.props.children}
           </main>
@@ -73,22 +88,6 @@ class App extends ReactCSS.Component {
     );
   }
 }
-
-App.childContextTypes = {
-  muiTheme: React.PropTypes.object
-};
-
-App.propTypes = {
-  children: React.PropTypes.object,
-  drawer: React.PropTypes.shape({
-    isOpen: React.PropTypes.bool.isRequired,
-    isDocked: React.PropTypes.bool.isRequired
-  }).isRequired,
-  dockDrawer: React.PropTypes.func,
-  undockDrawer: React.PropTypes.func,
-  toggleDrawer: React.PropTypes.func,
-  updateAutoDock: React.PropTypes.func
-};
 
 export default connect(
   state => ({

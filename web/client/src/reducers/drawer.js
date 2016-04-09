@@ -37,7 +37,7 @@ const drawer = handleActions({
   })
 }, {
   isOpen: false,
-  isDocked: false,
+  isDocked: mql.matches,
   mql
 });
 

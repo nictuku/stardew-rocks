@@ -2,9 +2,8 @@ import React, {PropTypes} from 'react';
 import Radium from 'radium';
 import _ from 'lodash';
 import {Link} from 'react-router';
-import Card from 'material-ui/lib/card/card';
-import CardMedia from 'material-ui/lib/card/card-media';
-import CardTitle from 'material-ui/lib/card/card-title';
+
+import colors from '../colors';
 
 @Radium
 class FarmCard extends React.Component {
@@ -15,18 +14,35 @@ class FarmCard extends React.Component {
   styles () {
     return {
       link: {
-        overflow: 'hidden'
+        overflow: 'hidden',
+        textDecoration: 'none',
+        color: colors.dkBrown,
+        fontWeight: '500'
       },
       card: {
         display: 'inline-block',
         margin: '.5rem',
-        maxWidth: '100%',
-        height: '284px',
-        zIndex: 'initial'
+        zIndex: 'initial',
+        borderRadius: '5px',
+        border: `solid 2px ${colors.brown}`,
+        backgroundColor: colors.tan,
+        overflow: 'hidden',
+        boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
+        ':hover': {
+          boxShadow: '0 8px 17px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)'
+        }
       },
-      cell: {
+      image: {
         height: '284px',
         width: '350px'
+      },
+      meta: {
+        borderTop: `solid 2px ${colors.brown}`,
+        padding: '1rem'
+      },
+      title: {
+        fontSize: '1.5rem',
+        fontWeight: 'normal'
       }
     };
   }
@@ -35,18 +51,20 @@ class FarmCard extends React.Component {
     const thumb = _.split(this.props.farm.Thumbnail, '.');
     /* eslint-disable no-magic-numbers */
     return (
-      <Card
+      <div
         style={this.styles().card}
         className="farm-card"
       >
         <Link to={`/${this.props.farm.ID}`} key={this.props.farm.ID} style={this.styles().link}>
-          <CardMedia style={this.styles().cell}
-            overlay={<CardTitle title={this.props.farm.Name} subtitle={`by ${this.props.farm.Farmer}`} />}
-          >
+          <div style={this.styles().image}>
             <img src={`${thumb[0]}w350.${thumb[1]}`} />
-          </CardMedia>
+          </div>
+          <div style={this.styles().meta}>
+            <div style={this.styles().title}>{this.props.farm.Name}</div>
+            <div>{`by ${this.props.farm.Farmer}`}</div>
+          </div>
         </Link>
-      </Card>
+      </div>
     );
   }
 }

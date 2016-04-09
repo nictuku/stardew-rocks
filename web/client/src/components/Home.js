@@ -40,7 +40,8 @@ class Home extends React.Component {
       home: {
         flex: '1',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundImage: 'url("content/brick.png")'
       },
       listWrapper: {
         overflowY: 'auto',

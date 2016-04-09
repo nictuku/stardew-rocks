@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Radium from 'radium';
 import _ from 'lodash';
 import {connect} from 'react-redux';
@@ -10,13 +10,18 @@ import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 import IconButton from 'material-ui/lib/icon-button';
 
+import colors from '../colors';
 import {updateDiscord} from '../actions/discordActions';
 
 @Radium
 class DiscordWidget extends React.Component {
   static propTypes = {
-    discord: React.PropTypes.object.isRequired,
-    update: React.PropTypes.func
+    discord: PropTypes.object.isRequired,
+    update: PropTypes.func.isRequired,
+    drawerIsDocked: PropTypes.bool.isRequired,
+    undockDrawer: PropTypes.func.isRequired,
+    dockDrawer: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool.isRequired
   };
 
   componentDidMount () {
@@ -27,7 +32,7 @@ class DiscordWidget extends React.Component {
     return {
       toolbar: {
         display: 'flex',
-        backgroundColor: '#7289DA',
+        backgroundColor: colors.maroon,
         padding: '0 1rem',
         color: '#ffffff',
         justifyContent: 'space-between'
@@ -47,11 +52,16 @@ class DiscordWidget extends React.Component {
       iconButtonLink: {
         margin: 'auto'
       },
-      iconButon: {
+      iconButton: {
         margin: 'auto'
       },
       iconButtonIcon: {
         color: '#ffffff'
+      },
+      svgIcon: {
+        fill: '#ffffff',
+        height: '30px',
+        width: '30px'
       }
     };
   }
@@ -92,15 +102,17 @@ class DiscordWidget extends React.Component {
       <div>
         <Toolbar style={this.styles().toolbar} noGutter>
           <ToolbarGroup style={this.styles().toolbarGroup}>
-            <object style={this.styles().icon} type="image/svg+xml" data="content/discord.svg" />
-            <ToolbarTitle text="Discord" style={this.styles().white} />
+            <svg style={this.styles().svgIcon}>
+              <use xlinkHref="content/discord.svg#discord" />
+            </svg>
+            <ToolbarTitle text="&nbsp;Discord" style={this.styles().white} />
           </ToolbarGroup>
           <ToolbarGroup
             style={this.styles().toolbarGroup}
           >
             <IconButton iconClassName="material-icons"
               className="discord-refresh"
-              style={this.styles().iconButon}
+              style={this.styles().iconButton}
               onClick={this.props.update}
               iconStyle={this.styles().iconButtonIcon}>refresh</IconButton>
             <a href={this.props.discord.instant_invite}
@@ -109,6 +121,13 @@ class DiscordWidget extends React.Component {
               <IconButton iconClassName="material-icons"
                 iconStyle={this.styles().iconButtonIcon}>launch</IconButton>
             </a>
+            {!this.props.isMobile ?
+              <IconButton iconClassName="material-icons"
+                style={this.styles().iconButton}
+                iconStyle={this.styles().iconButtonIcon}
+                onClick={this.props.drawerIsDocked ? this.props.undockDrawer : this.props.dockDrawer}
+              >chrome_reader_mode</IconButton>
+            : null}
           </ToolbarGroup>
         </Toolbar>
         <List>
