@@ -23,8 +23,8 @@ import (
 
 func init() {
 	// TODO: manage the cache space somehow.
-	// os.RemoveAll(filepath.Join(os.TempDir(), "stardew"))
-	historyCache = filepath.Join(os.TempDir(), "stardew", strconv.Itoa(int(time.Now().Unix())))
+	// os.RemoveAll(filepath.Join("/var/cache", "stardew"))
+	historyCache = filepath.Join("/var/cache", "stardew", strconv.Itoa(int(time.Now().Unix())))
 }
 
 var historyCache string
@@ -85,7 +85,7 @@ func ServeAnimation(w http.ResponseWriter, r *http.Request) {
 		p := filepath.Join(tmp, fmt.Sprintf("%04d.png", i))
 		i++
 		if !dirCreated {
-			if err := os.MkdirAll(filepath.Dir(p), 0600); err != nil {
+			if err := os.MkdirAll(filepath.Dir(p), 1750); err != nil {
 				log.Error("mkdir error:", err)
 				continue
 			}
@@ -117,14 +117,15 @@ func ServeAnimation(w http.ResponseWriter, r *http.Request) {
 	for _, s := range tmpScreenshotPaths {
 		fmt.Println(s)
 	}
-	os.MkdirAll(filepath.Dir(dest), 0600)
+	os.MkdirAll(filepath.Dir(dest), 1750)
 	cacheMu.Lock()
 	defer cacheMu.Unlock()
 	cmd := exec.Command(
-		"ffmpeg",
-		"-nostats", "-hide_banner",
-		"-an", "-pix_fmt", "yuv420p", "-r", "1",
+		"avconv",
+		"-nostats", // "-hide_banner",
+		"-pix_fmt", "yuv420p", "-r", "1",
 		"-i", filepath.Join(tmp, "%04d.png"), "-c:v", "libvpx", "-b:v", "2M", "-crf", "4",
+		"-an",
 		// draw a text + box:
 		/*
 			                "-vf", "format=yuv444p,"+
