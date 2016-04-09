@@ -1,7 +1,6 @@
 import React, {PropTypes} from 'react';
 import Radium from 'radium';
 import _ from 'lodash';
-import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import Waypoint from 'react-waypoint';
 

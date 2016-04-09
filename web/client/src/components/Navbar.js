@@ -8,6 +8,7 @@ var Link = require('react-router').Link;
 Link = Radium(Link);
 
 import colors from '../colors';
+import MenuBtn from './MenuBtn';
 
 @Radium
 class Navbar extends React.Component {
@@ -102,8 +103,9 @@ class Navbar extends React.Component {
           <IconButton
             onClick={this.props.toggleDrawer}
             style={this.styles().iconButton}
-            iconClassName="material-icons" iconStyle={this.styles().icon}
-          >{this.props.drawerIsOpen ? 'arrow_back' : 'menu'}</IconButton>
+          >
+            <MenuBtn isArrow={this.props.drawerIsOpen || this.props.drawerIsDocked } />
+          </IconButton>
           <Link to="/" style={this.styles().brand} >
             <img src="content/logo.png" style={this.styles().logo} />
           </Link>
