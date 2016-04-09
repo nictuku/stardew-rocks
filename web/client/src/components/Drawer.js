@@ -12,8 +12,6 @@ class Drawer extends React.Component {
     isOpen: React.PropTypes.bool.isRequired,
     isDocked: React.PropTypes.bool.isRequired,
     toggleDrawer: React.PropTypes.func.isRequired,
-    dockDrawer: React.PropTypes.func,
-    undockDrawer: React.PropTypes.func,
     children: React.PropTypes.array
   };
 
@@ -98,12 +96,7 @@ class Drawer extends React.Component {
                 </Menu>
               </div>
             : null }
-            <DiscordWidget
-              isMobile={this.props.isMobile}
-              dockDrawer={this.props.dockDrawer}
-              undockDrawer={this.props.undockDrawer}
-              drawerIsDocked={this.props.isDocked}
-            />
+            <DiscordWidget />
           </div>
         }
         open={this.props.isOpen}

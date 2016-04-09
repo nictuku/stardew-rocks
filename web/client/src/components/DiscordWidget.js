@@ -17,11 +17,7 @@ import {updateDiscord} from '../actions/discordActions';
 class DiscordWidget extends React.Component {
   static propTypes = {
     discord: PropTypes.object.isRequired,
-    update: PropTypes.func.isRequired,
-    drawerIsDocked: PropTypes.bool.isRequired,
-    undockDrawer: PropTypes.func.isRequired,
-    dockDrawer: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired
+    update: PropTypes.func.isRequired
   };
 
   componentDidMount () {
@@ -121,13 +117,6 @@ class DiscordWidget extends React.Component {
               <IconButton iconClassName="material-icons"
                 iconStyle={this.styles().iconButtonIcon}>launch</IconButton>
             </a>
-            {!this.props.isMobile ?
-              <IconButton iconClassName="material-icons"
-                style={this.styles().iconButton}
-                iconStyle={this.styles().iconButtonIcon}
-                onClick={this.props.drawerIsDocked ? this.props.undockDrawer : this.props.dockDrawer}
-              >chrome_reader_mode</IconButton>
-            : null}
           </ToolbarGroup>
         </Toolbar>
         <List>

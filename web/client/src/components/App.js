@@ -23,8 +23,6 @@ class App extends React.Component {
       isDocked: PropTypes.bool.isRequired,
       mql: PropTypes.object.isRequired
     }).isRequired,
-    dockDrawer: PropTypes.func.isRequired,
-    undockDrawer: PropTypes.func.isRequired,
     toggleDrawer: PropTypes.func.isRequired,
     updateAutoDock: PropTypes.func.isRequired
   };
@@ -68,6 +66,7 @@ class App extends React.Component {
             isMobile={!this.props.drawer.mql.matches}
             toggleDrawer={this.props.toggleDrawer}
             drawerIsDocked={this.props.drawer.isDocked}
+            drawerIsOpen={this.props.drawer.isOpen}
           />
         </header>
         <Drawer
@@ -75,10 +74,7 @@ class App extends React.Component {
           isOpen={this.props.drawer.isOpen}
           isDocked={this.props.drawer.isDocked}
           toggleDrawer={this.props.toggleDrawer}
-          dockDrawer={this.props.dockDrawer}
-          undockDrawer={this.props.undockDrawer}
         >
-
           <main style={this.styles().main}>
               {this.props.children}
           </main>
@@ -96,12 +92,6 @@ export default connect(
   dispatch => ({
     toggleDrawer: () => {
       dispatch(drawerActions.toggleDrawer());
-    },
-    dockDrawer: () => {
-      dispatch(drawerActions.dockDrawer());
-    },
-    undockDrawer: () => {
-      dispatch(drawerActions.undockDrawer());
     },
     updateAutoDock: () => {
       dispatch(drawerActions.updateAutoDock());

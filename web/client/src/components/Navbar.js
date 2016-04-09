@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Radium from 'radium';
 import IconButton from 'material-ui/lib/icon-button';
 import color from 'color';
@@ -12,9 +12,10 @@ import colors from '../colors';
 @Radium
 class Navbar extends React.Component {
   static propTypes = {
-    isMobile: React.PropTypes.bool.isRequired,
-    toggleDrawer: React.PropTypes.func.isRequired,
-    drawerIsDocked: React.PropTypes.bool.isRequired
+    isMobile: PropTypes.bool.isRequired,
+    toggleDrawer: PropTypes.func.isRequired,
+    drawerIsDocked: PropTypes.bool.isRequired,
+    drawerIsOpen: PropTypes.bool.isRequired
   };
 
   styles () {
@@ -98,19 +99,12 @@ class Navbar extends React.Component {
       <div style={this.styles().toolbar}>
         <img style={this.styles().leftCloud} src="content/cloudl.png" />
         <div style={this.styles().group}>
-          {!this.props.drawerIsDocked ?
-            <IconButton
-              onClick={this.props.toggleDrawer}
-              style={this.styles().iconButton}
-              iconClassName="material-icons" iconStyle={this.styles().icon}
-            >menu</IconButton>
-          : null}
-          <Link to="/"
-            style={[
-              this.styles().brand,
-              this.props.drawerIsDocked && this.styles().brandDrawerIsDocked
-            ]}
-          >
+          <IconButton
+            onClick={this.props.toggleDrawer}
+            style={this.styles().iconButton}
+            iconClassName="material-icons" iconStyle={this.styles().icon}
+          >{this.props.drawerIsOpen ? 'arrow_back' : 'menu'}</IconButton>
+          <Link to="/" style={this.styles().brand} >
             <img src="content/logo.png" style={this.styles().logo} />
           </Link>
         </div>
