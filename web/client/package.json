@@ -24,7 +24,6 @@
     "eslint": "^2.5.1",
     "eslint-plugin-babel": "^3.1.0",
     "eslint-plugin-react": "^4.2.3",
-    "faker": "^3.1.0",
     "jsdom": "^8.3.0",
     "json-loader": "^0.5.4",
     "karma": "^0.13.22",
@@ -46,6 +45,7 @@
   "dependencies": {
     "classnames": "^2.2.3",
     "color": "^0.11.1",
+    "faker": "^3.1.0",
     "lodash": "^4.8.2",
     "material-ui": "^0.14.4",
     "moment": "^2.12.0",

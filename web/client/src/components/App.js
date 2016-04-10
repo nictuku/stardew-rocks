@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
+import faker from 'faker';
 
 import * as drawerActions from "../actions/drawerActions";
 import Navbar from './Navbar';
@@ -13,7 +14,9 @@ class App extends React.Component {
   getChildContext () {
     return {
       muiTheme: getMuiTheme(theme),
-      season: 'summer'
+      season: faker.random.arrayElement([
+        'fall', 'summer'
+      ])
     };
   }
 
