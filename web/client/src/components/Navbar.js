@@ -60,12 +60,12 @@ class Navbar extends React.Component {
         margin: 'auto'
       },
       icon: {
-        color: colors[this.context.season].color1
+        color: colors[this.context.season].text
       },
       svgIcon: {
         height: '20px',
         width: '20px',
-        fill: colors[this.context.season].color3,
+        fill: colors[this.context.season].text,
         pointerEvents: 'none'
       },
       leftCloud: {
@@ -84,7 +84,8 @@ class Navbar extends React.Component {
         marginRight: '.5rem'
       },
       clientBtn: {
-        border: `solid 1px ${colors[this.context.season].color3}`,
+        color: colors.yellow,
+        border: `solid 1px ${colors.yellow}`,
         backgroundColor: color(colors[this.context.season].color1).clearer(.3).rgbString(), // eslint-disable-line no-magic-numbers
         ':hover': {
           backgroundColor: colors[this.context.season].color1
@@ -101,7 +102,7 @@ class Navbar extends React.Component {
             '.btn': {
               cursor: 'pointer',
               textDecoration: 'none',
-              color: colors[this.context.season].color3,
+              color: colors[this.context.season].text,
               padding: '.25rem .75rem .25rem .5rem',
               display: 'flex',
               alignItems: 'center',
@@ -115,7 +116,7 @@ class Navbar extends React.Component {
               transition: 'all 250ms ease'
             },
             '.btn:hover': {
-              border: `solid 1px ${colors[this.context.season].color3}`
+              border: `solid 1px ${colors[this.context.season].text}`
             }
           }}
         />

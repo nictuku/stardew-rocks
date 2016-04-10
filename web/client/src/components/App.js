@@ -13,7 +13,7 @@ class App extends React.Component {
   getChildContext () {
     return {
       muiTheme: getMuiTheme(theme),
-      season: 'fall'
+      season: 'summer'
     };
   }
 
