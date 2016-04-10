@@ -1,6 +1,10 @@
 # Usage
 ## Prerequisites
 - Install [Nodejs](https://nodejs.org/en/)
+- Install webpack globally
+```
+$ npm install -g webpack
+```
 - Install dependencies
 ```
 $ npm install
@@ -16,7 +20,7 @@ $ npm install
 $ webpack
 ```
 
-# Running Locally
+## Running Locally
 - Make sure you've gotten the dependencies
 ```
 $ npm install
@@ -30,6 +34,26 @@ $ go ../server/server
 - Run the webpack-dev-server
 ```
 $ npm start
+```
+
+## Testing
+- Make sure you've gotten the dependencies
+```
+$ npm install
+```
+- Run the test running in watch mode
+```
+$ npm test
+```
+
+## Running tests once
+- Install karma-cli globally
+```
+$ npm install -g karma-cli
+```
+- Run karma
+```
+$ karma start --single-run
 ```
 
 # Required things for app to run
