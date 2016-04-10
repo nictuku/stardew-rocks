@@ -94,6 +94,14 @@ func SaveGamePath(id string, ts time.Time) string {
 	return SaveGamePathInt(id, int(ts.Unix()))
 }
 
+func RecentFarm() (farm *Farm) {
+	err := FarmCollection.Find(nil).Sort("-lastupdate").One(&farm)
+	if err != nil {
+		return nil
+	}
+	return farm
+}
+
 // AllFarms iterates over all farms and sends them over c until it's done, then it closes the
 // channel.  There is no cancellation here so the caller *must* read everything from c until it's
 // closed, otherwise the goroutine will leak out.

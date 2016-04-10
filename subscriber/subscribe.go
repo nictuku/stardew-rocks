@@ -2,11 +2,9 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 	"time"
 
@@ -102,8 +100,6 @@ func main() {
 				continue
 			}
 
-			name := path.Base(path.Clean(saveGame.Player.Name)) // please don't hacko me mister
-
 			ts := time.Now()
 
 			farm, _, err := stardb.FindOrCreateFarm(stardb.FarmCollection, saveGame.UniqueIDForThisGame, saveGame.Player.Name, saveGame.Player.FarmName)
@@ -111,24 +107,6 @@ func main() {
 				log.Print("Error fetching farm ID:", err)
 				continue
 			}
-
-			// DEPRECATED filesystem write.
-			//
-			// Write the save game, then write the screenshot.
-			// TODO: deal with races and conflicts.
-			saveFile := path.Join(wwwDir(), "saveGames", fmt.Sprintf("%v-%d.xml", name, ts.Unix()))
-			sf, err := os.OpenFile(saveFile, os.O_CREATE|os.O_WRONLY, 0666)
-			if err != nil {
-				log.Printf("Error opening saveGames %v: %v", saveFile, err)
-				continue
-			}
-			if _, err := sf.Write(d.Body); err != nil {
-				log.Printf("Failed to write save file at %v: %v", saveFile, err)
-				continue
-			} else {
-				log.Printf("Wrote saveGame file %v", saveFile)
-			}
-			sf.Close()
 
 			// GridFS XML save file write.
 			// TODO: broken saves (length 0)
@@ -150,17 +128,6 @@ func main() {
 					continue
 				}
 			}
-
-			// DEPRECATED filesystem write.
-			mapFile := path.Join(wwwDir(), fmt.Sprintf("map-%v-%d.png", name, ts.Unix()))
-			f, err := os.OpenFile(mapFile, os.O_CREATE|os.O_WRONLY, 0666)
-			if err != nil {
-				log.Printf("Error opening screenshot file %v: %v", mapFile, err)
-				continue
-			}
-			view.WriteImage(farmMap, saveGame, f)
-			f.Close()
-			log.Printf("Wrote map file %v", mapFile)
 
 			// GridFs screenshot write.
 			fs, err := stardb.NewScreenshotWriter(farm, ts)

@@ -10,7 +10,10 @@ dest="$rootdir/assets/$ts"
 echo "Deploying to $dest .."
 
 npm install
+
 webpack
+
+karma start --single-run
 
 mkdir -p "${dest}"
 
