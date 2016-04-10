@@ -2,9 +2,14 @@ import React, {PropTypes} from 'react';
 import Radium, {Style} from 'radium';
 import _ from 'lodash';
 import moment from 'moment';
+import 'moment-duration-format';
 import numeral from 'numeral';
 
 class FarmMeta extends React.Component {
+  static propTypes = {
+    farm: PropTypes.object.isRequired
+  };
+
   render () {
     return (
       <div className="farm-meta">
@@ -51,16 +56,12 @@ class FarmMeta extends React.Component {
           </div>
           <div>
             <span className="item-label">Time Played: </span>
-            {moment(this.props.farm.Player.MillisecondsPlayed).format('H [hrs] m [mins]')}
+            {moment.duration(this.props.farm.Player.MillisecondsPlayed).format('H [hrs] m [mins]')}
           </div>
         </div>
       </div>
     );
   }
 }
-
-FarmMeta.propTypes = {
-  farm: PropTypes.object.isRequired
-};
 
 export default Radium(FarmMeta);
