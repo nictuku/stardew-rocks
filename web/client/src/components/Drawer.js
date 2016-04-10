@@ -1,18 +1,23 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Sidebar from 'react-sidebar';
 import Menu from 'material-ui/lib/menus/menu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import FontIcon from 'material-ui/lib/font-icon';
 
 import DiscordWidget from './DiscordWidget';
+import colors from '../colors';
 
 class Drawer extends React.Component {
   static propTypes = {
-    isMobile: React.PropTypes.bool.isRequired,
-    isOpen: React.PropTypes.bool.isRequired,
-    isDocked: React.PropTypes.bool.isRequired,
-    toggleDrawer: React.PropTypes.func.isRequired,
-    children: React.PropTypes.array
+    isMobile: PropTypes.bool.isRequired,
+    isOpen: PropTypes.bool.isRequired,
+    isDocked: PropTypes.bool.isRequired,
+    toggleDrawer: PropTypes.func.isRequired,
+    children: PropTypes.array
+  };
+
+  static contextTypes = {
+    season: PropTypes.string
   };
 
   styles () {
@@ -36,7 +41,8 @@ class Drawer extends React.Component {
         color: `#ffffff`
       },
       drawer: {
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        borderRight: `1px solid ${colors[this.context.season].color1}`
       },
       content: {
         display: 'flex',
@@ -56,7 +62,7 @@ class Drawer extends React.Component {
         fill: 'rgb(117, 117, 117)'
       },
       root: {
-        top: '56px'
+        top: '57px'
       }
     };
   }

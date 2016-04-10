@@ -22,6 +22,12 @@ const randomUser = (isIdle) => ({
 describe('DiscordWidget', function () {
   let discord;
 
+  const options = {
+    context: {
+      season: 'fall'
+    }
+  };
+
   beforeEach(function () {
     discord = {
       name: 'Stardew Farm',
@@ -47,7 +53,7 @@ describe('DiscordWidget', function () {
   it('shows a list of online users', function () {
     const wrapper = mount(
       <DiscordWidget discord={discord} update={() => {}} />
-    );
+    , options);
 
     expect(wrapper).to.have.exactly(2).descendants('.discord-user');
   });
@@ -56,7 +62,7 @@ describe('DiscordWidget', function () {
     const updateSpy = sinon.spy();
     mount(
       <DiscordWidget discord={discord} update={updateSpy} />
-    );
+    , options);
 
     expect(updateSpy).to.have.been.calledOnce;
   });
@@ -65,7 +71,7 @@ describe('DiscordWidget', function () {
     const updateSpy = sinon.spy(() => discord.members.push(randomUser()));
     const wrapper = mount(
       <DiscordWidget discord={discord} update={updateSpy} />
-    );
+    , options);
 
     wrapper.find('.discord-refresh').simulate('click');
     expect(updateSpy).to.have.been.calledTwice;
@@ -77,7 +83,7 @@ describe('DiscordWidget', function () {
     _.times(2, () => discord.members.push(randomUser(true)));
     const wrapper = mount(
       <DiscordWidget discord={discord} update={() => {}} />
-    );
+    , options);
 
     expect(discord.members).to.have.length(4);
     expect(wrapper).to.have.exactly(2).descendants('.discord-user');
@@ -87,7 +93,7 @@ describe('DiscordWidget', function () {
     discord.members = [];
     const wrapper = mount(
       <DiscordWidget discord={discord} update={() => {}} />
-    );
+    , options);
 
     expect(wrapper).to.not.have.descendants('.discord-user');
     expect(wrapper).to.have.exactly(1).descendants('.discord-error-users');
@@ -96,7 +102,7 @@ describe('DiscordWidget', function () {
   it('shows a error message when discord api fails', function () {
     const wrapper = mount(
       <DiscordWidget discord={{}} update={() => {}} />
-    );
+    , options);
 
     expect(wrapper).to.have.exactly(1).descendants('.discord-error');
   });

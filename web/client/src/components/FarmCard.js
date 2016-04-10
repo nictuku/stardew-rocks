@@ -17,7 +17,8 @@ class FarmCard extends React.Component {
         overflow: 'hidden',
         textDecoration: 'none',
         color: colors.dkBrown,
-        fontWeight: '500'
+        fontWeight: '500',
+        fontFamily: 'Roboto Slab'
       },
       card: {
         display: 'inline-block',

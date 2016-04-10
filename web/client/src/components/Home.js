@@ -39,8 +39,7 @@ class Home extends React.Component {
       home: {
         flex: '1',
         display: 'flex',
-        flexDirection: 'column',
-        backgroundImage: 'url("content/brick.png")'
+        flexDirection: 'column'
       },
       listWrapper: {
         overflowY: 'auto',
@@ -50,6 +49,7 @@ class Home extends React.Component {
       },
       list: {
         position: 'absolute',
+        paddingTop: '1rem',
         bottom: '0',
         left: '0',
         right: '0',

@@ -10,6 +10,10 @@ class MenuBtn extends React.Component {
     isArrow: PropTypes.bool.isRequired
   };
 
+  static contextTypes = {
+    season: PropTypes.string
+  };
+
   render () {
     return (
       <div>
@@ -24,7 +28,7 @@ class MenuBtn extends React.Component {
               transition: 'all 500ms ease'
             },
             '.menu-icon span': {
-              backgroundColor: colors.maroon,
+              backgroundColor: colors[this.context.season].color1,
               display: 'block',
               position: 'absolute',
               top: '0',

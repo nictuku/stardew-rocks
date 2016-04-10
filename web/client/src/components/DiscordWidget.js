@@ -20,6 +20,10 @@ class DiscordWidget extends React.Component {
     update: PropTypes.func.isRequired
   };
 
+  static contextTypes = {
+    season: PropTypes.string
+  };
+
   componentDidMount () {
     this.props.update();
   }
@@ -28,7 +32,7 @@ class DiscordWidget extends React.Component {
     return {
       toolbar: {
         display: 'flex',
-        backgroundColor: colors.maroon,
+        backgroundColor: colors[this.context.season].color1,
         padding: '0 1rem',
         color: '#ffffff',
         justifyContent: 'space-between'

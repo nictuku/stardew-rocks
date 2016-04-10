@@ -3,7 +3,8 @@ import Radium, {Style} from 'radium';
 import _ from 'lodash';
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
-import FontIcon from 'material-ui/lib/font-icon';
+
+import colors from '../colors';
 
 @Radium
 class SearchBar extends React.Component {
@@ -34,7 +35,7 @@ class SearchBar extends React.Component {
     return {
       toolbar: {
         display: 'flex',
-        backgroundImage: 'url("content/dirt.png")'
+        backgroundColor: colors.tan
       },
       group: {
         display: 'flex',
@@ -44,8 +45,7 @@ class SearchBar extends React.Component {
       icon: {
         paddingLeft: 'initial',
         margin: 'auto',
-        color: '#fff',
-        textShadow: '-1px 1px 2px #666'
+        color: colors.dkBrown
       },
       input: {
         marginLeft: '.5rem',
@@ -55,9 +55,9 @@ class SearchBar extends React.Component {
         outline: 'none'
       },
       inputText: {
-        color: '#fff',
-        fontSize: '1rem',
-        textShadow: '-1px 1px 2px #666'
+        fontFamily: 'Roboto Slab',
+        color: colors.dkBrown,
+        fontSize: '1rem'
       }
     };
   }

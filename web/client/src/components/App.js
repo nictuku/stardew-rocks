@@ -12,7 +12,8 @@ import theme from '../theme';
 class App extends React.Component {
   getChildContext () {
     return {
-      muiTheme: getMuiTheme(theme)
+      muiTheme: getMuiTheme(theme),
+      season: 'fall'
     };
   }
 
@@ -28,7 +29,8 @@ class App extends React.Component {
   };
 
   static childContextTypes = {
-    muiTheme: PropTypes.object
+    muiTheme: PropTypes.object,
+    season: PropTypes.string
   };
 
   componentWillMount () {

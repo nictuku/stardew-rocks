@@ -34,11 +34,11 @@ const drawer = handleActions({
   }),
   [UPDATE_AUTODOCK_DRAWER]: (state) => ({
     ...state,
-    isDocked: state.mql.matches
+    isDocked: false
   })
 }, {
   isOpen: false,
-  isDocked: mql.matches,
+  isDocked: false,
   mql
 });
 
