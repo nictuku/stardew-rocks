@@ -1,6 +1,11 @@
 import {createAction} from 'redux-actions';
 import {
-  GET_FARMS, GET_FARM, SEARCH_FARMS, INCREASE_FARMS_AMOUNT, RESET_FARMS_AMOUNT, CLEAR_FARM
+  GET_FARMS,
+  GET_FARM,
+  SEARCH_FARMS,
+  INCREASE_FARMS_AMOUNT,
+  RESET_FARMS_AMOUNT,
+  CLEAR_FARM
 } from '../actionTypes';
 import * as farm from '../services/farm';
 

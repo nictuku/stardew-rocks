@@ -1,9 +1,12 @@
 module.exports = function (config) {
   config.set({
     basePath: '.',
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'sinon'],
     browsers: ['jsdom'],
     reporters: ['nyan'],
+    nyanReporter: {
+      renderOnRunCompleteOnly: true
+    },
     files: [
       'test/index.js'
     ],
@@ -11,16 +14,8 @@ module.exports = function (config) {
       'test/index.js': ['webpack']
     },
     webpack: {
-      devtool: 'inline-source-map',
-      resolve: {
-        alias: {
-          sinon: 'sinon/pkg/sinon'
-        }
-      },
+      devtool: 'eval',
       module: {
-        noParse: [
-          /\/sinon\.js/
-        ],
         loaders: [{
           test: /\.jsx?$/,
           exclude: /(node_modules|bower_components)/,
