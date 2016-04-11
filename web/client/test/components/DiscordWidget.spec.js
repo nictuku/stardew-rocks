@@ -8,6 +8,7 @@ import faker from 'faker';
 chai.use(require('sinon-chai'));
 chai.use(require('chai-enzyme')());
 
+import context from '../mocks/mockContext';
 import {component as DiscordWidget} from '../../src/components/DiscordWidget';
 
 const randomUser = (isIdle) => ({
@@ -22,11 +23,7 @@ const randomUser = (isIdle) => ({
 describe('DiscordWidget', function () {
   let discord;
 
-  const options = {
-    context: {
-      season: 'fall'
-    }
-  };
+  const options = {context};
 
   beforeEach(function () {
     discord = {

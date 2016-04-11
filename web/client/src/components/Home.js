@@ -3,9 +3,10 @@ import Radium from 'radium';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import Waypoint from 'react-waypoint';
-
 import Paper from 'material-ui/lib/paper';
+import color from 'color';
 
+import colors from '../colors';
 import SearchBar from './SearchBar';
 import FarmCard from './FarmCard';
 import {changeFilter} from '../actions/farmFilterActions';
@@ -26,6 +27,10 @@ class Home extends React.Component {
     getMoreFarms: PropTypes.func.isRequired
   }
 
+  static contextTypes = {
+    season: PropTypes.string
+  };
+
   componentDidMount () {
     this.props.getFarms();
   }
@@ -35,6 +40,7 @@ class Home extends React.Component {
   }
 
   styles () {
+    /* eslint-disable no-magic-numbers */
     return {
       home: {
         flex: '1',
@@ -45,7 +51,8 @@ class Home extends React.Component {
         overflowY: 'auto',
         overflowX: 'hidden',
         flex: '1',
-        position: 'relative'
+        position: 'relative',
+        backgroundColor: color(colors[this.context.season].color1).darken(0.5).rgbString()
       },
       list: {
         position: 'absolute',
@@ -70,6 +77,7 @@ class Home extends React.Component {
         justifyContent: 'center'
       }
     };
+    /* eslint-enable */
   }
 
   render () {

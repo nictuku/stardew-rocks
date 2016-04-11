@@ -6,6 +6,7 @@ import chai, {expect} from 'chai';
 chai.use(require('sinon-chai'));
 chai.use(require('chai-enzyme')());
 
+import context from '../mocks/mockContext';
 import mockFarms from '../mocks/mockFarms';
 import mockProps from '../mocks/mockProps';
 import {initialState} from '../../src/reducers/farms';
@@ -29,6 +30,8 @@ describe('Home', function () {
     ]
   };
 
+  const options = {context};
+
   let props;
 
   before('mock inconsequential', function () {
@@ -40,7 +43,7 @@ describe('Home', function () {
     const farms = mockFarms.generateFarms(initialState.farmsPerPage);
     const wrapper = mount(
       <Home {...props} {...initialState} getFarms={getFarmsSpy} />
-    );
+    , options);
 
     expect(getFarmsSpy).to.have.been.calledOnce;
     expect(wrapper).to.not.have.descendants('.farm-card');
@@ -53,7 +56,7 @@ describe('Home', function () {
     const farms = mockFarms.generateFarms(initialState.farmsPerPage + 10);
     const wrapper = mount(
       <Home {...props} {...initialState} farms={farms} />
-    );
+    , options);
 
     expect(wrapper).to.have.exactly(initialState.farmsPerPage)
       .descendants('.farm-card');
@@ -62,7 +65,7 @@ describe('Home', function () {
   it('shows no results with no farms', function () {
     const wrapper = mount(
       <Home {...props} {...initialState} />
-    );
+    , options);
 
     expect(wrapper).to.not.have.descendants('.farm-card');
     expect(wrapper).to.have.exactly(1).descendants('.home-error-no-farms');

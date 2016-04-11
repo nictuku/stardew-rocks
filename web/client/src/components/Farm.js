@@ -47,14 +47,14 @@ class Farm extends React.Component {
         top: '0',
         bottom: '0',
         textAlign: 'center',
-        cursor: 'pointer',
-        backgroundImage: 'url("content/logo.svg")',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center'
+        cursor: 'pointer'
       },
       image: {
         maxHeight: '100%',
-        maxWidth: '100%'
+        maxWidth: '100%',
+        backgroundImage: 'url("content/logo.svg")',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center'
       }
     };
   }
