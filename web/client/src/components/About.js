@@ -11,8 +11,8 @@ class About extends React.Component {
       paper: {
         display: 'inline-block',
         textAlign: 'left',
-        padding: '1rem',
-        maxWidth: '600px',
+        padding: '0 1rem 1rem 1rem',
+        maxWidth: '800px',
         margin: '1rem'
       }
     };
