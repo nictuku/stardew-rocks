@@ -140,7 +140,7 @@ class Navbar extends React.Component {
             ]}
           >
             <Link to="about" className="btn">
-              <i className="material-icons">file_download</i>
+              <i className="material-icons">question_answer</i>
               &nbsp;About/FAQ
             </Link>
             <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">

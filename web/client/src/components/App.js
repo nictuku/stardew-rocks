@@ -14,9 +14,7 @@ class App extends React.Component {
   getChildContext () {
     return {
       muiTheme: getMuiTheme(theme),
-      season: faker.random.arrayElement([
-        'fall', 'summer'
-      ])
+      season: 'night'
     };
   }
 
