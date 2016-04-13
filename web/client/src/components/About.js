@@ -1,12 +1,20 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Paper from 'material-ui/lib/paper';
 
+import colors from '../colors';
+
 class About extends React.Component {
+  static contextTypes = {
+    season: PropTypes.string
+  };
+
   styles () {
     return {
       about: {
         overflow: 'auto',
-        textAlign: 'center'
+        textAlign: 'center',
+        flex: '1',
+        backgroundColor: colors[this.context.season].color1
       },
       paper: {
         display: 'inline-block',
