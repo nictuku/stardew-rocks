@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import Paper from 'material-ui/lib/paper';
+import color from 'color';
 
 import colors from '../colors';
 
@@ -9,12 +10,13 @@ class About extends React.Component {
   };
 
   styles () {
+    /* eslint-disable no-magic-numbers */
     return {
       about: {
         overflow: 'auto',
         textAlign: 'center',
         flex: '1',
-        backgroundColor: colors[this.context.season].color1
+        backgroundColor: color(colors[this.context.season].color1).darken(0.5).rgbString()
       },
       paper: {
         display: 'inline-block',
@@ -24,6 +26,7 @@ class About extends React.Component {
         margin: '1rem'
       }
     };
+    /* eslint-enable */
   }
 
   render () {
