@@ -175,6 +175,7 @@ func main() {
 
 	// This is served by the web app.
 	http.Handle("/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Index)))
+	http.Handle("/about/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Index)))
 
 	// This is served from the filesystem, but / goes to index.html which has our web app.
 	http.Handle("/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Root))))
