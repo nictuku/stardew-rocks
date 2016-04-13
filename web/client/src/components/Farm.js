@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import _ from 'lodash';
+import color from 'color';
 import {connect} from 'react-redux';
 import Lightbox from 'react-image-lightbox';
 import LinearProgress from 'material-ui/lib/linear-progress';
@@ -7,6 +8,8 @@ import LinearProgress from 'material-ui/lib/linear-progress';
 import * as farmActions from '../actions/farmActions';
 import * as lightBoxActions from '../actions/farmLightBoxActions';
 import * as globalActions from '../actions/globalActions';
+
+import colors from '../colors';
 
 import FarmMeta from './FarmMeta';
 
@@ -23,6 +26,26 @@ class Farm extends React.Component {
     /* eslint-enable */
   }
 
+  static propTypes = {
+    routeParams: PropTypes.object.isRequired,
+    lightBox: PropTypes.object.isRequired,
+    nextSrc: PropTypes.func.isRequired,
+    prevSrc: PropTypes.func.isRequired,
+    farm: PropTypes.object.isRequired,
+    getFarm: PropTypes.func.isRequired,
+    openLightBox: PropTypes.func.isRequired,
+    closeLightBox: PropTypes.func.isRequired,
+    setLightBoxSources: PropTypes.func.isRequired,
+    clearFarm: PropTypes.func.isRequired,
+    changeSeason: PropTypes.func.isRequired,
+    changeSeasonDefault: PropTypes.func.isRequired
+  };
+
+  static contextTypes = {
+    season: PropTypes.string,
+    muiTheme: PropTypes.object
+  };
+
   componentDidMount () {
     this.props.getFarm(this.props.routeParams.id);
   }
@@ -33,8 +56,15 @@ class Farm extends React.Component {
   }
 
   styles () {
+    /* eslint-disable no-magic-numbers */
     return {
       farm: {
+        display: "flex",
+        flexDirection: "column",
+        flex: '1',
+        backgroundColor: color(colors[this.context.season].color1).darken(0.5).rgbString()
+      },
+      card: {
         display: "flex",
         flexDirection: "column",
         flex: '1'
@@ -44,7 +74,7 @@ class Farm extends React.Component {
         position: 'relative',
         display: 'flex',
         flexDirection: 'row',
-        marginBottom: '1rem'
+        margin: '1rem'
       },
       imageWrapper: {
         backgroundColor: this.context.muiTheme.rawTheme.palette.accent3Color,
@@ -64,16 +94,14 @@ class Farm extends React.Component {
         backgroundPosition: 'center'
       }
     };
+    /* eslint-enable */
   }
 
   componentWillReceiveProps (nextProps) {
     if (!_.isEqual(nextProps.farm.sources, this.props.farm.sources)) {
       this.setLightBoxSources(nextProps.farm.sources);
-      if (_.has(nextProps.farm, "Player.DateStringForSaveGame")) {
-        const season = nextProps.farm.Player.DateStringForSaveGame
-          .match(/(Summer|Spring|Fall|Winter)/)[0] // eslint-disable-line no-magic-numbers
-          .toLowerCase();
-        this.changeSeason(season);
+      if (_.has(nextProps.farm, "CurrentSeason")) {
+        this.changeSeason(nextProps.farm.CurrentSeason);
       }
     }
   }
@@ -82,7 +110,7 @@ class Farm extends React.Component {
     return (
       <div style={this.styles().farm}>
         {_.has(this.props.farm, 'Farmer') ?
-          <div style={this.styles().farm}>
+          <div style={this.styles().card}>
             <FarmMeta farm={this.props.farm} />
             <div style={this.styles().cardMedia} onClick={this.props.openLightBox}>
               <div style={this.styles().imageWrapper}>
@@ -106,25 +134,6 @@ class Farm extends React.Component {
     );
   }
 }
-
-Farm.contextTypes = {
-  muiTheme: PropTypes.object
-};
-
-Farm.propTypes = {
-  routeParams: PropTypes.object.isRequired,
-  lightBox: PropTypes.object.isRequired,
-  nextSrc: PropTypes.func.isRequired,
-  prevSrc: PropTypes.func.isRequired,
-  farm: PropTypes.object.isRequired,
-  getFarm: PropTypes.func.isRequired,
-  openLightBox: PropTypes.func.isRequired,
-  closeLightBox: PropTypes.func.isRequired,
-  setLightBoxSources: PropTypes.func.isRequired,
-  clearFarm: PropTypes.func.isRequired,
-  changeSeason: PropTypes.func.isRequired,
-  changeSeasonDefault: PropTypes.func.isRequired
-};
 
 export default connect(
   state => ({
