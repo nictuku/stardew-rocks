@@ -67,12 +67,14 @@ class Farm extends React.Component {
       card: {
         display: "flex",
         flexDirection: "column",
-        flex: '1'
+        flex: '1',
+        border: '201px solid #FFFF',
+        borderImage: 'url("content/page.png") 201 224 52 270 stretch'
       },
       cardMedia: {
         flex: '1',
         position: 'relative',
-        display: 'flex',
+        display: 'none',
         flexDirection: 'row',
         margin: '1rem'
       },
@@ -110,24 +112,26 @@ class Farm extends React.Component {
     return (
       <div style={this.styles().farm}>
         {_.has(this.props.farm, 'Farmer') ?
-          <div style={this.styles().card}>
-            <FarmMeta farm={this.props.farm} />
-            <div style={this.styles().cardMedia} onClick={this.props.openLightBox}>
-              <div style={this.styles().imageWrapper}>
-                <img src={this.props.farm.Thumbnail} style={this.styles().image}/>
+          <div style={this.styles().farm}>
+            <div style={this.styles().card}>
+              <FarmMeta farm={this.props.farm} />
+              <div style={this.styles().cardMedia} onClick={this.props.openLightBox}>
+                <div style={this.styles().imageWrapper}>
+                  <img src={this.props.farm.Thumbnail} style={this.styles().image}/>
+                </div>
               </div>
+              {this.props.lightBox.isOpen ?
+                <Lightbox
+                  mainSrc={this.props.lightBox.mainSrc}
+                  nextSrc={this.props.lightBox.nextSrc}
+                  prevSrc={this.props.lightBox.prevSrc}
+                  onMoveNextRequest={this.props.nextSrc}
+                  onMovePrevRequest={this.props.prevSrc}
+                  onCloseRequest={this.props.closeLightBox}
+                  animationDisabled={true}
+                />
+              : null}
             </div>
-            {this.props.lightBox.isOpen ?
-              <Lightbox
-                mainSrc={this.props.lightBox.mainSrc}
-                nextSrc={this.props.lightBox.nextSrc}
-                prevSrc={this.props.lightBox.prevSrc}
-                onMoveNextRequest={this.props.nextSrc}
-                onMovePrevRequest={this.props.prevSrc}
-                onCloseRequest={this.props.closeLightBox}
-                animationDisabled={true}
-              />
-            : null}
           </div>
       : <LinearProgress mode="indeterminate" />}
       </div>
