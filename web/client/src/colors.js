@@ -5,9 +5,9 @@ export const tan        = '#ffd284';
 export const yellow     = '#f9cc2a';
 export const orange     = '#de5936';
 export const maroon     = '#72122b';
-export const dkBlue     = '#0e4175';
-export const blue       = '#0879ba';
-export const ltBlue     = '#03a8f3';
+export const dkBlue     = '#1d3cd3';
+export const blue       = '#165ed7';
+export const ltBlue     = '#219df5';
 export const royalBlue  = '#1e0d69';
 export const purple     = '#531f96';
 export const pink       = '#c012d7';
@@ -28,7 +28,7 @@ export const spring = {
   color1: dkBlue,
   color2: blue,
   color3: ltBlue,
-  text: white
+  text: yellow
 };
 export const night = {
   color1: royalBlue,

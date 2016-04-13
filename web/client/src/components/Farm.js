@@ -6,15 +6,21 @@ import LinearProgress from 'material-ui/lib/linear-progress';
 
 import * as farmActions from '../actions/farmActions';
 import * as lightBoxActions from '../actions/farmLightBoxActions';
+import * as globalActions from '../actions/globalActions';
 
 import FarmMeta from './FarmMeta';
 
 class Farm extends React.Component {
   constructor (props) {
     super(props);
-    this.setLightBoxSources = _.debounce(this.props.setLightBoxSources, 1000, { // eslint-disable-line no-magic-numbers
+    /* eslint-disable no-magic-numbers */
+    this.setLightBoxSources = _.debounce(this.props.setLightBoxSources, 1000, {
       leading: true, trailing: false
     });
+    this.changeSeason = _.debounce(this.props.changeSeason, 300, {
+      leading: true, trailing: false
+    });
+    /* eslint-enable */
   }
 
   componentDidMount () {
@@ -23,6 +29,7 @@ class Farm extends React.Component {
 
   componentWillUnmount () {
     this.props.clearFarm();
+    this.props.changeSeasonDefault();
   }
 
   styles () {
@@ -62,6 +69,12 @@ class Farm extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (!_.isEqual(nextProps.farm.sources, this.props.farm.sources)) {
       this.setLightBoxSources(nextProps.farm.sources);
+      if (_.has(nextProps.farm, "Player.DateStringForSaveGame")) {
+        const season = nextProps.farm.Player.DateStringForSaveGame
+          .match(/(Summer|Spring|Fall|Winter)/)[0] // eslint-disable-line no-magic-numbers
+          .toLowerCase();
+        this.changeSeason(season);
+      }
     }
   }
 
@@ -108,7 +121,9 @@ Farm.propTypes = {
   openLightBox: PropTypes.func.isRequired,
   closeLightBox: PropTypes.func.isRequired,
   setLightBoxSources: PropTypes.func.isRequired,
-  clearFarm: PropTypes.func.isRequired
+  clearFarm: PropTypes.func.isRequired,
+  changeSeason: PropTypes.func.isRequired,
+  changeSeasonDefault: PropTypes.func.isRequired
 };
 
 export default connect(
@@ -140,6 +155,12 @@ export default connect(
     },
     setLightBoxSources (sources) {
       dispatch(lightBoxActions.setSources(sources));
+    },
+    changeSeason (season) {
+      dispatch(globalActions.changeSeason(season));
+    },
+    changeSeasonDefault () {
+      dispatch(globalActions.changeSeasonDefault());
     }
   })
 )(Farm);
