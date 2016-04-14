@@ -17,6 +17,8 @@ export const ltGrey     = '#878687';
 export const raspberry  = '#ae2b7b';
 export const dkPink     = '#ce1551';
 export const tangerine  = '#f58413';
+export const leather    = '#b67029';
+export const parchment  = '#ffe2af';
 
 export const fall = {
   color1: maroon,
@@ -50,6 +52,6 @@ export const summer = {
 };
 
 export default {
-  brown, dkBrown, tan, yellow,
+  brown, dkBrown, tan, yellow, leather, parchment,
   fall, summer, winter, spring, night
 };

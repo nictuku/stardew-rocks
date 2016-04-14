@@ -12,6 +12,7 @@ import * as globalActions from '../actions/globalActions';
 import colors from '../colors';
 
 import FarmMeta from './FarmMeta';
+import FarmSlider from './FarmSlider';
 
 class Farm extends React.Component {
   constructor (props) {
@@ -61,22 +62,25 @@ class Farm extends React.Component {
       farm: {
         display: "flex",
         flexDirection: "column",
-        flex: '1',
-        backgroundColor: color(colors[this.context.season].color1).darken(0.5).rgbString()
+        flex: '1'
+      },
+      content: {
+        display: 'flex',
+        flexDirection: "column",
+        flex: '1'
       },
       card: {
-        margin: '1rem',
-        flex: '1',
+        margin: '2.5rem 1rem 1rem 1rem',
         position: 'relative',
         display: 'flex',
         flexDirection: 'column'
       },
-      page: {
+      pageBackground: {
         position: 'absolute',
         top: 0,
-        bottom: 0,
         left: 0,
         right: 0,
+        bottom: 0,
         borderImageSource: 'url("content/page.png")',
         borderImageSlice: '197 224 52 270 fill',
         borderImageRepeat: 'stretch',
@@ -84,17 +88,8 @@ class Farm extends React.Component {
       },
       pageContent: {
         display: 'flex',
-        flexDirection: 'column',
-        margin: '1rem',
         zIndex: '1',
-        flex: '1'
-      },
-      cardMedia: {
-        flex: '1',
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'row',
-        margin: '1rem'
+        position: 'relative'
       },
       imageWrapper: {
         position: 'absolute',
@@ -105,12 +100,41 @@ class Farm extends React.Component {
         textAlign: 'center',
         cursor: 'pointer'
       },
-      image: {
-        maxHeight: '100%',
-        maxWidth: '100%',
-        backgroundImage: 'url("content/logo.svg")',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center'
+      nameWrapper: {
+        position: 'absolute',
+        display: 'flex',
+        top: '-1.75rem',
+        left: '1rem',
+        padding: '.5rem 4rem .75rem 4rem'
+      },
+      nameBackground: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        borderImageSource: 'url("content/name.png")',
+        borderImageSlice: '12 52 28 52 fill',
+        borderImageRepeat: 'stretch',
+        borderWidth: '12px 52px 28px 52px'
+      },
+      name: {
+        flex: '1',
+        zIndex: 1,
+        fontSize: '2rem',
+        color: colors.dkBrown,
+        fontFamily: 'Roboto Slab'
+      },
+      meta: {
+        width: '20%'
+      },
+      slider: {
+        position: 'absolute',
+        top: '3rem',
+        right: 0,
+        bottom: '1rem',
+        width: '65%',
+        zIndex: 2
       }
     };
     /* eslint-enable */
@@ -129,27 +153,18 @@ class Farm extends React.Component {
     return (
       <div style={this.styles().farm}>
         {_.has(this.props.farm, 'Farmer') ?
-          <div style={this.styles().card}>
-            <div style={this.styles().page} />
-            <div style={this.styles().pageContent}>
-              <FarmMeta farm={this.props.farm} />
-              <div style={this.styles().cardMedia} onClick={this.props.openLightBox}>
-                <div style={this.styles().imageWrapper}>
-                  <img src={this.props.farm.Thumbnail} style={this.styles().image}/>
-                </div>
+          <div style={this.styles().content}>
+            <div style={this.styles().card}>
+              <div style={this.styles().pageBackground}></div>
+              <div style={this.styles().pageContent}>
+                <FarmMeta farm={this.props.farm} style={this.styles().meta} />
               </div>
-              {this.props.lightBox.isOpen ?
-                <Lightbox
-                  mainSrc={this.props.lightBox.mainSrc}
-                  nextSrc={this.props.lightBox.nextSrc}
-                  prevSrc={this.props.lightBox.prevSrc}
-                  onMoveNextRequest={this.props.nextSrc}
-                  onMovePrevRequest={this.props.prevSrc}
-                  onCloseRequest={this.props.closeLightBox}
-                  animationDisabled={true}
-                />
-              : null}
+              <div style={this.styles().nameWrapper}>
+                <div style={this.styles().nameBackground}></div>
+                <div style={this.styles().name}>{this.props.farm.Name}</div>
+              </div>
             </div>
+            <FarmSlider farm={this.props.farm} style={this.styles().slider} />
           </div>
       : <LinearProgress mode="indeterminate" />}
       </div>

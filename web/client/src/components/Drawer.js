@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import {Link} from 'react-router';
+import color from 'color';
 import Sidebar from 'react-sidebar';
 import Menu from 'material-ui/lib/menus/menu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
@@ -47,7 +48,8 @@ class Drawer extends React.Component {
       },
       content: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: color(colors[this.context.season].color1).darken(0.5).rgbString()
       },
       badButton: {
         padding: 'initial',
