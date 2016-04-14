@@ -65,21 +65,38 @@ class Farm extends React.Component {
         backgroundColor: color(colors[this.context.season].color1).darken(0.5).rgbString()
       },
       card: {
-        display: "flex",
-        flexDirection: "column",
+        margin: '1rem',
         flex: '1',
-        border: '201px solid #FFFF',
-        borderImage: 'url("content/page.png") 201 224 52 270 stretch'
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column'
+      },
+      page: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        borderImageSource: 'url("content/page.png")',
+        borderImageSlice: '197 224 52 270 fill',
+        borderImageRepeat: 'stretch',
+        borderWidth: '197px 224px 52px 270px'
+      },
+      pageContent: {
+        display: 'flex',
+        flexDirection: 'column',
+        margin: '1rem',
+        zIndex: '1',
+        flex: '1'
       },
       cardMedia: {
         flex: '1',
         position: 'relative',
-        display: 'none',
+        display: 'flex',
         flexDirection: 'row',
         margin: '1rem'
       },
       imageWrapper: {
-        backgroundColor: this.context.muiTheme.rawTheme.palette.accent3Color,
         position: 'absolute',
         left: '0',
         right: '0',
@@ -112,8 +129,9 @@ class Farm extends React.Component {
     return (
       <div style={this.styles().farm}>
         {_.has(this.props.farm, 'Farmer') ?
-          <div style={this.styles().farm}>
-            <div style={this.styles().card}>
+          <div style={this.styles().card}>
+            <div style={this.styles().page} />
+            <div style={this.styles().pageContent}>
               <FarmMeta farm={this.props.farm} />
               <div style={this.styles().cardMedia} onClick={this.props.openLightBox}>
                 <div style={this.styles().imageWrapper}>
