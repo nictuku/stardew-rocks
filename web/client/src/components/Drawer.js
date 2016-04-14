@@ -75,7 +75,8 @@ class Drawer extends React.Component {
           root: this.styles().root,
           overlay: this.styles().root,
           sidebar: this.styles().drawer,
-          content: this.styles().content
+          content: this.styles().content,
+          dragHandle: this.styles().root
         }}
         sidebar={
           <div>
@@ -86,7 +87,7 @@ class Drawer extends React.Component {
                     href="https://github.com/nictuku/stardew-rocks"
                     leftIcon={<FontIcon className="material-icons">file_download</FontIcon>}
                   />
-                  <Link to="about" style={this.styles().link}>
+                  <Link to="about" style={this.styles().link} onClick={this.props.toggleDrawer}>
                     <MenuItem
                       primaryText="About/FAQ"
                       leftIcon={
