@@ -3,6 +3,7 @@ package stardb
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/nictuku/stardew-rocks/parser"
 	"gopkg.in/mgo.v2/bson"
@@ -42,13 +43,16 @@ func FarmBundleJSON(id string) ([]byte, error) {
 		return nil, fmt.Errorf("invalid farm id")
 	}
 	var farm *Farm
-	if err := FarmCollection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&farm); err != nil {
+	err := FarmCollection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&farm)
+	if err != nil {
 		return nil, err
 	}
 	farm.Thumbnail = farm.ScreenshotPath()
 	farm.ID = farm.InternalID.Hex()
-	// Note: This is probably a bit slow in the current implementation.
-	farm.History = farm.SaveTimes()
+	farm.History, err = GetFarmHistory(id)
+	if err != nil {
+		log.Println("bundle history error:", err)
+	}
 
 	var fi *FarmInfo
 	if err := FarmInfoCollection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&fi); err != nil {
@@ -56,4 +60,3 @@ func FarmBundleJSON(id string) ([]byte, error) {
 	}
 	return json.Marshal(FarmBundle{farm, fi})
 }
-
