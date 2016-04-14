@@ -7,13 +7,13 @@ import colors from '../colors';
 class FarmSlider extends React.Component {
   static propTypes = {
     farm: PropTypes.object.isRequired,
-    style: PropTypes.object
+    style: PropTypes.object,
+    isMobile: PropTypes.bool.isRequired
   };
 
   styles () {
     return {
       slider: {
-        padding: '3rem',
         textAlign: 'center'
       },
       image: {
@@ -28,7 +28,8 @@ class FarmSlider extends React.Component {
       },
       controls: {
         display: 'flex',
-        marginBottom: '1rem'
+        marginBottom: '1rem',
+        justifyContent: 'space-between'
       },
       farmDate: {
         flex: '1',
@@ -38,7 +39,11 @@ class FarmSlider extends React.Component {
         fontSize: '1.25rem',
         fontWeight: '500'
       },
+      farmDateMobile: {
+        color: colors.parchment
+      },
       btn: {
+        userSelect: 'none',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
@@ -46,6 +51,8 @@ class FarmSlider extends React.Component {
         padding: '.25rem .5rem',
         border: `1px solid ${colors.leather}`,
         borderRadius: '5px',
+        transition: 'all 250ms ease',
+        backgroundColor: colors.parchment,
         ':hover': {
           backgroundColor: colors.leather,
           color: colors.parchment
@@ -55,6 +62,16 @@ class FarmSlider extends React.Component {
   }
 
   render () {
+    const farmDate = (
+      <div
+        style={[
+          this.styles().farmDate,
+          this.props.isMobile && this.styles().farmDateMobile
+        ]}
+      >
+        {this.props.farm.Player.DateStringForSaveGame}
+      </div>
+    );
     return (
       <div style={[this.props.style, this.styles().slider]}>
         <div style={this.styles().controls}>
@@ -62,15 +79,14 @@ class FarmSlider extends React.Component {
             <i className="material-icons">fast_rewind</i>
             &nbsp;Past
           </div>
-          <div style={this.styles().farmDate}>
-            {this.props.farm.Player.DateStringForSaveGame}
-          </div>
+          {this.props.isMobile ? null : farmDate}
           <div style={this.styles().btn} key="slider-future">
             Future&nbsp;
             <i className="material-icons">fast_forward</i>
           </div>
         </div>
         <img style={this.styles().image} src={this.props.farm.Thumbnail} />
+        {this.props.isMobile ? farmDate : null}
       </div>
     );
   }

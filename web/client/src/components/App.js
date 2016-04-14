@@ -63,24 +63,25 @@ class App extends React.Component {
   }
 
   render () {
+    const isMobile = !this.props.drawer.mql.matches;
     return (
       <div style={this.styles().app}>
         <header>
           <Navbar
-            isMobile={!this.props.drawer.mql.matches}
             toggleDrawer={this.props.toggleDrawer}
             drawerIsDocked={this.props.drawer.isDocked}
             drawerIsOpen={this.props.drawer.isOpen}
+            isMobile={isMobile}
           />
         </header>
         <Drawer
-          isMobile={!this.props.drawer.mql.matches}
           isOpen={this.props.drawer.isOpen}
           isDocked={this.props.drawer.isDocked}
           toggleDrawer={this.props.toggleDrawer}
+          isMobile={isMobile}
         >
           <main style={this.styles().main}>
-              {this.props.children}
+            {React.cloneElement(this.props.children, {isMobile})}
           </main>
         <footer></footer>
         </Drawer>

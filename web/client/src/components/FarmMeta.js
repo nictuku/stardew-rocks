@@ -21,14 +21,17 @@ class FarmMeta extends React.Component {
           rules={{
             padding: '3rem',
             '.group': {
+              display: 'inline-block'
             },
             '.item': {
+              display: 'inline-block',
               textAlign: 'left',
               color: colors.dkBrown,
               fontSize: '1.25rem',
               fontWeight: '500',
               paddingTop: '.25rem',
-              paddingBottom: '.25rem'
+              paddingBottom: '.25rem',
+              marginRight: '1rem'
             },
             '.item:last-child': {
               paddingBottom: '1rem'

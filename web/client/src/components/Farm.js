@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
+import Radium from 'radium';
 import _ from 'lodash';
-import color from 'color';
 import {connect} from 'react-redux';
 import Lightbox from 'react-image-lightbox';
 import LinearProgress from 'material-ui/lib/linear-progress';
@@ -14,6 +14,7 @@ import colors from '../colors';
 import FarmMeta from './FarmMeta';
 import FarmSlider from './FarmSlider';
 
+@Radium
 class Farm extends React.Component {
   constructor (props) {
     super(props);
@@ -39,12 +40,14 @@ class Farm extends React.Component {
     setLightBoxSources: PropTypes.func.isRequired,
     clearFarm: PropTypes.func.isRequired,
     changeSeason: PropTypes.func.isRequired,
-    changeSeasonDefault: PropTypes.func.isRequired
+    changeSeasonDefault: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool.isRequired
   };
 
   static contextTypes = {
     season: PropTypes.string,
-    muiTheme: PropTypes.object
+    muiTheme: PropTypes.object,
+    isMobile: PropTypes.bool
   };
 
   componentDidMount () {
@@ -60,20 +63,28 @@ class Farm extends React.Component {
     /* eslint-disable no-magic-numbers */
     return {
       farm: {
-        display: "flex",
-        flexDirection: "column",
-        flex: '1'
+        display: 'flex',
+        justifyContent: 'center',
+        flex: '1',
+        overflowX: 'hidden'
       },
       content: {
         display: 'flex',
         flexDirection: "column",
-        flex: '1'
+        flex: '1',
+        maxWidth: '1000px',
+        position: 'relative'
       },
       card: {
         margin: '2.5rem 1rem 1rem 1rem',
         position: 'relative',
         display: 'flex',
         flexDirection: 'column'
+      },
+      cardMobile: {
+        margin: 'initial',
+        order: 2,
+        display: 'initial'
       },
       pageBackground: {
         position: 'absolute',
@@ -85,6 +96,10 @@ class Farm extends React.Component {
         borderImageSlice: '197 224 52 270 fill',
         borderImageRepeat: 'stretch',
         borderWidth: '197px 224px 52px 270px'
+      },
+      pageBackgroundMobile: {
+        left: '-3rem',
+        right: '-3rem'
       },
       pageContent: {
         display: 'flex',
@@ -103,9 +118,17 @@ class Farm extends React.Component {
       nameWrapper: {
         position: 'absolute',
         display: 'flex',
-        top: '-1.75rem',
-        left: '1rem',
+        top: '1rem',
+        left: '2rem',
         padding: '.5rem 4rem .75rem 4rem'
+      },
+      nameWrapperMobile: {
+        position: 'relative',
+        padding: '2rem 3.5rem',
+        top: 'initial',
+        left: 'initial',
+        alignSelf: 'center',
+        margin: '1rem'
       },
       nameBackground: {
         position: 'absolute',
@@ -115,7 +138,7 @@ class Farm extends React.Component {
         bottom: 0,
         borderImageSource: 'url("content/name.png")',
         borderImageSlice: '12 52 28 52 fill',
-        borderImageRepeat: 'stretch',
+        borderImageRepeat: 'round',
         borderWidth: '12px 52px 28px 52px'
       },
       name: {
@@ -123,10 +146,14 @@ class Farm extends React.Component {
         zIndex: 1,
         fontSize: '2rem',
         color: colors.dkBrown,
-        fontFamily: 'Roboto Slab'
+        fontFamily: 'Roboto Slab',
+        alignSelf: 'center'
       },
       meta: {
         width: '20%'
+      },
+      metaMobile: {
+        width: 'initial'
       },
       slider: {
         position: 'absolute',
@@ -134,7 +161,16 @@ class Farm extends React.Component {
         right: 0,
         bottom: '1rem',
         width: '65%',
-        zIndex: 2
+        zIndex: 2,
+        margin: '3rem'
+      },
+      sliderMobile: {
+        position: 'relative',
+        order: 1,
+        width: 'initial',
+        top: 'initial',
+        right: 'initial',
+        margin: '1rem 1rem 0 1rem'
       }
     };
     /* eslint-enable */
@@ -154,17 +190,43 @@ class Farm extends React.Component {
       <div style={this.styles().farm}>
         {_.has(this.props.farm, 'Farmer') ?
           <div style={this.styles().content}>
-            <div style={this.styles().card}>
-              <div style={this.styles().pageBackground}></div>
+            <div
+              style={[
+                this.styles().card,
+                this.props.isMobile && this.styles().cardMobile
+              ]}
+            >
+              <div
+                style={[
+                  this.styles().pageBackground,
+                  this.props.isMobile && this.styles().pageBackgroundMobile
+                ]}
+              ></div>
               <div style={this.styles().pageContent}>
-                <FarmMeta farm={this.props.farm} style={this.styles().meta} />
-              </div>
-              <div style={this.styles().nameWrapper}>
-                <div style={this.styles().nameBackground}></div>
-                <div style={this.styles().name}>{this.props.farm.Name}</div>
+                <FarmMeta farm={this.props.farm}
+                  style={[
+                    this.styles().meta,
+                    this.props.isMobile && this.styles().metaMobile
+                  ]}
+                />
               </div>
             </div>
-            <FarmSlider farm={this.props.farm} style={this.styles().slider} />
+            <div
+              style={[
+                this.styles().nameWrapper,
+                this.props.isMobile && this.styles().nameWrapperMobile
+              ]}
+            >
+              <div style={this.styles().nameBackground}></div>
+              <div style={this.styles().name}>{this.props.farm.Name}</div>
+            </div>
+            <FarmSlider farm={this.props.farm}
+              isMobile={this.props.isMobile}
+              style={[
+                this.styles().slider,
+                this.props.isMobile && this.styles().sliderMobile
+              ]}
+            />
           </div>
       : <LinearProgress mode="indeterminate" />}
       </div>
