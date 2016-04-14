@@ -31,3 +31,29 @@ func FarmInfoJSON(id string) ([]byte, error) {
 	}
 	return json.Marshal(fi)
 }
+
+type FarmBundle struct {
+	*Farm
+	FarmInfo *FarmInfo
+}
+
+func FarmBundleJSON(id string) ([]byte, error) {
+	if !bson.IsObjectIdHex(id) {
+		return nil, fmt.Errorf("invalid farm id")
+	}
+	var farm *Farm
+	if err := FarmCollection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&farm); err != nil {
+		return nil, err
+	}
+	farm.Thumbnail = farm.ScreenshotPath()
+	farm.ID = farm.InternalID.Hex()
+	// Note: This is probably a bit slow in the current implementation.
+	farm.History = farm.SaveTimes()
+
+	var fi *FarmInfo
+	if err := FarmInfoCollection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&fi); err != nil {
+		return nil, err
+	}
+	return json.Marshal(FarmBundle{farm, fi})
+}
+
