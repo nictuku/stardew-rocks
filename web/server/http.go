@@ -181,7 +181,7 @@ func main() {
 	dir := wwwDir()
 	log.Infof("Serving files from %v", dir)
 	http.Handle("/api/farms", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarms)))
-	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, gziphandler.gzipHandler(http.HandlerFunc(GetFarm))))
+	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(GetFarm))))
 	http.Handle("/api/farminfo/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarmInfo)))
 	http.Handle("/api/farmbundle/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarmBundle)))
 	http.Handle("/api/search/farm", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(SearchFarms)))
