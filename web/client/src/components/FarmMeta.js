@@ -21,7 +21,6 @@ class FarmMeta extends React.Component {
           rules={{
             padding: '3rem',
             '.group': {
-              display: 'inline-block'
             },
             '.item': {
               display: 'inline-block',

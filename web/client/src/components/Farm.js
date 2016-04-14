@@ -2,7 +2,6 @@ import React, {PropTypes} from 'react';
 import Radium from 'radium';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import Lightbox from 'react-image-lightbox';
 import LinearProgress from 'material-ui/lib/linear-progress';
 
 import * as farmActions from '../actions/farmActions';
@@ -149,6 +148,9 @@ class Farm extends React.Component {
         fontFamily: 'Roboto Slab',
         alignSelf: 'center'
       },
+      nameMobile: {
+        fontSize: '1.5rem'
+      },
       meta: {
         width: '20%'
       },
@@ -218,9 +220,19 @@ class Farm extends React.Component {
               ]}
             >
               <div style={this.styles().nameBackground}></div>
-              <div style={this.styles().name}>{this.props.farm.Name}</div>
+              <div
+                style={[
+                  this.styles().name,
+                  this.props.isMobile && this.styles().nameMobile
+                ]}
+              >{this.props.farm.Name}</div>
             </div>
             <FarmSlider farm={this.props.farm}
+              lightBox={this.props.lightBox}
+              nextSrc={this.props.nextSrc}
+              prevSrc={this.props.prevSrc}
+              openLightBox={this.props.openLightBox}
+              closeLightBox={this.props.closeLightBox}
               isMobile={this.props.isMobile}
               style={[
                 this.styles().slider,
