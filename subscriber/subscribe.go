@@ -107,6 +107,23 @@ func main() {
 				log.Print("Error fetching farm ID:", err)
 				continue
 			}
+			// GridFs screenshot write. We write this first because as soon as we change
+			// the save game (below) users of the site will be given that save's timestamp and
+			// will try to open the screenshot. See issue #72.
+			// But we treat this screenshot write as optional - just in case the
+			// renderer is broken or something, we continue anyway because the most
+			// valuable data are the save games.
+			fs, err := stardb.NewScreenshotWriter(farm, ts)
+			if err != nil {
+				log.Print("Error writing grid screenshot:", err)
+			} else {
+				if err := view.WriteImage(farmMap, saveGame, fs); err != nil {
+					log.Print(err)
+				} else {
+					log.Printf("Wrote grid map file %v", farm.ScreenshotPath())
+				}
+				fs.Close()
+			}
 
 			// GridFS XML save file write.
 			// TODO: broken saves (length 0)
@@ -128,21 +145,6 @@ func main() {
 					continue
 				}
 			}
-
-			// GridFs screenshot write.
-			fs, err := stardb.NewScreenshotWriter(farm, ts)
-			if err != nil {
-				log.Print("Error writing grid screenshot:", err)
-				continue
-			}
-
-			if err := view.WriteImage(farmMap, saveGame, fs); err != nil {
-				log.Print(err)
-				fs.Close()
-				continue
-			}
-			fs.Close()
-			log.Printf("Wrote grid map file %v", farm.ScreenshotPath())
 
 		}
 		log.Printf("Total messages so far: %d", count)
