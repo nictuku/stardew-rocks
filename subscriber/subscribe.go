@@ -128,7 +128,7 @@ func main() {
 					continue
 				}
 			}
-			if fi, err := stardb.FarmHistoryFromSaveGame(farm.InternalID, saveGame, ts); err != nil {
+			if fi, err := stardb.FarmHistoryFromSaveGame(farm.InternalID, saveGame, int(ts.Unix())); err != nil {
 				log.Print("farm history from save game:", err)
 				continue
 			} else {
