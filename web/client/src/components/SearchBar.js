@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Radium, {Style} from 'radium';
 import _ from 'lodash';
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
@@ -9,11 +9,15 @@ import colors from '../colors';
 @Radium
 class SearchBar extends React.Component {
   static propTypes = {
-    getFarms: React.PropTypes.func.isRequired,
-    searchFarms: React.PropTypes.func.isRequired,
-    changeFilter: React.PropTypes.func,
-    filter: React.PropTypes.number,
-    filters: React.PropTypes.array
+    getFarms: PropTypes.func.isRequired,
+    searchFarms: PropTypes.func.isRequired,
+    changeFilter: PropTypes.func,
+    filter: PropTypes.number,
+    filters: PropTypes.array
+  };
+
+  static contextTypes = {
+    season: PropTypes.string
   };
 
   constructor (props) {
@@ -35,6 +39,7 @@ class SearchBar extends React.Component {
     return {
       toolbar: {
         display: 'flex',
+        borderBottom: `1px solid ${colors[this.context.season].color1}`,
         backgroundColor: colors.tan
       },
       group: {

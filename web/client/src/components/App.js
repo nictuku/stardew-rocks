@@ -2,7 +2,6 @@ import React, {PropTypes} from 'react';
 import Radium from 'radium';
 import {connect} from 'react-redux';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
-import faker from 'faker';
 
 import * as drawerActions from "../actions/drawerActions";
 import Navbar from './Navbar';
@@ -11,17 +10,10 @@ import theme from '../theme';
 
 @Radium
 class App extends React.Component {
-  getChildContext () {
-    return {
-      muiTheme: getMuiTheme(theme),
-      season: faker.random.arrayElement([
-        'fall', 'summer'
-      ])
-    };
-  }
 
   static propTypes = {
     children: PropTypes.object.isRequired,
+    season: PropTypes.string.isRequired,
     drawer: PropTypes.shape({
       isOpen: PropTypes.bool.isRequired,
       isDocked: PropTypes.bool.isRequired,
@@ -35,6 +27,13 @@ class App extends React.Component {
     muiTheme: PropTypes.object,
     season: PropTypes.string
   };
+
+  getChildContext () {
+    return {
+      muiTheme: getMuiTheme(theme),
+      season: this.props.season
+    };
+  }
 
   componentWillMount () {
     this.props.drawer.mql.addListener(this.props.updateAutoDock);
@@ -92,7 +91,8 @@ class App extends React.Component {
 
 export default connect(
   state => ({
-    drawer: state.drawer
+    drawer: state.drawer,
+    season: state.global.season
   }),
   dispatch => ({
     toggleDrawer: () => {

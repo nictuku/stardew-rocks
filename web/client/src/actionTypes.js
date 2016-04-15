@@ -1,3 +1,7 @@
+// global
+export const CHANGE_SEASON = "CHANGE_SEASON";
+export const CHANGE_SEASON_DEFAULT = "CHANGE_SEASON_DEFAULT";
+
 // farms
 export const GET_FARMS = "GET_FARMS";
 export const SEARCH_FARMS = "SEARCH_FARMS";
