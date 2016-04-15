@@ -188,6 +188,7 @@ class Farm extends React.Component {
   }
 
   render () {
+    console.log("farm", this.props.farm);
     return (
       <div style={this.styles().farm}>
         {_.has(this.props.farm, 'Farmer') ?
@@ -248,10 +249,7 @@ class Farm extends React.Component {
 
 export default connect(
   state => ({
-    farm: {
-      ...state.farms.farm,
-      sources: _.map(state.farms.farm.History, image => `/screenshot/${state.farms.farm.ID}/${image}.png`)
-    },
+    farm: state.farms.farm,
     lightBox: state.farmLightBox
   }),
   dispatch => ({

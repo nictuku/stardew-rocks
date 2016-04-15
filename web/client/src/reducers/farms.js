@@ -1,4 +1,6 @@
+/* eslint-disable no-magic-numbers */
 import {handleActions} from 'redux-actions';
+import _ from 'lodash';
 
 import {
   GET_FARMS, GET_FARM, SEARCH_FARMS, INCREASE_FARMS_AMOUNT, RESET_FARMS_AMOUNT, CLEAR_FARM
@@ -19,7 +21,11 @@ const farms = handleActions({
   }),
   [GET_FARM]: (state, action) => ({
     ...state,
-    farm: action.payload
+    farm: {
+      ...action.payload,
+      Player: action.payload.History[action.payload.History.length - 1].Player,
+      sources: _.map(action.payload.History, history => `/screenshot/${action.payload.ID}/${history.Ts}.png`)
+    }
   }),
   [CLEAR_FARM]: (state) => ({
     ...state,

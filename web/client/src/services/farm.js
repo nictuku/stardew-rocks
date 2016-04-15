@@ -14,13 +14,7 @@ export const getFarmInfo = (id) => {
 
 export const getFarm = (id) => {
   return new Promise(resolve => {
-    fetch(`api/farm/${id}`)
-      .then(res => res.json())
-      .then(farm => {
-        getFarmInfo(id).then(info => {
-          resolve(_.assign(farm, info));
-        });
-      });
+    fetch(`api/farm/${id}`).then(res => resolve(res.json()));
   });
 };
 
