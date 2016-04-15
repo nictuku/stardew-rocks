@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/nictuku/stardew-rocks/stardb"
 	//	"gopkg.in/mgo.v2"
 	"log"
@@ -41,6 +42,7 @@ func main() {
 				FilePath: gfile,
 				Size:     sg.Size(),
 			})
+			sg.Close()
 		}
 		for md5, files := range uniqueSaves {
 			if len(files) > 1 {
@@ -53,10 +55,14 @@ func main() {
 				}
 				for _, f := range files {
 					if f.SaveTime > older {
-						if (f.SaveTime - older) > 60 {
-							log.Fatalf("unexpected delta between save times for %v: %d - %d = %d", f.FilePath, f.SaveTime, older, f.SaveTime - older)
+						if (f.SaveTime - older) > 3600 {
+							log.Printf("unexpected delta between save times for %v: %d - %d = %d", f.FilePath, f.SaveTime, older, f.SaveTime-older)
 						}
-						fmt.Println("would delete", f.FilePath)
+						fmt.Println("deleting", f.FilePath)
+						err := stardb.GFS.Remove(f.FilePath)
+						if err != nil {
+							log.Fatal(err)
+						}
 						totalDelete += f.Size
 					}
 				}
@@ -64,5 +70,4 @@ func main() {
 		}
 	}
 	fmt.Println("total bytes", totalDelete)
-
 }

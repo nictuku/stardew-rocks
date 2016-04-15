@@ -54,6 +54,10 @@ class About extends React.Component {
             The app is configured to run on startup for you. If you don't want that, just rename the stardew_rocks.exe executable to something else and it won't start automatically anymore.
           </p>
           <h2>FAQ</h2>
+          <h4>How do I find my farm?</h4>
+          <p>
+            After you have slept one night in game with this service running, use the search bar at the top and enter your farm or farmer's name.
+          </p>
           <h4>I don't see my screenshot. What happened?</h4>
           <p>
             The save files are only uploaded after the game is saved, which happens after each night in the game.

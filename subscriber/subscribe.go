@@ -128,6 +128,17 @@ func main() {
 					continue
 				}
 			}
+			if fi, err := stardb.FarmHistoryFromSaveGame(farm.InternalID, saveGame, ts); err != nil {
+				log.Print("farm history from save game:", err)
+				continue
+			} else {
+				if err := stardb.InsertFarmHistory(farm.InternalID, fi); err != nil {
+					log.Print("update farm history failed:", err)
+					continue
+				}
+				log.Println("Updated farm history")
+			}
+
 
 			// GridFs screenshot write.
 			fs, err := stardb.NewScreenshotWriter(farm, ts)
