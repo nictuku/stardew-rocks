@@ -32,6 +32,8 @@ sed -e "s#src=\"#src=\"assets/${ts}/#"  -i ${tmpdest}/*html
 mv ${tmpdest}/* "${dest}"
 
 tmp=$(mktemp)
-sed -e "s#DirectoryIndex .*html#DirectoryIndex assets/${ts}/index.html#" /etc/apache2/sites-available/${release_env}.conf > "${tmp}"
+sed -e "s#assets/[0-9]\+/#assets/${ts}/#" \
+	-e "s#DirectoryIndex .*html#DirectoryIndex assets/${ts}/index.html#" \
+	/etc/apache2/sites-available/${release_env}.conf > "${tmp}"
 
 cp "${tmp}" /etc/apache2/sites-available/${release_env}.conf
