@@ -2,28 +2,29 @@ package stardb
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/nictuku/stardew-rocks/parser"
 	"gopkg.in/mgo.v2/bson"
 )
 
 type FarmHistory struct {
-	 // FarmID is a foreign key to the farms collection. Not unique in this
-	 // collection since each farm will have several entries, one for each
-	 // save game.
+	// FarmID is a foreign key to the farms collection. Not unique in this
+	// collection since each farm will have several entries, one for each
+	// save game.
 	FarmID bson.ObjectId `json:"-"`
-	Ts     int64         // timestamp for this save game
+	Ts     int           // timestamp for this save game
 
 	*parser.SaveGame
 }
 
-func FarmHistoryFromSaveGame(id bson.ObjectId, sg *parser.SaveGame, ts time.Time) (*FarmHistory, error) {
-	return &FarmHistory{id, ts.Unix(), sg}, nil
+func FarmHistoryFromSaveGame(id bson.ObjectId, sg *parser.SaveGame, ts int) (*FarmHistory, error) {
+	return &FarmHistory{id, ts, sg}, nil
 }
 
 func InsertFarmHistory(id bson.ObjectId, fi *FarmHistory) error {
-	return FarmHistoryCollection.Insert(fi)
+	_, err := FarmHistoryCollection.Upsert(bson.M{"farmid": id, "ts": fi.Ts}, fi)
+	// log.Printf("%v %v : inserted? %#v", id.Hex(), fi.Ts, changeInfo)
+	return err
 }
 
 func GetFarmHistory(id string) ([]*FarmHistory, error) {
