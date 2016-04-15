@@ -114,8 +114,8 @@ class FarmSlider extends React.Component {
             nextSrc={this.props.lightBox.nextSrc}
             prevSrc={this.props.lightBox.prevSrc}
             onCloseRequest={this.props.closeLightBox}
-            onMovePrevRequest={this.props.nextSrc}
-            onMoveNextRequest={this.props.prevSrc}
+            onMovePrevRequest={this.props.prevSrc}
+            onMoveNextRequest={this.props.nextSrc}
             imageTitle={this.props.lightBox.currentDate}
           />
         : null}
