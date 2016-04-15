@@ -38,6 +38,7 @@ func main() {
 		}
 		for _, st := range savetimes {
 			gfile := stardb.SaveGamePathInt(farm.InternalID.Hex(), st)
+			log.Println(gfile)
 
 			sg, err := stardb.GFS.Open(gfile)
 			if err != nil {
@@ -47,7 +48,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			fi, err := stardb.FarmHistoryFromSaveGame(farm.InternalID, gameSave, farm.LastUpdate)
+			fi, err := stardb.FarmHistoryFromSaveGame(farm.InternalID, gameSave, st)
 			if err != nil {
 				log.Fatal(err)
 			}
