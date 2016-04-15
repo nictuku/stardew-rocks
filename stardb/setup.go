@@ -9,11 +9,12 @@ import (
 )
 
 var (
-	Session            *mgo.Session
-	DB                 *mgo.Database
-	FarmCollection     *mgo.Collection
-	FarmInfoCollection *mgo.Collection
-	GFS                *mgo.GridFS
+	Session               *mgo.Session
+	DB                    *mgo.Database
+	FarmCollection        *mgo.Collection
+	FarmInfoCollection    *mgo.Collection
+	FarmHistoryCollection *mgo.Collection
+	GFS                   *mgo.GridFS
 )
 
 func dbName() string {
@@ -37,6 +38,9 @@ func init() {
 	// farminfo is updated more often and has extended information about the farm.
 	FarmInfoCollection = DB.C("farminfo")
 
+	// FarmHistory is like farminfo but has one entry for each save game of that farm.
+	FarmHistoryCollection = DB.C("farmhistory")
+
 	GFS = DB.GridFS("sdr")
 
 	if err := FarmCollection.EnsureIndexKey("name", "farmer"); err != nil {
@@ -53,6 +57,10 @@ func init() {
 	}
 	if err := DB.C("sdr.files").EnsureIndexKey("filename"); err != nil {
 		log.Printf("Failed to create a GFS index: %v", err)
+		os.Exit(1)
+	}
+	if err := FarmHistoryCollection.EnsureIndexKey("farmid", "ts"); err != nil {
+		log.Printf("Failed to create a FarmHistoryCollection index: %v", err)
 		os.Exit(1)
 	}
 

@@ -29,7 +29,7 @@ type Farm struct {
 	// TODO: stop omitting this once the web client understands it.
 	LastUpdate time.Time `json:"-"`
 	Thumbnail  string
-	History    []int
+	History    []*FarmHistory
 	Money      int
 }
 
@@ -162,8 +162,11 @@ func FarmJSON(id string) ([]byte, error) {
 	}
 	farm.Thumbnail = farm.ScreenshotPath()
 	farm.ID = farm.InternalID.Hex()
-	// Note: This is probably a bit slow in the current implementation.
-	farm.History = farm.SaveTimes()
+	fh, err := GetFarmHistory(id)
+	if err != nil {
+		log.Println("Warning FarmJSON history:", err)
+	}
+	farm.History = fh
 
 	return json.Marshal(farm)
 }

@@ -64,6 +64,22 @@ func GetFarm(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func GetFarmBundle(w http.ResponseWriter, r *http.Request) {
+	farmid := strings.TrimPrefix(r.URL.Path, "/api/farmbundle/")
+
+	b, err := stardb.FarmBundleJSON(farmid)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	_, err = w.Write(b)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	return
+}
+
 func GetFarmInfo(w http.ResponseWriter, r *http.Request) {
 	farmid := strings.TrimPrefix(r.URL.Path, "/api/farminfo/")
 
@@ -79,6 +95,7 @@ func GetFarmInfo(w http.ResponseWriter, r *http.Request) {
 	}
 	return
 }
+
 
 func Root(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, "/map") {
@@ -164,8 +181,9 @@ func main() {
 	dir := wwwDir()
 	log.Infof("Serving files from %v", dir)
 	http.Handle("/api/farms", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarms)))
-	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarm)))
+	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(GetFarm))))
 	http.Handle("/api/farminfo/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarmInfo)))
+	http.Handle("/api/farmbundle/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarmBundle)))
 	http.Handle("/api/search/farm", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(SearchFarms)))
 
 	http.Handle("/screenshot/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeScreenshot)))
