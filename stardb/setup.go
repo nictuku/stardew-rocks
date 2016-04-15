@@ -56,7 +56,12 @@ func init() {
 		os.Exit(1)
 	}
 	if err := DB.C("sdr.files").EnsureIndexKey("filename"); err != nil {
-		log.Printf("Failed to create a GFS index: %v", err)
+		log.Printf("Failed to create a GFS filename index: %v", err)
+		os.Exit(1)
+	}
+	// Used for dedupe queries.
+	if err := DB.C("sdr.files").EnsureIndexKey("md5"); err != nil {
+		log.Printf("Failed to create a GFS md5 index: %v", err)
 		os.Exit(1)
 	}
 	if err := FarmHistoryCollection.EnsureIndexKey("farmid", "ts"); err != nil {

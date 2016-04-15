@@ -142,6 +142,23 @@ func FarmsJSON() ([]byte, error) {
 	return json.Marshal(farms)
 }
 
+func IsSaveGameDupe(id string, md5 string) bool {
+	if !bson.IsObjectIdHex(id) {
+		log.Printf("invalid farm id")
+		return false
+	}
+	prefix := fmt.Sprintf("^/saveGames/%v", id)
+	n, err := DB.C("sdr.files").Find(bson.M{
+		"md5": md5,
+		"filename": bson.M{"$regex": prefix},
+	}).Count()
+	if err != nil {
+		log.Print("dupe check error:", err)
+		return false
+	}
+	return n > 0
+}
+
 func FindFarm(id string) (*Farm, error) {
 	if !bson.IsObjectIdHex(id) {
 		return nil, fmt.Errorf("invalid farm id")
