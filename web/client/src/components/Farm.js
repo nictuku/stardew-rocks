@@ -5,7 +5,6 @@ import {connect} from 'react-redux';
 import LinearProgress from 'material-ui/lib/linear-progress';
 
 import * as farmActions from '../actions/farmActions';
-import * as lightBoxActions from '../actions/farmLightBoxActions';
 import * as globalActions from '../actions/globalActions';
 
 import colors from '../colors';
@@ -18,9 +17,6 @@ class Farm extends React.Component {
   constructor (props) {
     super(props);
     /* eslint-disable no-magic-numbers */
-    this.setLightBoxSources = _.debounce(this.props.setLightBoxSources, 1000, {
-      leading: true, trailing: false
-    });
     this.changeSeason = _.debounce(this.props.changeSeason, 300, {
       leading: true, trailing: false
     });
@@ -36,7 +32,6 @@ class Farm extends React.Component {
     getFarm: PropTypes.func.isRequired,
     openLightBox: PropTypes.func.isRequired,
     closeLightBox: PropTypes.func.isRequired,
-    setLightBoxSources: PropTypes.func.isRequired,
     clearFarm: PropTypes.func.isRequired,
     changeSeason: PropTypes.func.isRequired,
     changeSeasonDefault: PropTypes.func.isRequired,
@@ -179,16 +174,12 @@ class Farm extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (!_.isEqual(nextProps.farm.sources, this.props.farm.sources)) {
-      this.setLightBoxSources(nextProps.farm.sources);
-      if (_.has(nextProps.farm, "CurrentSeason")) {
-        this.changeSeason(nextProps.farm.CurrentSeason);
-      }
+    if (!_.isEqual(nextProps.farm.CurrentSeason, this.props.farm.CurrentSeason)) {
+      this.changeSeason(nextProps.farm.CurrentSeason);
     }
   }
 
   render () {
-    console.log("farm", this.props.farm);
     return (
       <div style={this.styles().farm}>
         {_.has(this.props.farm, 'Farmer') ?
@@ -248,10 +239,21 @@ class Farm extends React.Component {
 }
 
 export default connect(
-  state => ({
-    farm: state.farms.farm,
-    lightBox: state.farmLightBox
-  }),
+  state => {
+    const {farm, nextSrc, mainSrc, prevSrc, sources, isOpen, index, currentDate} = state.farm;
+    return {
+      farm,
+      lightBox: {
+        mainSrc,
+        nextSrc,
+        prevSrc,
+        sources,
+        isOpen,
+        index,
+        currentDate
+      }
+    };
+  },
   dispatch => ({
     getFarm (id) {
       dispatch(farmActions.getFarm(id));
@@ -260,19 +262,16 @@ export default connect(
       dispatch(farmActions.clearFarm());
     },
     nextSrc () {
-      dispatch(lightBoxActions.nextSrc());
+      dispatch(farmActions.nextSrc());
     },
     prevSrc () {
-      dispatch(lightBoxActions.prevSrc());
+      dispatch(farmActions.prevSrc());
     },
     openLightBox () {
-      dispatch(lightBoxActions.open());
+      dispatch(farmActions.open());
     },
     closeLightBox () {
-      dispatch(lightBoxActions.close());
-    },
-    setLightBoxSources (sources) {
-      dispatch(lightBoxActions.setSources(sources));
+      dispatch(farmActions.close());
     },
     changeSeason (season) {
       dispatch(globalActions.changeSeason(season));

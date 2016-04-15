@@ -15,7 +15,9 @@ class FarmSlider extends React.Component {
       nextSrc: PropTypes.string.isRequired,
       prevSrc: PropTypes.string.isRequired,
       sources: PropTypes.array.isRequired,
-      isOpen: PropTypes.bool.isRequired
+      isOpen: PropTypes.bool.isRequired,
+      index: PropTypes.number.isRequired,
+      currentDate: PropTypes.string.isRequired
     }).isRequired,
     nextSrc: PropTypes.func.isRequired,
     prevSrc: PropTypes.func.isRequired,
@@ -81,7 +83,7 @@ class FarmSlider extends React.Component {
           this.props.isMobile && this.styles().farmDateMobile
         ]}
       >
-        {this.props.farm.Player.DateStringForSaveGame}
+        {this.props.lightBox.currentDate}
       </div>
     );
     return (
@@ -114,6 +116,7 @@ class FarmSlider extends React.Component {
             onCloseRequest={this.props.closeLightBox}
             onMovePrevRequest={this.props.nextSrc}
             onMoveNextRequest={this.props.prevSrc}
+            imageTitle={this.props.lightBox.currentDate}
           />
         : null}
       </div>

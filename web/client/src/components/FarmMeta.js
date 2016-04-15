@@ -63,7 +63,7 @@ class FarmMeta extends React.Component {
         <div className="group">
           <div className="item">
             <div className="label">Last Save</div>
-            {moment.unix(_.takeRight(this.props.farm.History)).fromNow()}
+            {moment.unix(this.props.farm.LastSave).fromNow()}
           </div>
           <div className="item">
             <div className="label">Time Played</div>

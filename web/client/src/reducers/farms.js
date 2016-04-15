@@ -1,13 +1,11 @@
 /* eslint-disable no-magic-numbers */
 import {handleActions} from 'redux-actions';
-import _ from 'lodash';
 
 import {
-  GET_FARMS, GET_FARM, SEARCH_FARMS, INCREASE_FARMS_AMOUNT, RESET_FARMS_AMOUNT, CLEAR_FARM
+  GET_FARMS, SEARCH_FARMS, INCREASE_FARMS_AMOUNT, RESET_FARMS_AMOUNT
 } from '../actionTypes';
 
 const initialState = {
-  farm: {},
   farms: [],
   pages: 1,
   farmsPerPage: 20,
@@ -18,18 +16,6 @@ const farms = handleActions({
   [GET_FARMS]: (state, action) => ({
     ...state,
     farms: action.payload
-  }),
-  [GET_FARM]: (state, action) => ({
-    ...state,
-    farm: {
-      ...action.payload,
-      Player: action.payload.History[action.payload.History.length - 1].Player,
-      sources: _.map(action.payload.History, history => `/screenshot/${action.payload.ID}/${history.Ts}.png`)
-    }
-  }),
-  [CLEAR_FARM]: (state) => ({
-    ...state,
-    farm: {}
   }),
   [SEARCH_FARMS]: (state, action) => ({
     ...state,
