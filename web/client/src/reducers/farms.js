@@ -1,11 +1,11 @@
+/* eslint-disable no-magic-numbers */
 import {handleActions} from 'redux-actions';
 
 import {
-  GET_FARMS, GET_FARM, SEARCH_FARMS, INCREASE_FARMS_AMOUNT, RESET_FARMS_AMOUNT, CLEAR_FARM
+  GET_FARMS, SEARCH_FARMS, INCREASE_FARMS_AMOUNT, RESET_FARMS_AMOUNT
 } from '../actionTypes';
 
 const initialState = {
-  farm: {},
   farms: [],
   pages: 1,
   farmsPerPage: 20,
@@ -16,14 +16,6 @@ const farms = handleActions({
   [GET_FARMS]: (state, action) => ({
     ...state,
     farms: action.payload
-  }),
-  [GET_FARM]: (state, action) => ({
-    ...state,
-    farm: action.payload
-  }),
-  [CLEAR_FARM]: (state) => ({
-    ...state,
-    farm: {}
   }),
   [SEARCH_FARMS]: (state, action) => ({
     ...state,

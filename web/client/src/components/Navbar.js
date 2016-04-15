@@ -13,10 +13,10 @@ import MenuBtn from './MenuBtn';
 @Radium
 class Navbar extends React.Component {
   static propTypes = {
-    isMobile: PropTypes.bool.isRequired,
     toggleDrawer: PropTypes.func.isRequired,
     drawerIsDocked: PropTypes.bool.isRequired,
-    drawerIsOpen: PropTypes.bool.isRequired
+    drawerIsOpen: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool
   };
 
   static contextTypes = {

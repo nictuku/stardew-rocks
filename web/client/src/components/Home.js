@@ -10,7 +10,7 @@ import colors from '../colors';
 import SearchBar from './SearchBar';
 import FarmCard from './FarmCard';
 import {changeFilter} from '../actions/farmFilterActions';
-import * as farmActions from '../actions/farmActions';
+import * as farmsActions from '../actions/farmsActions';
 
 @Radium
 class Home extends React.Component {
@@ -137,16 +137,16 @@ export default connect(
       dispatch(changeFilter(event, index, value));
     },
     getFarms () {
-      dispatch(farmActions.getFarms());
+      dispatch(farmsActions.getFarms());
     },
     searchFarms (query) {
-      dispatch(farmActions.searchFarms(query));
+      dispatch(farmsActions.searchFarms(query));
     },
     getMoreFarms () {
-      dispatch(farmActions.increaseAmount());
+      dispatch(farmsActions.increaseAmount());
     },
     resetFarmsAmount () {
-      dispatch(farmActions.resetAmount());
+      dispatch(farmsActions.resetAmount());
     }
   })
 )(Home);

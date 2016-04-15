@@ -1,5 +1,7 @@
 import React, {PropTypes} from 'react';
 import {Link} from 'react-router';
+import _ from 'lodash';
+import color from 'color';
 import Sidebar from 'react-sidebar';
 import Menu from 'material-ui/lib/menus/menu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
@@ -10,11 +12,11 @@ import colors from '../colors';
 
 class Drawer extends React.Component {
   static propTypes = {
-    isMobile: PropTypes.bool.isRequired,
     isOpen: PropTypes.bool.isRequired,
     isDocked: PropTypes.bool.isRequired,
     toggleDrawer: PropTypes.func.isRequired,
-    children: PropTypes.array
+    children: PropTypes.array,
+    isMobile: PropTypes.bool.isRequired
   };
 
   static contextTypes = {
@@ -22,6 +24,7 @@ class Drawer extends React.Component {
   };
 
   styles () {
+    /* eslint-disable no-magic-numbers */
     return {
       link: {
         textDecoration: 'none'
@@ -43,11 +46,13 @@ class Drawer extends React.Component {
       },
       drawer: {
         backgroundColor: '#ffffff',
+        zIndex: '10',
         borderRight: `1px solid ${colors[this.context.season].color1}`
       },
       content: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: color(colors[this.context.season].color1).darken(0.5).rgbString()
       },
       badButton: {
         padding: 'initial',
@@ -55,6 +60,9 @@ class Drawer extends React.Component {
         backgroundColor: 'initial',
         textAlign: 'left',
         width: '100%'
+      },
+      overlay: {
+        zIndex: '9'
       },
       white: {
         color: `#ffffff`
@@ -66,6 +74,7 @@ class Drawer extends React.Component {
         top: '57px'
       }
     };
+    /* eslint-enable */
   }
 
   render () {
@@ -73,7 +82,7 @@ class Drawer extends React.Component {
       <Sidebar
         styles={{
           root: this.styles().root,
-          overlay: this.styles().root,
+          overlay: _.assign(this.styles().root, this.styles().overlay),
           sidebar: this.styles().drawer,
           content: this.styles().content,
           dragHandle: this.styles().root
