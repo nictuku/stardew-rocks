@@ -1,19 +1,23 @@
-import React from 'react';
-import Radium from 'radium';
+import React, {PropTypes} from 'react';
+import Radium, {Style} from 'radium';
 import _ from 'lodash';
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
-import TextField from 'material-ui/lib/text-field';
-import FontIcon from 'material-ui/lib/font-icon';
+
+import colors from '../colors';
 
 @Radium
 class SearchBar extends React.Component {
   static propTypes = {
-    getFarms: React.PropTypes.func.isRequired,
-    searchFarms: React.PropTypes.func.isRequired,
-    changeFilter: React.PropTypes.func,
-    filter: React.PropTypes.number,
-    filters: React.PropTypes.array
+    getFarms: PropTypes.func.isRequired,
+    searchFarms: PropTypes.func.isRequired,
+    changeFilter: PropTypes.func,
+    filter: PropTypes.number,
+    filters: PropTypes.array
+  };
+
+  static contextTypes = {
+    season: PropTypes.string
   };
 
   constructor (props) {
@@ -34,7 +38,9 @@ class SearchBar extends React.Component {
   styles () {
     return {
       toolbar: {
-        display: 'flex'
+        display: 'flex',
+        borderBottom: `1px solid ${colors[this.context.season].color1}`,
+        backgroundColor: colors.tan
       },
       group: {
         display: 'flex',
@@ -42,26 +48,45 @@ class SearchBar extends React.Component {
         margin: '0 2rem'
       },
       icon: {
-        paddingLeft: 'initial'
+        paddingLeft: 'initial',
+        margin: 'auto',
+        color: colors.dkBrown
       },
       input: {
-        flex: '1'
+        marginLeft: '.5rem',
+        flex: '1',
+        background: 'initial',
+        border: 'initial',
+        outline: 'none'
+      },
+      inputText: {
+        fontFamily: 'Roboto Slab',
+        color: colors.dkBrown,
+        fontSize: '1rem'
       }
     };
   }
 
   render () {
     return (
-      <Toolbar noGutter style={this.styles().toolbar}>
+      <Toolbar noGutter style={this.styles().toolbar} className="search">
+        <Style scopeSelector=".search"
+          rules={{
+            '::-webkit-input-placeholder': this.styles().inputText,
+            ':-moz-placeholder': this.styles().inputText,
+            '::-moz-placeholder': this.styles().inputText,
+            ':-ms-input-placeholder': this.styles().inputText
+          }}
+        />
         <ToolbarGroup style={this.styles().group}>
-          <FontIcon style={this.styles().icon}
+          <i
+            style={this.styles().icon}
             className="material-icons"
-          >
-            search
-          </FontIcon>
-          <TextField style={this.styles().input}
+          >search</i>
+          <input type="test"
+            style={[this.styles().input, this.styles().inputText]}
             className="search-input"
-            hintText="Search for farms or farmers"
+            placeholder="Search for farms or farmers..."
             onChange={this.query}
           />
         </ToolbarGroup>

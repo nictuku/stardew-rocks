@@ -29,11 +29,12 @@ const drawer = handleActions({
   }),
   [TOGGLE_DRAWER]: (state) => ({
     ...state,
-    isOpen: !state.isOpen
+    isOpen: state.mql.matches ? !state.isDocked : !state.isOpen,
+    isDocked: state.mql.matches ? !state.isDocked : state.mql.matches
   }),
   [UPDATE_AUTODOCK_DRAWER]: (state) => ({
     ...state,
-    isDocked: state.mql.matches
+    isDocked: false
   })
 }, {
   isOpen: false,

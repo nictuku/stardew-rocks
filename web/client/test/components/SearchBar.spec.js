@@ -7,15 +7,18 @@ import chai, {expect} from 'chai';
 chai.use(require('sinon-chai'));
 chai.use(require('chai-enzyme')());
 
+import context from '../mocks/mockContext';
 import SearchBar from '../../src/components/SearchBar';
 
 describe('SearchBar', function () {
+  const options = {context};
+
   it('searches when a query is entered', function () {
     const searchFarmsSpy = sinon.spy();
     const getFarmsSpy = sinon.spy();
     const wrapper = mount(
       <SearchBar searchFarms={searchFarmsSpy} getFarms={getFarmsSpy}/>
-    );
+    , options);
 
     wrapper.find('.search-input').simulate('change', _.set({}, 'target.value', 'pomegranate'));
 
@@ -31,7 +34,7 @@ describe('SearchBar', function () {
     const getFarmsSpy = sinon.spy();
     const wrapper = mount(
       <SearchBar searchFarms={searchFarmsSpy} getFarms={getFarmsSpy}/>
-    );
+    , options);
 
     expect(getFarmsSpy).to.have.not.been.called;
     wrapper.find('.search-input').simulate('change', _.set({}, 'target.value', ''));

@@ -1,16 +1,16 @@
 import React, {PropTypes} from 'react';
 import Radium from 'radium';
 import _ from 'lodash';
-import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import Waypoint from 'react-waypoint';
-
 import Paper from 'material-ui/lib/paper';
+import color from 'color';
 
+import colors from '../colors';
 import SearchBar from './SearchBar';
 import FarmCard from './FarmCard';
 import {changeFilter} from '../actions/farmFilterActions';
-import * as farmActions from '../actions/farmActions';
+import * as farmsActions from '../actions/farmsActions';
 
 @Radium
 class Home extends React.Component {
@@ -27,6 +27,10 @@ class Home extends React.Component {
     getMoreFarms: PropTypes.func.isRequired
   }
 
+  static contextTypes = {
+    season: PropTypes.string
+  };
+
   componentDidMount () {
     this.props.getFarms();
   }
@@ -36,6 +40,7 @@ class Home extends React.Component {
   }
 
   styles () {
+    /* eslint-disable no-magic-numbers */
     return {
       home: {
         flex: '1',
@@ -46,10 +51,12 @@ class Home extends React.Component {
         overflowY: 'auto',
         overflowX: 'hidden',
         flex: '1',
-        position: 'relative'
+        position: 'relative',
+        backgroundColor: color(colors[this.context.season].color1).darken(0.5).rgbString()
       },
       list: {
         position: 'absolute',
+        paddingTop: '1rem',
         bottom: '0',
         left: '0',
         right: '0',
@@ -70,6 +77,7 @@ class Home extends React.Component {
         justifyContent: 'center'
       }
     };
+    /* eslint-enable */
   }
 
   render () {
@@ -129,16 +137,16 @@ export default connect(
       dispatch(changeFilter(event, index, value));
     },
     getFarms () {
-      dispatch(farmActions.getFarms());
+      dispatch(farmsActions.getFarms());
     },
     searchFarms (query) {
-      dispatch(farmActions.searchFarms(query));
+      dispatch(farmsActions.searchFarms(query));
     },
     getMoreFarms () {
-      dispatch(farmActions.increaseAmount());
+      dispatch(farmsActions.increaseAmount());
     },
     resetFarmsAmount () {
-      dispatch(farmActions.resetAmount());
+      dispatch(farmsActions.resetAmount());
     }
   })
 )(Home);

@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactCSS from 'reactcss';
+import React, {PropTypes} from 'react';
+import Radium from 'radium';
 import {connect} from 'react-redux';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 
@@ -8,64 +8,80 @@ import Navbar from './Navbar';
 import Drawer from './Drawer';
 import theme from '../theme';
 
-class App extends ReactCSS.Component {
-  constructor (props) {
-    super(props);
-  }
+@Radium
+class App extends React.Component {
+
+  static propTypes = {
+    children: PropTypes.object.isRequired,
+    season: PropTypes.string.isRequired,
+    drawer: PropTypes.shape({
+      isOpen: PropTypes.bool.isRequired,
+      isDocked: PropTypes.bool.isRequired,
+      mql: PropTypes.object.isRequired
+    }).isRequired,
+    toggleDrawer: PropTypes.func.isRequired,
+    updateAutoDock: PropTypes.func.isRequired
+  };
+
+  static childContextTypes = {
+    muiTheme: PropTypes.object,
+    season: PropTypes.string
+  };
 
   getChildContext () {
     return {
-      muiTheme: getMuiTheme(theme)
+      muiTheme: getMuiTheme(theme),
+      season: this.props.season
     };
   }
 
   componentWillMount () {
-    // this.props.drawer.mql.addListener(this.props.updateAutoDock);
+    this.props.drawer.mql.addListener(this.props.updateAutoDock);
   }
 
   componentWillUnmount () {
-    // this.props.drawer.mql.removeListener(this.props.updateAutoDock);
+    this.props.drawer.mql.removeListener(this.props.updateAutoDock);
   }
 
-  classes () {
+  styles () {
     return {
-      default: {
-        app: {
-          minHeight: "100%",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden"
-        },
-        main: {
-          flex: "1",
-          display: "flex",
-          flexDirection: "column"
-        },
-        leftNavOverlay: {
-          position: 'relative'
-        }
+      app: {
+        minHeight: "100%",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden"
+      },
+      main: {
+        flex: "1",
+        display: "flex",
+        flexDirection: "column"
+      },
+      leftNavOverlay: {
+        position: 'relative'
       }
     };
   }
 
   render () {
+    const isMobile = !this.props.drawer.mql.matches;
     return (
       <div style={this.styles().app}>
+        <header>
+          <Navbar
+            toggleDrawer={this.props.toggleDrawer}
+            drawerIsDocked={this.props.drawer.isDocked}
+            drawerIsOpen={this.props.drawer.isOpen}
+            isMobile={isMobile}
+          />
+        </header>
         <Drawer
           isOpen={this.props.drawer.isOpen}
           isDocked={this.props.drawer.isDocked}
           toggleDrawer={this.props.toggleDrawer}
-          dockDrawer={this.props.dockDrawer}
-          undockDrawer={this.props.undockDrawer}
+          isMobile={isMobile}
         >
-          <header>
-            <Navbar
-              toggleDrawer={this.props.toggleDrawer}
-              drawerIsDocked={this.props.drawer.isDocked}
-            />
-          </header>
           <main style={this.styles().main}>
-              {this.props.children}
+            {React.cloneElement(this.props.children, {isMobile})}
           </main>
         <footer></footer>
         </Drawer>
@@ -74,35 +90,14 @@ class App extends ReactCSS.Component {
   }
 }
 
-App.childContextTypes = {
-  muiTheme: React.PropTypes.object
-};
-
-App.propTypes = {
-  children: React.PropTypes.object,
-  drawer: React.PropTypes.shape({
-    isOpen: React.PropTypes.bool.isRequired,
-    isDocked: React.PropTypes.bool.isRequired
-  }).isRequired,
-  dockDrawer: React.PropTypes.func,
-  undockDrawer: React.PropTypes.func,
-  toggleDrawer: React.PropTypes.func,
-  updateAutoDock: React.PropTypes.func
-};
-
 export default connect(
   state => ({
-    drawer: state.drawer
+    drawer: state.drawer,
+    season: state.global.season
   }),
   dispatch => ({
     toggleDrawer: () => {
       dispatch(drawerActions.toggleDrawer());
-    },
-    dockDrawer: () => {
-      dispatch(drawerActions.dockDrawer());
-    },
-    undockDrawer: () => {
-      dispatch(drawerActions.undockDrawer());
     },
     updateAutoDock: () => {
       dispatch(drawerActions.updateAutoDock());
