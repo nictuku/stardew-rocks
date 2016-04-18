@@ -89,6 +89,7 @@ class Farm extends React.Component {
         borderImageSource: 'url("content/page.png")',
         borderImageSlice: '197 224 52 270 fill',
         borderImageRepeat: 'stretch',
+        borderStyle: 'solid',
         borderWidth: '197px 224px 52px 270px'
       },
       pageBackgroundMobile: {
@@ -133,6 +134,7 @@ class Farm extends React.Component {
         borderImageSource: 'url("content/name.png")',
         borderImageSlice: '12 52 28 52 fill',
         borderImageRepeat: 'round',
+        borderStyle: 'solid',
         borderWidth: '12px 52px 28px 52px'
       },
       name: {

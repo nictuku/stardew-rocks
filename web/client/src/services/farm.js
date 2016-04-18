@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export const getFarms = () => {
   return new Promise(resolve => {
     fetch('api/farms').then(res => resolve(res.json()));

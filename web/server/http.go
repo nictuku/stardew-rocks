@@ -35,6 +35,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFarms(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	b, err := stardb.FarmsJSON()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -51,6 +52,7 @@ func GetFarms(w http.ResponseWriter, r *http.Request) {
 func GetFarm(w http.ResponseWriter, r *http.Request) {
 	farmid := strings.TrimPrefix(r.URL.Path, "/api/farm/")
 
+	w.Header().Set("Content-Type", "application/json")
 	b, err := stardb.FarmJSON(farmid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -86,7 +88,7 @@ func StaticFiles(w http.ResponseWriter, r *http.Request) {
 // SearchFarms searches for farms or farmers. It looks for a query paramater "q".
 func SearchFarms(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-
+	w.Header().Set("Content-Type", "application/json")
 	q := r.Form.Get("q")
 	if len(q) == 0 {
 		w.Write([]byte("{}"))
