@@ -4,11 +4,13 @@ Stardew Farm is a tool for Stardew Valley that collects saved games and shares t
 
 We create and share screenshots of your game with everyone - no complicated setup needed!
 
-Install the Stardew Farm client to share your farm state with the rest of the community! Farm screenshots will automatically appear here every time your game is saved: http://stardew.farm (website is work in progress, hehe).
+Install the Stardew Farm client to share your farm state with the rest of the community!
 
  - [Download Stardew Farm!](https://github.com/nictuku/stardew-rocks/releases/download/v0.8/stardew_rocks.exe)
 
-For usage instructions, see the [About page and FAQ](http://stardew.farm/about)
+Farm screenshots will automatically appear here a few seconds *after your game is saved*: http://stardew.farm. Search for your the name of your farm or farmer.
+ 
+If you have questions, see the [About page and FAQ](http://stardew.farm/about)
 
 Screenshots look like this:
 
