@@ -11,6 +11,8 @@
 //
 // This tool let me treat the "old" database as authoritative, but preserving new
 // data created in the new one after the db dump was taken.
+//
+// Remember to run the remove dupe saves tool and to generate screenshots after this.
 package main
 
 import (
