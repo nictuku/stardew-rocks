@@ -3,7 +3,6 @@ package view
 import (
 	"fmt"
 	"image"
-	"image/draw"
 	"log"
 
 	"github.com/nictuku/stardew-rocks/parser"
@@ -44,7 +43,7 @@ func fenceIndex(object *parser.ObjectItem, objects [][]*parser.ObjectItem, fn fe
 	return fenceNeighbourLookupTable[index]
 }
 
-func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image, objects [][]*parser.ObjectItem) {
+func (s *screenshot) drawObject(pm *parser.Map, item *parser.ObjectItem, objects [][]*parser.ObjectItem) {
 	var (
 		tileHeight            = 16 // Width is 32 even for big craftables.
 		sourcePath            = "../Maps/springobjects.png"
@@ -88,5 +87,5 @@ func drawObject(pm *parser.Map, item *parser.ObjectItem, img draw.Image, objects
 		item.Key.Vector2.X * 16,
 		item.Key.Vector2.Y*16 + placementCompensation,
 	})
-	sb.Draw(img, r, src, sr.Min, objectLayer)
+	s.Draw(r, src, sr.Min, objectLayer)
 }

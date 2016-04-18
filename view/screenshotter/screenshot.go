@@ -10,8 +10,8 @@ import (
 
 	"fmt"
 
-	"github.com/nictuku/stardew-rocks/view"
 	"github.com/nictuku/stardew-rocks/parser"
+	"github.com/nictuku/stardew-rocks/view"
 )
 
 func main() {
@@ -27,7 +27,7 @@ func main() {
 	// This requires access to a TMX of the Farm map. That involves:
 	// - unpacking the game's assets
 	// - converting the tile map to TMX format since what's what our tool supports.
-        farm := parser.LoadFarmMap()
+	farm := parser.LoadFarmMap()
 	gameSave, err := parser.ParseSaveGame(sg)
 	if err != nil {
 		log.Fatal(err)

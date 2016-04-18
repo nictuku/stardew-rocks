@@ -3,7 +3,6 @@ package view
 import (
 	"fmt"
 	"image"
-	"image/draw"
 	"log"
 
 	"github.com/nictuku/stardew-rocks/parser"
@@ -36,7 +35,7 @@ func treeAsset(terrainType string, treeType int, season string) string {
 
 }
 
-func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
+func (s *screenshot) drawTree(pm *parser.Map, season string, item *parser.TerrainItem) {
 
 	if item.Value.TerrainFeature.Type != "Tree" && item.Value.TerrainFeature.Type != "FruitTree" {
 		return
@@ -50,14 +49,14 @@ func drawTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.
 	stage := item.Value.TerrainFeature.GrowthStage
 
 	if item.Value.TerrainFeature.Type == "Tree" {
-		drawRegularTree(pm, season, item, img, src, stage)
+		s.drawRegularTree(pm, season, item, src, stage)
 	} else if item.Value.TerrainFeature.Type == "FruitTree" {
-		drawFruitTree(pm, season, item, img, src, stage)
+		s.drawFruitTree(pm, season, item, src, stage)
 	}
 
 	return
 }
-func drawRegularTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image, src image.Image, stage int) {
+func (s *screenshot) drawRegularTree(pm *parser.Map, season string, item *parser.TerrainItem, src image.Image, stage int) {
 	m := pm.TMX
 	if stage < 5 {
 		sr, ok := treeRects[stage]
@@ -71,7 +70,7 @@ func drawRegularTree(pm *parser.Map, season string, item *parser.TerrainItem, im
 		} else {
 			r = midLeftAlign(sr, image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight})
 		}
-		sb.Draw(img, r, src, sr.Min, treeLayer)
+		s.Draw(r, src, sr.Min, treeLayer)
 	} else {
 		{
 			// shadow
@@ -84,7 +83,7 @@ func drawRegularTree(pm *parser.Map, season string, item *parser.TerrainItem, im
 			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X*m.TileWidth - m.TileWidth, // centralize
 				item.Key.Vector2.Y*m.TileHeight - 0, // vertical centralize
 			})
-			sb.Draw(img, r, src, sr.Min, treeLayer)
+			s.Draw(r, src, sr.Min, treeLayer)
 		}
 		{
 			// stump
@@ -92,7 +91,7 @@ func drawRegularTree(pm *parser.Map, season string, item *parser.TerrainItem, im
 			r := sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth,
 				item.Key.Vector2.Y*m.TileHeight - m.TileHeight, // stump offset
 			})
-			sb.Draw(img, r, cropAndMaybeFlip(item.Value.TerrainFeature.Flipped, src, sr), image.ZP, treeLayer)
+			s.Draw(r, cropAndMaybeFlip(item.Value.TerrainFeature.Flipped, src, sr), image.ZP, treeLayer)
 		}
 		{
 			// tree
@@ -102,7 +101,7 @@ func drawRegularTree(pm *parser.Map, season string, item *parser.TerrainItem, im
 				item.Key.Vector2.Y*m.TileHeight - 80,         // stump offset
 			})
 
-			sb.Draw(img, r,
+			s.Draw(r,
 				cropAndMaybeFlip(item.Value.TerrainFeature.Flipped, src, sr),
 				image.ZP,
 				treeLayer)
@@ -110,7 +109,7 @@ func drawRegularTree(pm *parser.Map, season string, item *parser.TerrainItem, im
 	}
 }
 
-func drawFruitTree(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image, src image.Image, stage int) {
+func (s *screenshot) drawFruitTree(pm *parser.Map, season string, item *parser.TerrainItem, src image.Image, stage int) {
 	m := pm.TMX
 
 	stump := false
@@ -143,5 +142,5 @@ func drawFruitTree(pm *parser.Map, season string, item *parser.TerrainItem, img 
 	// Tree rects are all 3 tiles wide by 5 tiles tall, but the center tile on the bottom is the footprint of the tree's tile.
 	var r image.Rectangle = sr.Sub(sr.Min).Add(image.Point{item.Key.Vector2.X * m.TileWidth, item.Key.Vector2.Y * m.TileHeight}).Sub(image.Point{m.TileWidth, m.TileHeight * 4})
 
-	sb.Draw(img, r, src, sr.Min, treeLayer)
+	s.Draw(r, src, sr.Min, treeLayer)
 }

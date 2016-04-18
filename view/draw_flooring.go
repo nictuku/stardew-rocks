@@ -2,7 +2,6 @@ package view
 
 import (
 	"image"
-	"image/draw"
 	"log"
 
 	"github.com/nictuku/stardew-rocks/parser"
@@ -40,7 +39,7 @@ func getFlooringIndex(item *parser.TerrainItem, items [][]*parser.TerrainItem, f
 	return flooringNeighbourLookupTable[index]
 }
 
-func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image, items [][]*parser.TerrainItem) {
+func (s *screenshot) drawFlooring(pm *parser.Map, item *parser.TerrainItem, items [][]*parser.TerrainItem) {
 	m := pm.TMX
 	if item.Value.TerrainFeature.Type != "Flooring" {
 		return
@@ -59,5 +58,5 @@ func drawFlooring(pm *parser.Map, item *parser.TerrainItem, img draw.Image, item
 		item.Key.Vector2.X * m.TileWidth,
 		item.Key.Vector2.Y * m.TileHeight,
 	})
-	sb.Draw(img, r, src, sr.Min, flooringLayer)
+	s.Draw(r, src, sr.Min, flooringLayer)
 }

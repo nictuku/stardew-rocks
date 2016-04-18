@@ -3,13 +3,12 @@ package view
 import (
 	"fmt"
 	"image"
-	"image/draw"
 	"log"
 
 	"github.com/nictuku/stardew-rocks/parser"
 )
 
-func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
+func (s *screenshot) drawBuilding(pm *parser.Map, building *parser.Building) {
 	if building.Type == "" && building.BuildingType == "" {
 		return
 	}
@@ -30,7 +29,7 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			(building.TileX + building.AnimalDoor.X) * m.TileWidth,
 			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
 		})
-		sb.Draw(img, r, src, sr.Min, objectLayer)
+		s.Draw(r, src, sr.Min, objectLayer)
 
 		// Animal door
 		sr = xnaRect(0, 112, 16, 16)
@@ -38,7 +37,7 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			((building.TileX + building.AnimalDoor.X) * m.TileWidth) + 16, // TODO: Open door
 			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
 		})
-		sb.Draw(img, r, src, sr.Min, objectLayer)
+		s.Draw(r, src, sr.Min, objectLayer)
 
 		// Coop
 		sr = xnaRect(0, 0, 96, 112)
@@ -46,7 +45,7 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			(building.TileX * m.TileWidth),
 			building.TileY*m.TileHeight + building.TilesHigh*m.TileHeight,
 		}
-		sb.Draw(img, topLeftAlign(sr, dp), src, sr.Min, houseLayer)
+		s.Draw(topLeftAlign(sr, dp), src, sr.Min, houseLayer)
 	case building.Type == "Barn": // Also works for building.BuildingType == Deluxe Barn
 		// Door. TODO: open or closed.
 		sr := xnaRect(0, 112, 32, 16)
@@ -55,48 +54,48 @@ func drawBuilding(pm *parser.Map, building *parser.Building, img draw.Image) {
 			(building.TileY + building.AnimalDoor.Y) * m.TileHeight,
 		})
 		// Top part of the door.
-		sb.Draw(img, r, src, sr.Min, objectLayer)
+		s.Draw(r, src, sr.Min, objectLayer)
 		sr = xnaRect(0, 112, 32, 16)
 		r = sr.Sub(sr.Min).Add(image.Point{
 			(building.TileX + building.AnimalDoor.X) * m.TileWidth,
 			(building.TileY + building.AnimalDoor.Y - 1) * m.TileHeight,
 		})
-		sb.Draw(img, r, src, sr.Min, objectLayer)
+		s.Draw(r, src, sr.Min, objectLayer)
 		// Barn
 		sr = xnaRect(0, 0, 112, 112)
 		dp := image.Point{
 			(building.TileX * m.TileWidth),
 			building.TileY*m.TileHeight + building.TilesHigh*m.TileHeight,
 		}
-		sb.Draw(img, topLeftAlign(sr, dp), src, sr.Min, houseLayer)
+		s.Draw(topLeftAlign(sr, dp), src, sr.Min, houseLayer)
 	case building.BuildingType == "Silo":
 		sr := xnaRect(0, 0, 48, 128)
 		dp := image.Point{
 			building.TileX * m.TileWidth,
 			(building.TileY - 1) * m.TileHeight,
 		}
-		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
+		s.Draw(midLeftAlign(sr, dp), src, sr.Min, houseLayer)
 	case building.BuildingType == "Well":
 		sr := xnaRect(0, 0, 48, 80)
 		dp := image.Point{
 			building.TileX * m.TileWidth,
 			(building.TileY)*m.TileHeight + m.TileHeight/2,
 		}
-		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
+		s.Draw(midLeftAlign(sr, dp), src, sr.Min, houseLayer)
 	case building.BuildingType == "Slime Hutch":
 		sr := xnaRect(0, 0, 176, 144)
 		dp := image.Point{
 			building.TileX * m.TileWidth,
 			(building.TileY+1)*m.TileHeight + m.TileHeight/2,
 		}
-		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
+		s.Draw(midLeftAlign(sr, dp), src, sr.Min, houseLayer)
 	case building.BuildingType == "Stable":
 		sr := xnaRect(0, 0, 64, 96)
 		dp := image.Point{
 			building.TileX * m.TileWidth,
 			(building.TileY - 1) * m.TileHeight,
 		}
-		sb.Draw(img, midLeftAlign(sr, dp), src, sr.Min, houseLayer)
+		s.Draw(midLeftAlign(sr, dp), src, sr.Min, houseLayer)
 
 	default:
 		return
