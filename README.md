@@ -4,29 +4,19 @@ Stardew Farm is a tool for Stardew Valley that collects saved games and shares t
 
 We create and share screenshots of your game with everyone - no complicated setup needed!
 
-Discord server for stardew.farm chat: https://discord.gg/0tpEyZrnOVQKA93b
-
-# For Farmers
-
 Install the Stardew Farm client to share your farm state with the rest of the community! Farm screenshots will automatically appear here every time your game is saved: http://stardew.farm (website is work in progress, hehe).
 
  - [Download Stardew Farm!](https://github.com/nictuku/stardew-rocks/releases/download/v0.8/stardew_rocks.exe)
 
-WARNING: 64-bit executable only for now. Sorry. See issue #2 for details.
-
-Just download the .exe file and run it. It stays on your system tray and looks like this:
-
-![Screenshot](assets/img/systray.png)
-
-You can right click on that icon to close it.
-
-The app is configured to run on startup for you. If you don't want that, just rename the *stardew_rocks.exe* executable to something else and it won't start automatically anymore.
+For usage instructions, see the [About page and FAQ](http://stardew.farm/about)
 
 Screenshots look like this:
 
 ![Farm Map](view/map-'JackyBreak'_1459385994.png)
 
 The screenshots are not perfect yet, but we're working on it as fast as possible!
+
+Discord server for stardew.farm chat: https://discord.gg/0tpEyZrnOVQKA93b
 
 # For Developers
 
