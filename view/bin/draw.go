@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/nictuku/stardew-rocks/parser"
 	"github.com/nictuku/stardew-rocks/stardb"
@@ -21,29 +22,38 @@ func main() {
 	log.Printf("Processing farms with farmer name matching `%v`", farmerRE)
 
 	c := stardb.AllFarms(farmerRE)
-	for farm := range c {
-		fmt.Println("processing", farm.Farmer)
-		for _, savetime := range farm.SaveTimes() {
-			gfile := stardb.SaveGamePathInt(farm.InternalID.Hex(), savetime)
-			sg, err := stardb.GFS.Open(gfile)
-			if err != nil {
-				log.Fatal(err)
-			}
-			screenFile := farm.ScreenshotPathByTime(savetime)
-			f, err := stardb.GFS.Create(screenFile)
-			if err != nil {
-				log.Fatal(err)
-			}
+	wg := new(sync.WaitGroup)
 
-			gameSave, err := parser.ParseSaveGame(sg)
-			if err != nil {
-				log.Fatal(err)
+	for i := 0; i < 5; i++ {
+		wg.Add(1)
+		go func() {
+			for farm := range c {
+				fmt.Println("processing", farm.Farmer)
+				for _, savetime := range farm.SaveTimes() {
+					gfile := stardb.SaveGamePathInt(farm.InternalID.Hex(), savetime)
+					sg, err := stardb.GFS.Open(gfile)
+					if err != nil {
+						log.Fatal(err)
+					}
+					screenFile := farm.ScreenshotPathByTime(savetime)
+					f, err := stardb.GFS.Create(screenFile)
+					if err != nil {
+						log.Fatal(err)
+					}
+
+					gameSave, err := parser.ParseSaveGame(sg)
+					if err != nil {
+						log.Fatal(err)
+					}
+					view.WriteImage(farmMap, gameSave, f)
+					sg.Close()
+					f.Close()
+					fmt.Printf("Done rewriting %v from %v\n", screenFile, gfile)
+				}
 			}
-			view.WriteImage(farmMap, gameSave, f)
-			sg.Close()
-			f.Close()
-			fmt.Printf("Done rewriting %v from %v\n", screenFile, gfile)
-		}
+			wg.Done()
+		}()
 	}
-
+	wg.Wait()
+	log.Println("done")
 }
