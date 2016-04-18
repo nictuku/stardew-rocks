@@ -127,15 +127,6 @@ func main() {
 				log.Print("update farm time:", err)
 				continue
 			}
-			if fi, err := stardb.FarmInfoFromSaveGame(saveGame); err != nil {
-				log.Print("farm info from save game:", err)
-				continue
-			} else {
-				if err := stardb.UpdateFarmInfo(farm.InternalID, fi); err != nil {
-					log.Print("update farm info:", err)
-					continue
-				}
-			}
 			if fi, err := stardb.FarmHistoryFromSaveGame(farm.InternalID, saveGame, int(ts.Unix())); err != nil {
 				log.Print("farm history from save game:", err)
 				continue

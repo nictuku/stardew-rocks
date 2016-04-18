@@ -6,12 +6,6 @@ export const getFarms = () => {
   });
 };
 
-export const getFarmInfo = (id) => {
-  return new Promise(resolve => {
-    fetch(`api/farminfo/${id}`).then(res => resolve(res.json()));
-  });
-};
-
 export const getFarm = (id) => {
   return new Promise(resolve => {
     fetch(`api/farm/${id}`).then(res => resolve(res.json()));

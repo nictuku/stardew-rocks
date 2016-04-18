@@ -12,7 +12,6 @@ var (
 	Session               *mgo.Session
 	DB                    *mgo.Database
 	FarmCollection        *mgo.Collection
-	FarmInfoCollection    *mgo.Collection
 	FarmHistoryCollection *mgo.Collection
 	GFS                   *mgo.GridFS
 )
@@ -35,10 +34,8 @@ func init() {
 	DB = Session.DB(dbName())
 	FarmCollection = DB.C("farms")
 
-	// farminfo is updated more often and has extended information about the farm.
-	FarmInfoCollection = DB.C("farminfo")
-
-	// FarmHistory is like farminfo but has one entry for each save game of that farm.
+	// farmhistory is updated more often and has extended information about the farm.
+	// It has one entry for each save game of that farm.
 	FarmHistoryCollection = DB.C("farmhistory")
 
 	GFS = DB.GridFS("sdr")
