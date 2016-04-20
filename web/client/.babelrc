@@ -2,7 +2,7 @@
   "presets": ["es2015", "react"],
   "plugins": [
     ["react-intl", {
-      "messagesDir": "../server/i18n/client/en-US",
+      "messagesDir": "./i18n/en-US",
       "enforceDescriptions": true
     }],
     "transform-decorators-legacy",

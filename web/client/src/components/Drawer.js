@@ -80,7 +80,6 @@ class Drawer extends React.Component {
 
   render () {
     return (
-      <IntlProvider messages={messages}>
         <Sidebar
           styles={{
             root: this.styles().root,
@@ -152,7 +151,6 @@ class Drawer extends React.Component {
         >
           {this.props.children}
         </Sidebar>
-      </IntlProvider>
     );
   }
 }
