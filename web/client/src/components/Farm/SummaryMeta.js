@@ -5,7 +5,7 @@ import moment from 'moment';
 import 'moment-duration-format';
 import numeral from 'numeral';
 
-import colors from '../colors';
+import colors from '../../colors';
 
 class FarmMeta extends React.Component {
   static propTypes = {

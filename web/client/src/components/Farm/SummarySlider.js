@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react';
 import Radium from 'radium';
 import Lightbox from 'react-image-lightbox';
 
-import colors from '../colors';
+import colors from '../../colors';
 
 @Radium
 class FarmSlider extends React.Component {
@@ -38,7 +38,8 @@ class FarmSlider extends React.Component {
         maxWidth: '100%',
         backgroundImage: 'url("content/logo.svg")',
         backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center'
+        backgroundPosition: 'center',
+        cursor: 'pointer'
       },
       controls: {
         display: 'flex',
