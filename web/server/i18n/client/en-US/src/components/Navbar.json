@@ -1,0 +1,17 @@
+[
+  {
+    "id": "navbar.about",
+    "description": "about/faq link",
+    "defaultMessage": "About/FAQ"
+  },
+  {
+    "id": "navbar.donate",
+    "description": "donate link",
+    "defaultMessage": "Support Us"
+  },
+  {
+    "id": "navbar.download",
+    "description": "download link",
+    "defaultMessage": "Get the Client"
+  }
+]

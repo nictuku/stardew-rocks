@@ -1,0 +1,17 @@
+[
+  {
+    "id": "drawer.download",
+    "description": "download client link",
+    "defaultMessage": "Get the Client"
+  },
+  {
+    "id": "drawer.about",
+    "description": "about/faq link",
+    "defaultMessage": "About/FAQ"
+  },
+  {
+    "id": "drawer.donate",
+    "description": "donate link",
+    "defaultMessage": "Support Us"
+  }
+]

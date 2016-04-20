@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import Radium from 'radium';
+import {FormattedMessage} from 'react-intl';
 import Lightbox from 'react-image-lightbox';
 
 import colors from '../colors';
@@ -93,13 +94,23 @@ class FarmSlider extends React.Component {
             onClick={this.props.prevSrc}
           >
             <i className="material-icons">fast_rewind</i>
-            &nbsp;Past
+            &nbsp;
+            <FormattedMessage
+              id="farm.past"
+              description="past button"
+              defaultMessage="Past"
+            />
           </div>
           {this.props.isMobile ? null : farmDate}
           <div style={this.styles().btn} key="slider-future"
             onClick={this.props.nextSrc}
           >
-            Future&nbsp;
+            <FormattedMessage
+              id="farm.future"
+              description="future button"
+              defaultMessage="Future"
+            />
+            &nbsp;
             <i className="material-icons">fast_forward</i>
           </div>
         </div>

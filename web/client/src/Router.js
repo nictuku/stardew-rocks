@@ -1,7 +1,10 @@
 import React from 'react';
 import {Router, browserHistory} from 'react-router';
 import {Provider} from 'react-redux';
+import moment from 'moment';
 import * as ga from 'react-ga';
+import {IntlProvider, addLocaleData} from 'react-intl';
+import en from 'react-intl/locale-data/en';
 
 import Routes from './Routes';
 import configureStore from './configureStore';
@@ -20,10 +23,15 @@ if (module.hot) {
   module.hot.decline('./Routes');
 }
 
+addLocaleData([...en]);
+moment.locale(navigator.language);
+
 export default (
   <Provider store={store}>
-    <Router history={browserHistory} onUpdate={logPageView}>
-      {Routes}
-    </Router>
+    <IntlProvider locale={navigator.language} defaultLocale="en-US">
+      <Router history={browserHistory} onUpdate={logPageView}>
+        {Routes}
+      </Router>
+    </IntlProvider>
   </Provider>
 );
