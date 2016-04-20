@@ -11,6 +11,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"encoding/json"
+  "io/ioutil"
 
 	"github.com/nictuku/stardew-rocks/stardb"
 
@@ -35,9 +37,35 @@ func wwwDir() string {
 func Index(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	locale := strings.Split(r.Header["Accept-Language"][0], ",")[0]
-	messagesPath := filepath.Join(wwwDir(), "i18n", locale, "**", "*.json")
-	messages, globErr := doublestar.Glob(messagesPath)
+	messagesPath := filepath.Join(wwwDir(), "i18n", locale)
+	var	messages []string
+	messages, globErr := doublestar.Glob(filepath.Join(messagesPath, "**", "*.json"))
+	if messages == nil {
+		// porque glob-chan
+		components := []string{
+			"Drawer.json",
+			"FarmCard.json",
+			"FarmMeta.json",
+			"FarmSlider.json",
+			"Home.json",
+			"Navbar.json",
+			"SearchBar.json",
+		}
+		for _, component := range components {
+			messages = append(messages, filepath.Join(messagesPath, "src", "components", component))
+		}
+	}
 	log.Infof("path: %v, glob:%v, err:%v", messagesPath, len(messages), globErr)
+
+	messagesMap := make(map[string]map[string]string)
+	for _, message := range messages {
+		file, _ := ioutil.ReadFile(message)
+		messageJson :=  make(map[string]string)
+		json.Unmarshal([]byte(file), &messageJson)
+		messagesMap[filepath.Base(message)] = messageJson
+	}
+	log.Infof("hmmm:%v", messagesMap)
+
 	fp := filepath.Join(wwwDir(), "index.html")
 
 	tmpl, _ := template.ParseFiles(fp)
