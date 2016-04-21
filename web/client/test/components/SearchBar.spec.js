@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers */
-import React from 'react';
+import React, {PropTypes} from 'react';
+import {IntlProvider} from 'react-intl';
 import _ from 'lodash';
 import {mount} from 'enzyme';
 import chai, {expect} from 'chai';
@@ -7,11 +8,13 @@ import chai, {expect} from 'chai';
 chai.use(require('sinon-chai'));
 chai.use(require('chai-enzyme')());
 
-import context from '../mocks/mockContext';
 import SearchBar from '../../src/components/SearchBar';
+import optionsDefault from '../mocks/mockOptions';
 
 describe('SearchBar', function () {
-  const options = {context};
+  let options = _.clone(optionsDefault, true);
+  _.assign(options.context, (new IntlProvider({locale: 'en'}, {})).getChildContext());
+  _.assign(options.childContextTypes, {season: PropTypes.string});
 
   it('searches when a query is entered', function () {
     const searchFarmsSpy = sinon.spy();
