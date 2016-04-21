@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import Radium from 'radium';
 import {FormattedMessage} from 'react-intl';
 import Lightbox from 'react-image-lightbox';
+import split from 'lodash/split';
 
 import colors from '../colors';
 
@@ -77,6 +78,9 @@ class FarmSlider extends React.Component {
   }
 
   render () {
+    /* eslint-disable no-magic-numbers */
+    const label = `${this.props.lightBox.currentDate} [${this.props.lightBox.index + 1} of ${this.props.farm.History.length}]`;
+    const thumb = split(this.props.lightBox.mainSrc, '.');
     const farmDate = (
       <div
         style={[
@@ -84,7 +88,7 @@ class FarmSlider extends React.Component {
           this.props.isMobile && this.styles().farmDateMobile
         ]}
       >
-        {this.props.lightBox.currentDate}
+        {label}
       </div>
     );
     return (
@@ -115,7 +119,7 @@ class FarmSlider extends React.Component {
           </div>
         </div>
         <img style={this.styles().image}
-          src={this.props.lightBox.mainSrc}
+          src={`${thumb[0]}w650.${thumb[1]}`}
           onClick={this.props.openLightBox}
         />
         {this.props.isMobile ? farmDate : null}
@@ -127,11 +131,12 @@ class FarmSlider extends React.Component {
             onCloseRequest={this.props.closeLightBox}
             onMovePrevRequest={this.props.prevSrc}
             onMoveNextRequest={this.props.nextSrc}
-            imageTitle={this.props.lightBox.currentDate}
+            imageTitle={label}
           />
         : null}
       </div>
     );
+    /* eslint-enable */
   }
 }
 
