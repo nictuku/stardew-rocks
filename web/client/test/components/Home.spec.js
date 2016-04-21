@@ -6,7 +6,7 @@ import chai, {expect} from 'chai';
 chai.use(require('sinon-chai'));
 chai.use(require('chai-enzyme')());
 
-import context from '../mocks/mockContext';
+import options from '../mocks/mockOptions';
 import mockFarms from '../mocks/mockFarms';
 import mockProps from '../mocks/mockProps';
 import {initialState} from '../../src/reducers/farms';
@@ -29,8 +29,6 @@ describe('Home', function () {
       'getMoreFarms'
     ]
   };
-
-  const options = {context};
 
   let props;
 

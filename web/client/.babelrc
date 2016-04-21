@@ -1,0 +1,12 @@
+{
+  "presets": ["es2015", "react"],
+  "plugins": [
+    ["react-intl", {
+      "messagesDir": "./i18n/en-US",
+      "enforceDescriptions": true
+    }],
+    "transform-decorators-legacy",
+    "transform-object-rest-spread",
+    "transform-class-properties"
+  ]
+}

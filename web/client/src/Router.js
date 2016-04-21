@@ -1,7 +1,11 @@
 import React from 'react';
 import {Router, browserHistory} from 'react-router';
 import {Provider} from 'react-redux';
+import _ from 'lodash';
+import moment from 'moment';
 import * as ga from 'react-ga';
+import {IntlProvider, addLocaleData} from 'react-intl';
+import en from 'react-intl/locale-data/en';
 
 import Routes from './Routes';
 import configureStore from './configureStore';
@@ -20,10 +24,26 @@ if (module.hot) {
   module.hot.decline('./Routes');
 }
 
+addLocaleData([...en]);
+moment.locale(navigator.language);
+
+const {messages, locale} = window.Stardewfarm;
+
+var intlMessages = _(messages)
+  .map(({id, defaultMessage}) => ({[id]: defaultMessage}))
+  .transform((messagesObj, message) => _.assign(messagesObj, message), {})
+  .value();
+
 export default (
   <Provider store={store}>
-    <Router history={browserHistory} onUpdate={logPageView}>
-      {Routes}
-    </Router>
+    <IntlProvider
+      defaultLocale="en-US"
+      locale={locale}
+      messages={intlMessages}
+    >
+      <Router history={browserHistory} onUpdate={logPageView}>
+        {Routes}
+      </Router>
+    </IntlProvider>
   </Provider>
 );

@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import Radium, {Style} from 'radium';
+import {FormattedMessage} from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
 import 'moment-duration-format';
@@ -52,21 +53,45 @@ class FarmMeta extends React.Component {
         </div>
         <div className="group">
           <div className="item">
-            <div className="label">Wealth</div>
+            <div className="label">
+              <FormattedMessage
+                id="farm.wealth"
+                description="wealth label"
+                defaultMessage="Wealth"
+              />
+            </div>
             {numeral(this.props.farm.Player.Money).format('0,0')}G
           </div>
           <div className="item">
-            <div className="label">Total Earnings</div>
+            <div className="label">
+              <FormattedMessage
+                id="farm.totalEarnings"
+                description="total earnings label"
+                defaultMessage="Total Earnings"
+              />
+            </div>
             {numeral(this.props.farm.Player.TotalMoneyEarned).format('0,0')}G
           </div>
         </div>
         <div className="group">
           <div className="item">
-            <div className="label">Last Save</div>
+            <div className="label">
+              <FormattedMessage
+                id="farm.lastSave"
+                description="last save label"
+                defaultMessage="Last Save"
+              />
+            </div>
             {moment.unix(this.props.farm.LastSave).fromNow()}
           </div>
           <div className="item">
-            <div className="label">Time Played</div>
+            <div className="label">
+              <FormattedMessage
+                id="farm.timePlayed"
+                description="time played label"
+                defaultMessage="Time Played"
+              />
+            </div>
             {moment.duration(this.props.farm.Player.MillisecondsPlayed).format('H [hrs] m [mins]')}
           </div>
         </div>
