@@ -39,9 +39,10 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	locale := strings.Split(r.Header["Accept-Language"][0], ",")[0]
 	messagesPath := filepath.Join(wwwDir(), "i18n", locale)
 	var	messages []string
-	messages, globErr := doublestar.Glob(filepath.Join(messagesPath, "**", "*.json"))
+	messages, _ = doublestar.Glob(filepath.Join(messagesPath, "**", "*.json"))
 	if messages == nil {
 		// porque glob-chan
+		log.Info("using messages fallback")
 		components := []string{
 			"Drawer.json",
 			"FarmCard.json",
@@ -55,22 +56,25 @@ func Index(w http.ResponseWriter, r *http.Request) {
 			messages = append(messages, filepath.Join(messagesPath, "src", "components", component))
 		}
 	}
-	log.Infof("path: %v, glob:%v, err:%v", messagesPath, len(messages), globErr)
-
-	messagesMap := make(map[string]map[string]string)
+	messagesMap := make(map[string]interface{})
 	for _, message := range messages {
 		file, _ := ioutil.ReadFile(message)
-		messageJson :=  make(map[string]string)
-		json.Unmarshal([]byte(file), &messageJson)
-		messagesMap[filepath.Base(message)] = messageJson
+		var messageJson interface{}
+		_ = json.Unmarshal(file, &messageJson)
+		messagesMap[strings.Split(filepath.Base(message), ".")[0]] = messageJson
 	}
-	log.Infof("hmmm:%v", messagesMap)
+	messagesJson, _ := json.Marshal(messagesMap)
 
 	fp := filepath.Join(wwwDir(), "index.html")
-
 	tmpl, _ := template.ParseFiles(fp)
 
-	tmpl.ExecuteTemplate(w, "index", nil)
+	tmpl.ExecuteTemplate(w, "index", struct{
+		Messages template.JS
+		Locale string
+	}{
+		template.JS(messagesJson),
+		locale,
+	})
 }
 
 func GetFarms(w http.ResponseWriter, r *http.Request) {

@@ -26,9 +26,15 @@ if (module.hot) {
 addLocaleData([...en]);
 moment.locale(navigator.language);
 
+const {messages, locale} = window.Stardewfarm;
+
 export default (
   <Provider store={store}>
-    <IntlProvider locale={navigator.language} defaultLocale="en-US">
+    <IntlProvider
+      locale={locale}
+      defaultLocale="en-US"
+      messages={messages}
+    >
       <Router history={browserHistory} onUpdate={logPageView}>
         {Routes}
       </Router>

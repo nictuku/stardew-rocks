@@ -27,8 +27,12 @@
   </head>
   <body>
     <div id="app"></div>
+    <div>{{.Messages}}</div>
     <script>
-
+      window.Stardewfarm = {
+        messages: {{.Messages}},
+        locale: {{.Locale}}
+      }
     </script>
     <script src="bundle.js"></script>
   </body>
