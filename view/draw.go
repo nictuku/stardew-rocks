@@ -134,7 +134,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 	}
 
 	img := image.NewRGBA(image.Rect(0, 0, m.Width*m.TileWidth, m.Height*m.TileHeight))
-	sb.Start()
+	shot := newScreenshot(img)
 
 	// Note that the order we issue draw commands must match the foreground/background order.
 	// At a high level, the expected order is:
@@ -142,7 +142,7 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 
 	for y := 0; y < m.Height; y++ {
 		if y == 0 {
-			drawHouse(pm, img, sg.Player.HouseUpgradeLevel)
+			shot.drawHouse(pm, sg.Player.HouseUpgradeLevel)
 		}
 		if y == 15 {
 			fixedGreenhouse := false
@@ -151,21 +151,21 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 					fixedGreenhouse = true
 				}
 			}
-			drawGreenhouse(pm, img, fixedGreenhouse)
+			shot.drawGreenhouse(pm, fixedGreenhouse)
 		}
 		for _, building := range buildings[y] {
-			drawBuilding(pm, building, img)
+			shot.drawBuilding(pm, building)
 		}
 		for _, item := range items[y] {
-			drawTree(pm, sg.CurrentSeason, item, img)
+			shot.drawTree(pm, sg.CurrentSeason, item)
 		}
 		for _, object := range objects[y] {
-			drawObject(pm, object, img, objects)
+			shot.drawObject(pm, object, objects)
 		}
 		for _, item := range items[y] {
-			drawGrass(pm, sg.CurrentSeason, item, img)
-			drawFlooring(pm, item, img, items)
-			drawHoeDirt(pm, sg.CurrentSeason, item, img, items)
+			shot.drawGrass(pm, sg.CurrentSeason, item)
+			shot.drawFlooring(pm, item, items)
+			shot.drawHoeDirt(pm, sg.CurrentSeason, item, items)
 		}
 		for x := 0; x < m.Width; x++ {
 			for _, layer := range m.Layers {
@@ -182,12 +182,12 @@ func WriteImage(pm *parser.Map, sg *parser.SaveGame, w io.Writer) error {
 				case "AlwaysFront":
 					layerOrder = alwaysFrontLayer
 				}
-				drawTile(pm, sg.CurrentSeason, layer.DecodedTiles[y*m.Width+x], img, x, y, layerOrder)
+				shot.drawTile(pm, sg.CurrentSeason, layer.DecodedTiles[y*m.Width+x], x, y, layerOrder)
 			}
 		}
 	}
 
-	sb.Flush()
+	shot.Flush()
 
 	if err := png.Encode(w, img); err != nil {
 		return err

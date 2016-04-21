@@ -2,7 +2,6 @@ package view
 
 import (
 	"image"
-	"image/draw"
 	"log"
 	"math/rand"
 
@@ -35,7 +34,7 @@ func grassRect(idx, grassType int, season string) image.Rectangle {
 	return xnaRect(idx, grassOffset(grassType, season), 15, 20)
 }
 
-func drawGrass(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image) {
+func (s *screenshot) drawGrass(pm *parser.Map, season string, item *parser.TerrainItem) {
 	if item.Value.TerrainFeature.Type != "Grass" {
 		return
 	}
@@ -81,6 +80,6 @@ func drawGrass(pm *parser.Map, season string, item *parser.TerrainItem, img draw
 				item.Key.Vector2.X*m.TileWidth + int(float32((i%2)*m.TileWidth)/2+(float32(offsetWeeds[i][2]-4))),
 				item.Key.Vector2.Y*m.TileHeight - i/2*m.TileHeight/2 + offsetWeeds[i][3],
 			})
-		sb.Draw(img, r, cropAndMaybeFlip(flipWeed[i], src, sr), image.ZP, grassLayer)
+		s.Draw(r, cropAndMaybeFlip(flipWeed[i], src, sr), image.ZP, grassLayer)
 	}
 }

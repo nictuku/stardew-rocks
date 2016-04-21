@@ -35,6 +35,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFarms(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	b, err := stardb.FarmsJSON()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -51,23 +52,8 @@ func GetFarms(w http.ResponseWriter, r *http.Request) {
 func GetFarm(w http.ResponseWriter, r *http.Request) {
 	farmid := strings.TrimPrefix(r.URL.Path, "/api/farm/")
 
+	w.Header().Set("Content-Type", "application/json")
 	b, err := stardb.FarmJSON(farmid)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	_, err = w.Write(b)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	return
-}
-
-func GetFarmInfo(w http.ResponseWriter, r *http.Request) {
-	farmid := strings.TrimPrefix(r.URL.Path, "/api/farminfo/")
-
-	b, err := stardb.FarmInfoJSON(farmid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -102,7 +88,7 @@ func StaticFiles(w http.ResponseWriter, r *http.Request) {
 // SearchFarms searches for farms or farmers. It looks for a query paramater "q".
 func SearchFarms(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-
+	w.Header().Set("Content-Type", "application/json")
 	q := r.Form.Get("q")
 	if len(q) == 0 {
 		w.Write([]byte("{}"))
@@ -164,8 +150,7 @@ func main() {
 	dir := wwwDir()
 	log.Infof("Serving files from %v", dir)
 	http.Handle("/api/farms", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarms)))
-	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarm)))
-	http.Handle("/api/farminfo/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarmInfo)))
+	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(GetFarm))))
 	http.Handle("/api/search/farm", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(SearchFarms)))
 
 	http.Handle("/screenshot/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeScreenshot)))

@@ -2,13 +2,12 @@ package view
 
 import (
 	"image"
-	"image/draw"
 	"log"
 
 	"github.com/nictuku/stardew-rocks/parser"
 )
 
-func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img draw.Image, items [][]*parser.TerrainItem) {
+func (s *screenshot) drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, items [][]*parser.TerrainItem) {
 	// TODO: neighbor detection.
 	if item.Value.TerrainFeature.Type != "HoeDirt" {
 		return
@@ -36,7 +35,7 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 		item.Key.Vector2.X * m.TileWidth,
 		item.Key.Vector2.Y * m.TileHeight,
 	})
-	sb.Draw(img, r, src, sr.Min, flooringLayer)
+	s.Draw(r, src, sr.Min, flooringLayer)
 
 	crop := item.Value.TerrainFeature.Crop
 
@@ -73,6 +72,6 @@ func drawHoeDirt(pm *parser.Map, season string, item *parser.TerrainItem, img dr
 			item.Key.Vector2.X * m.TileWidth,
 			item.Key.Vector2.Y*m.TileHeight - 16, // because using tile height 32 above
 		})
-		sb.Draw(img, r, cropAndMaybeFlip(crop.Flip, src, sr), image.ZP, objectLayer)
+		s.Draw(r, cropAndMaybeFlip(crop.Flip, src, sr), image.ZP, objectLayer)
 	}
 }

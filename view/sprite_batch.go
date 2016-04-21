@@ -6,8 +6,6 @@ import (
 	"sort"
 )
 
-var sb = &SpriteBatch{}
-
 type drawSprite struct {
 	f     func()
 	layer float32

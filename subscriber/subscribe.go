@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"crypto/md5"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -107,6 +109,12 @@ func main() {
 				log.Print("Error fetching farm ID:", err)
 				continue
 			}
+			farmid := farm.InternalID.Hex()
+			h := fmt.Sprintf("%x", md5.Sum(d.Body))
+			if stardb.IsSaveGameDupe(farmid, h) {
+				log.Println("Skipping dupe", farmid, h)
+				continue
+			}
 
 			// GridFS XML save file write.
 			// TODO: broken saves (length 0)
@@ -119,14 +127,15 @@ func main() {
 				log.Print("update farm time:", err)
 				continue
 			}
-			if fi, err := stardb.FarmInfoFromSaveGame(saveGame); err != nil {
-				log.Print("farm info from save game:", err)
+			if fi, err := stardb.FarmHistoryFromSaveGame(farm.InternalID, saveGame, int(ts.Unix())); err != nil {
+				log.Print("farm history from save game:", err)
 				continue
 			} else {
-				if err := stardb.UpdateFarmInfo(farm.InternalID, fi); err != nil {
-					log.Print("update farm info:", err)
+				if err := stardb.InsertFarmHistory(farm.InternalID, fi); err != nil {
+					log.Print("update farm history failed:", err)
 					continue
 				}
+				log.Println("Updated farm history")
 			}
 
 			// GridFs screenshot write.

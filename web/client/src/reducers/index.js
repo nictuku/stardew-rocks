@@ -1,17 +1,19 @@
 import {combineReducers} from 'redux';
 
 import farms from './farms';
+import farm from './farm';
 import farmFilter from './farmFilter';
-import farmLightBox from './farmLightBox';
 import drawer from './drawer';
 import discord from './discord';
+import global from './global';
 
 const mainReducer = combineReducers({
   farms,
   farmFilter,
-  farmLightBox,
+  farm,
   drawer,
-  discord
+  discord,
+  global
 });
 
 export default mainReducer;

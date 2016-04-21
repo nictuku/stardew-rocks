@@ -2,14 +2,13 @@ package view
 
 import (
 	"image"
-	"image/draw"
 	"log"
 
 	"github.com/nictuku/stardew-rocks/parser"
 	"github.com/salviati/go-tmx/tmx"
 )
 
-func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Image, x, y int, layer float32) {
+func (s *screenshot) drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, x, y int, layer float32) {
 	if tile.IsNil() {
 		return
 	}
@@ -27,5 +26,5 @@ func drawTile(pm *parser.Map, season string, tile *tmx.DecodedTile, img draw.Ima
 	r := sr.Sub(sr.Min).Add(image.Point{x * m.TileWidth, y * m.TileHeight})
 	// DrawMask with draw.Over and an alpha channel ensure the background is transparent.
 	// Anyway, it works.
-	sb.Draw(img, r, src, sr.Min, layer)
+	s.Draw(r, src, sr.Min, layer)
 }

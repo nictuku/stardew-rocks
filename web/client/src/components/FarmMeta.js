@@ -5,57 +5,68 @@ import moment from 'moment';
 import 'moment-duration-format';
 import numeral from 'numeral';
 
+import colors from '../colors';
+
 class FarmMeta extends React.Component {
   static propTypes = {
-    farm: PropTypes.object.isRequired
+    farm: PropTypes.object.isRequired,
+    style: PropTypes.object
   };
 
   render () {
     return (
-      <div className="farm-meta">
+      <div className="farm-meta" style={this.props.style}>
         <Style
           scopeSelector=".farm-meta"
           rules={{
-            textAlign: 'center',
-            paddingTop:'.5rem',
-            paddingBottom: '.5rem',
-            '> div': {
+            padding: '3rem',
+            '.group': {
+            },
+            '.item': {
               display: 'inline-block',
               textAlign: 'left',
-              padding: '.5rem 1rem .5rem 1rem',
-              verticalAlign: 'middle'
+              color: colors.dkBrown,
+              fontSize: '1.25rem',
+              fontWeight: '500',
+              paddingTop: '.25rem',
+              paddingBottom: '.25rem',
+              marginRight: '1rem'
             },
-            '.title': {
-              fontSize: '2rem'
+            '.item:last-child': {
+              paddingBottom: '1rem'
             },
-            '.item-label': {
-              fontSize: '1.2rem'
+            '.item:first-child': {
+              paddingTop: '1rem'
+            },
+            '.label': {
+              color: colors.leather,
+              fontSize: '1rem'
             }
           }}
         />
-        <div>
-          <div className="title">{this.props.farm.Farmer}'s {this.props.farm.Name}</div>
-          <div>
-            {this.props.farm.Player.DateStringForSaveGame}
+        <div className="group">
+          <div className="item">
+            <div className="label">Farmer</div>
+            {this.props.farm.Farmer}
           </div>
         </div>
-        <div>
-          <div>
-            <span className="item-label">Wealth: </span>
+        <div className="group">
+          <div className="item">
+            <div className="label">Wealth</div>
             {numeral(this.props.farm.Player.Money).format('0,0')}G
           </div>
-          <div>
-            <span className="item-label">Total Earnings: </span>
+          <div className="item">
+            <div className="label">Total Earnings</div>
             {numeral(this.props.farm.Player.TotalMoneyEarned).format('0,0')}G
           </div>
         </div>
-        <div>
-          <div>
-            <span className="item-label">Last Save: </span>
-            {moment.unix(_.takeRight(this.props.farm.History)).fromNow()}
+        <div className="group">
+          <div className="item">
+            <div className="label">Last Save</div>
+            {moment.unix(this.props.farm.LastSave).fromNow()}
           </div>
-          <div>
-            <span className="item-label">Time Played: </span>
+          <div className="item">
+            <div className="label">Time Played</div>
             {moment.duration(this.props.farm.Player.MillisecondsPlayed).format('H [hrs] m [mins]')}
           </div>
         </div>
