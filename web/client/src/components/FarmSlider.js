@@ -1,11 +1,20 @@
 import React, {PropTypes} from 'react';
 import Radium from 'radium';
-import {FormattedMessage} from 'react-intl';
+import {FormattedMessage, injectIntl, intlShape, defineMessages} from 'react-intl';
 import Lightbox from 'react-image-lightbox';
 import split from 'lodash/split';
 
 import colors from '../colors';
 
+const messages = defineMessages({
+  indexDisplay: {
+    id: 'farm.indexDisplay',
+    description: 'the index display of what farm is shown',
+    defaultMessage: '{currentIndex} of {numberOfFarms}'
+  }
+});
+
+@injectIntl
 @Radium
 class FarmSlider extends React.Component {
   static propTypes = {
@@ -24,7 +33,8 @@ class FarmSlider extends React.Component {
     nextSrc: PropTypes.func.isRequired,
     prevSrc: PropTypes.func.isRequired,
     openLightBox: PropTypes.func.isRequired,
-    closeLightBox: PropTypes.func.isRequired
+    closeLightBox: PropTypes.func.isRequired,
+    intl: intlShape.isRequired
   };
 
   styles () {
@@ -79,7 +89,11 @@ class FarmSlider extends React.Component {
 
   render () {
     /* eslint-disable no-magic-numbers */
-    const label = `${this.props.lightBox.currentDate} [${this.props.lightBox.index + 1} of ${this.props.farm.History.length}]`;
+    const indexDisplay = this.props.intl.formatMessage(messages.indexDisplay, {
+      currentIndex: this.props.lightBox.index + 1,
+      numberOfFarms: this.props.farm.History.length
+    });
+    const label = `${this.props.lightBox.currentDate} [${indexDisplay}]`;
     const thumb = split(this.props.lightBox.mainSrc, '.');
     const farmDate = (
       <div

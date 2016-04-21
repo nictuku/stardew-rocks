@@ -1,5 +1,10 @@
 [
   {
+    "id": "farm.indexDisplay",
+    "description": "the index display of what farm is shown",
+    "defaultMessage": "{currentIndex} of {numberOfFarms}"
+  },
+  {
     "id": "farm.past",
     "description": "past button",
     "defaultMessage": "Past"
