@@ -56,12 +56,18 @@ func Index(w http.ResponseWriter, r *http.Request) {
 			messages = append(messages, filepath.Join(messagesPath, "src", "components", component))
 		}
 	}
-	messagesMap := make(map[string]interface{})
+	type Message struct {
+		ID string `json:"id"`
+		Description string `json:"description"`
+		DefaultMessage string `json:"defaultMessage"`
+	}
+	type Messages []Message
+	var messagesMap []Message
 	for _, message := range messages {
 		file, _ := ioutil.ReadFile(message)
-		var messageJson interface{}
+		var messageJson Messages
 		_ = json.Unmarshal(file, &messageJson)
-		messagesMap[strings.Split(filepath.Base(message), ".")[0]] = messageJson
+		messagesMap = append(messagesMap, messageJson...)
 	}
 	messagesJson, _ := json.Marshal(messagesMap)
 

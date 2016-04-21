@@ -144,7 +144,7 @@ class Navbar extends React.Component {
               <i className="material-icons">question_answer</i>
               &nbsp;
               <FormattedMessage
-                id="navbar.about"
+                id="nav.about"
                 description="about/faq link"
                 defaultMessage="About/FAQ"
               />
@@ -161,7 +161,7 @@ class Navbar extends React.Component {
                 </span>
                 &nbsp;
                 <FormattedMessage
-                  id="navbar.donate"
+                  id="nav.donate"
                   description="donate link"
                   defaultMessage="Support Us"
                 />
@@ -173,7 +173,7 @@ class Navbar extends React.Component {
               <i className="material-icons">file_download</i>
               &nbsp;
               <FormattedMessage
-                id="navbar.download"
+                id="nav.download"
                 description="download link"
                 defaultMessage="Get the Client"
               />

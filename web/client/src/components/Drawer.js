@@ -95,11 +95,7 @@ class Drawer extends React.Component {
                   <Menu>
                     <MenuItem
                       primaryText={
-                        <FormattedMessage
-                          id="drawer.download"
-                          defaultMessage="Get the Client"
-                          description="download client link"
-                        />
+                        <FormattedMessage id="nav.download" />
                       }
                       href="https://github.com/nictuku/stardew-rocks"
                       leftIcon={<FontIcon className="material-icons">file_download</FontIcon>}
@@ -107,11 +103,7 @@ class Drawer extends React.Component {
                     <Link to="about" style={this.styles().link} onClick={this.props.toggleDrawer}>
                       <MenuItem
                         primaryText={
-                          <FormattedMessage
-                            id="drawer.about"
-                            defaultMessage="About/FAQ"
-                            description="about/faq link"
-                          />
+                          <FormattedMessage id="nav.about" />
                         }
                         leftIcon={
                           <FontIcon className="material-icons">question_answer</FontIcon>
@@ -125,11 +117,7 @@ class Drawer extends React.Component {
                       <button type="submit" style={this.styles().badButton}>
                         <MenuItem
                           primaryText={
-                            <FormattedMessage
-                              id="drawer.donate"
-                              defaultMessage="Support Us"
-                              description="donate link"
-                            />
+                            <FormattedMessage id="nav.donate" />
                           }
                           leftIcon={
                             <svg style={this.styles().icon}>
