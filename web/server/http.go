@@ -35,8 +35,7 @@ func wwwDir() string {
 	return filepath.Clean(filepath.Join(home, "www"))
 }
 
-func Index(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
+func GetLocaleInfo(r *http.Request) ([]byte, string) {
 	// get supported locales
 	localePaths, _ := filepath.Glob(filepath.Join(wwwDir(), "i18n", "*"))
 	var locales []language.Tag
@@ -84,6 +83,12 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		messagesMap = append(messagesMap, messageJson...)
 	}
 	messagesJson, _ := json.Marshal(messagesMap)
+	return  messagesJson, locale
+}
+
+func Index(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	messagesJson, locale := GetLocaleInfo(r)
 
 	fp := filepath.Join(wwwDir(), "index.html")
 	tmpl, _ := template.ParseFiles(fp)
