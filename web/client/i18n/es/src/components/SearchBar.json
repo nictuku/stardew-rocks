@@ -1,7 +1,7 @@
 [
   {
     "id": "search.placeholder",
-    "description": "placeholder for farm/farmer search",
-    "defaultMessage": "Search for farms or farmers..."
+    "description": "marcador de posición para la búsqueda de granjas o granjeros",
+    "defaultMessage": "Busca granjas o granjeros..."
   }
 ]

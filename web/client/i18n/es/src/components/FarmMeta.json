@@ -1,22 +1,22 @@
 [
   {
     "id": "farm.wealth",
-    "description": "wealth label",
-    "defaultMessage": "Wealth"
+    "description": "riqueza",
+    "defaultMessage": "Riqueza"
   },
   {
     "id": "farm.totalEarnings",
-    "description": "total earnings label",
-    "defaultMessage": "Total Earnings"
+    "description": "ganancias totales",
+    "defaultMessage": "Ganancias Totales"
   },
   {
     "id": "farm.lastSave",
-    "description": "last save label",
-    "defaultMessage": "Last Save"
+    "description": "última grabación",
+    "defaultMessage": "Última Grabación"
   },
   {
     "id": "farm.timePlayed",
-    "description": "time played label",
-    "defaultMessage": "Time Played"
+    "description": "tiempo jugado",
+    "defaultMessage": "Tiempo Jugado"
   }
 ]

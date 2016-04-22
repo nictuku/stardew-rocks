@@ -1,7 +1,7 @@
 [
   {
     "id": "home.noResults",
-    "description": "shown when there are no resutls",
-    "defaultMessage": "No results found"
+    "description": "se muestra cuando no hay resultados",
+    "defaultMessage": "No hay resultados"
   }
 ]

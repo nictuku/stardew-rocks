@@ -1,17 +1,17 @@
 [
   {
     "id": "farm.indexDisplay",
-    "description": "the index display of what farm is shown",
-    "defaultMessage": "{currentIndex} of {numberOfFarms}"
+    "description": "el índice de cual granja esta visible",
+    "defaultMessage": "{currentIndex} de {numberOfFarms}"
   },
   {
     "id": "farm.past",
-    "description": "past button",
-    "defaultMessage": "Past"
+    "description": "pasado",
+    "defaultMessage": "Pasado"
   },
   {
     "id": "farm.future",
-    "description": "future button",
-    "defaultMessage": "Future"
+    "description": "futuro",
+    "defaultMessage": "Futuro"
   }
 ]
