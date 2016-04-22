@@ -1,5 +1,13 @@
 [
   {
+    "id": "farm.timePlayedFormat",
+    "defaultMessage": "H [horas] m [minutos]"
+  },
+  {
+    "id": "farm.farmer",
+    "defaultMessage": "Agricultor"
+  },
+  {
     "id": "farm.wealth",
     "description": "riqueza",
     "defaultMessage": "Riqueza"

@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import Radium, {Style} from 'radium';
-import {FormattedMessage} from 'react-intl';
+import {FormattedMessage, injectIntl, intlShape, defineMessages} from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
 import 'moment-duration-format';
@@ -8,13 +8,25 @@ import numeral from 'numeral';
 
 import colors from '../colors';
 
+const messages = defineMessages({
+  timePlayedFormat: {
+    id: 'farm.timePlayedFormat',
+    description: 'the format string for the time played',
+    defaultMessage: 'H [hrs] m [mins]'
+  }
+});
+
+@injectIntl
+@Radium
 class FarmMeta extends React.Component {
   static propTypes = {
     farm: PropTypes.object.isRequired,
-    style: PropTypes.object
+    style: PropTypes.object,
+    intl: intlShape.isRequired
   };
 
   render () {
+    const timePlayedFormatStr = this.props.intl.formatMessage(messages.timePlayedFormat);
     return (
       <div className="farm-meta" style={this.props.style}>
         <Style
@@ -47,7 +59,13 @@ class FarmMeta extends React.Component {
         />
         <div className="group">
           <div className="item">
-            <div className="label">Farmer</div>
+            <div className="label">
+              <FormattedMessage
+                id="farm.farmer"
+                description="farmer label"
+                defaultMessage="Farmer"
+              />
+            </div>
             {this.props.farm.Farmer}
           </div>
         </div>
@@ -92,7 +110,7 @@ class FarmMeta extends React.Component {
                 defaultMessage="Time Played"
               />
             </div>
-            {moment.duration(this.props.farm.Player.MillisecondsPlayed).format('H [hrs] m [mins]')}
+            {moment.duration(this.props.farm.Player.MillisecondsPlayed).format(timePlayedFormatStr)}
           </div>
         </div>
       </div>

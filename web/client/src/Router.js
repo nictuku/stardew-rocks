@@ -6,6 +6,7 @@ import moment from 'moment';
 import * as ga from 'react-ga';
 import {IntlProvider, addLocaleData} from 'react-intl';
 import en from 'react-intl/locale-data/en';
+import es from 'react-intl/locale-data/es';
 
 import Routes from './Routes';
 import configureStore from './configureStore';
@@ -24,10 +25,10 @@ if (module.hot) {
   module.hot.decline('./Routes');
 }
 
-addLocaleData([...en]);
-moment.locale(navigator.language);
+addLocaleData([...en, ...es]);
 
 const {messages, locale} = window.Stardewfarm;
+moment.locale(locale);
 
 var intlMessages = _(messages)
   .map(({id, defaultMessage}) => ({[id]: defaultMessage}))
