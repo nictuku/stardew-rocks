@@ -22,10 +22,18 @@ import (
 	"github.com/NYTimes/gziphandler"
 	hs "github.com/gorilla/handlers"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"github.com/bmatcuk/doublestar"
+	"github.com/mattn/go-zglob"
 )
 
 var log = logging.MustGetLogger("stardew.rocks")
+
+type Message struct {
+	ID string `json:"id"`
+	Description string `json:"description"`
+	DefaultMessage string `json:"defaultMessage"`
+}
+
+type Messages []Message
 
 func wwwDir() string {
 	home := os.Getenv("HOME")
@@ -50,31 +58,8 @@ func GetLocaleInfo(r *http.Request) ([]byte, string) {
 	locale := localeTag.String()
 
 	// get messages for locale
-	messagesPath := filepath.Join(wwwDir(), "i18n", locale)
-	var	messages []string
-	messages, _ = doublestar.Glob(filepath.Join(messagesPath, "**", "*.json"))
-	if messages == nil {
-		// porque glob-chan
-		log.Info("using messages fallback")
-		components := []string{
-			"Drawer.json",
-			"FarmCard.json",
-			"FarmMeta.json",
-			"FarmSlider.json",
-			"Home.json",
-			"Navbar.json",
-			"SearchBar.json",
-		}
-		for _, component := range components {
-			messages = append(messages, filepath.Join(messagesPath, "src", "components", component))
-		}
-	}
-	type Message struct {
-		ID string `json:"id"`
-		Description string `json:"description"`
-		DefaultMessage string `json:"defaultMessage"`
-	}
-	type Messages []Message
+	messages, _ := zglob.Glob(filepath.Join(wwwDir(),"i18n", locale, "**", "*.json"))
+
 	var messagesMap []Message
 	for _, message := range messages {
 		file, _ := ioutil.ReadFile(message)
