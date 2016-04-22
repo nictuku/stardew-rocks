@@ -1,0 +1,7 @@
+[
+  {
+    "id": "search.placeholder",
+    "description": "marcador de posición para la búsqueda de granjas o granjeros",
+    "defaultMessage": "Busca granjas o granjeros..."
+  }
+]

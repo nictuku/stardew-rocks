@@ -1,0 +1,22 @@
+[
+  {
+    "id": "farm.wealth",
+    "description": "riqueza",
+    "defaultMessage": "Riqueza"
+  },
+  {
+    "id": "farm.totalEarnings",
+    "description": "ganancias totales",
+    "defaultMessage": "Ganancias Totales"
+  },
+  {
+    "id": "farm.lastSave",
+    "description": "última grabación",
+    "defaultMessage": "Última Grabación"
+  },
+  {
+    "id": "farm.timePlayed",
+    "description": "tiempo jugado",
+    "defaultMessage": "Tiempo Jugado"
+  }
+]
