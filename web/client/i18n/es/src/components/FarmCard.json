@@ -1,0 +1,7 @@
+[
+  {
+    "id": "farmCard.farmer",
+    "description": "the farmer of the farm",
+    "defaultMessage": "by {farmer}"
+  }
+]
