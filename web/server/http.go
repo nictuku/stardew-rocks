@@ -13,6 +13,7 @@ import (
 	"strings"
 	"encoding/json"
   "io/ioutil"
+	"golang.org/x/text/language"
 
 	"github.com/nictuku/stardew-rocks/stardb"
 
@@ -36,7 +37,20 @@ func wwwDir() string {
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	locale := strings.Split(r.Header["Accept-Language"][0], ",")[0]
+	// get supported locales
+	localePaths, _ := filepath.Glob(filepath.Join(wwwDir(), "i18n", "*"))
+	var locales []language.Tag
+	for _, locale := range localePaths {
+		locales = append(locales, language.Make(filepath.Base(locale)))
+	}
+	localesMatcher := language.NewMatcher(locales)
+
+	// get best locale for client
+	localeTags, _, _ := language.ParseAcceptLanguage(r.Header["Accept-Language"][0])
+	localeTag, _, _ := localesMatcher.Match(localeTags...)
+	locale := localeTag.String()
+
+	// get messages for locale
 	messagesPath := filepath.Join(wwwDir(), "i18n", locale)
 	var	messages []string
 	messages, _ = doublestar.Glob(filepath.Join(messagesPath, "**", "*.json"))
