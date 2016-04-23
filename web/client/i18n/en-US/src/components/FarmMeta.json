@@ -1,0 +1,32 @@
+[
+  {
+    "id": "farm.timePlayedFormat",
+    "description": "the format string for the time played",
+    "defaultMessage": "H [hrs] m [mins]"
+  },
+  {
+    "id": "farm.farmer",
+    "description": "farmer label",
+    "defaultMessage": "Farmer"
+  },
+  {
+    "id": "farm.wealth",
+    "description": "wealth label",
+    "defaultMessage": "Wealth"
+  },
+  {
+    "id": "farm.totalEarnings",
+    "description": "total earnings label",
+    "defaultMessage": "Total Earnings"
+  },
+  {
+    "id": "farm.lastSave",
+    "description": "last save label",
+    "defaultMessage": "Last Save"
+  },
+  {
+    "id": "farm.timePlayed",
+    "description": "time played label",
+    "defaultMessage": "Time Played"
+  }
+]

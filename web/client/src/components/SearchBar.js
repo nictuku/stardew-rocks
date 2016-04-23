@@ -1,11 +1,21 @@
 import React, {PropTypes} from 'react';
 import Radium, {Style} from 'radium';
+import {injectIntl, intlShape, defineMessages} from 'react-intl';
 import _ from 'lodash';
 import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 
 import colors from '../colors';
 
+const messages = defineMessages({
+  placeholder: {
+    id: 'search.placeholder',
+    description: 'placeholder for farm/farmer search',
+    defaultMessage: 'Search for farms or farmers...'
+  }
+});
+
+@injectIntl
 @Radium
 class SearchBar extends React.Component {
   static propTypes = {
@@ -13,7 +23,8 @@ class SearchBar extends React.Component {
     searchFarms: PropTypes.func.isRequired,
     changeFilter: PropTypes.func,
     filter: PropTypes.number,
-    filters: PropTypes.array
+    filters: PropTypes.array,
+    intl: intlShape.isRequired
   };
 
   static contextTypes = {
@@ -86,7 +97,7 @@ class SearchBar extends React.Component {
           <input type="test"
             style={[this.styles().input, this.styles().inputText]}
             className="search-input"
-            placeholder="Search for farms or farmers..."
+            placeholder={this.props.intl.formatMessage(messages.placeholder)}
             onChange={this.query}
           />
         </ToolbarGroup>

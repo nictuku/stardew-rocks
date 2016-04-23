@@ -1,0 +1,17 @@
+[
+  {
+    "id": "nav.about",
+    "description": "sobre nosotros/preguntas frequentes",
+    "defaultMessage": "Sobre Nosotros/Preguntas Frequentes"
+  },
+  {
+    "id": "nav.donate",
+    "description": "link de donación",
+    "defaultMessage": "Apóyanos"
+  },
+  {
+    "id": "nav.download",
+    "description": "link de descarga",
+    "defaultMessage": "Consigue el Cliente"
+  }
+]

@@ -1,5 +1,3 @@
-const combineLoaders = require('webpack-combine-loaders');
-
 module.exports = {
   entry: [
     './src/main.js'
@@ -10,19 +8,7 @@ module.exports = {
     loaders: [{
       test: /\.jsx?$/,
       exclude: /(node_modules|bower_components)/,
-      loader: combineLoaders([{
-        loader: 'react-hot'
-      }, {
-        loader:'babel',
-        query: {
-          presets: ['es2015', 'react'],
-          plugins: [
-            'transform-decorators-legacy',
-            'transform-object-rest-spread',
-            'transform-class-properties'
-          ]
-        }
-      }])
+      loaders: ['react-hot', 'babel']
     }]
   },
   devServer: {

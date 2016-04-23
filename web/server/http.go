@@ -6,10 +6,14 @@
 package main
 
 import (
+	"html/template"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"encoding/json"
+  "io/ioutil"
+	"golang.org/x/text/language"
 
 	"github.com/nictuku/stardew-rocks/stardb"
 
@@ -18,9 +22,18 @@ import (
 	"github.com/NYTimes/gziphandler"
 	hs "github.com/gorilla/handlers"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"github.com/mattn/go-zglob"
 )
 
 var log = logging.MustGetLogger("stardew.rocks")
+
+type Message struct {
+	ID string `json:"id"`
+	Description string `json:"description"`
+	DefaultMessage string `json:"defaultMessage"`
+}
+
+type Messages []Message
 
 func wwwDir() string {
 	home := os.Getenv("HOME")
@@ -30,8 +43,48 @@ func wwwDir() string {
 	return filepath.Clean(filepath.Join(home, "www"))
 }
 
+func GetLocaleInfo(r *http.Request) ([]byte, string) {
+	// get supported locales
+	localePaths, _ := filepath.Glob(filepath.Join(wwwDir(), "i18n", "*"))
+	var locales []language.Tag
+	for _, locale := range localePaths {
+		locales = append(locales, language.Make(filepath.Base(locale)))
+	}
+	localesMatcher := language.NewMatcher(locales)
+
+	// get best locale for client
+	localeTags, _, _ := language.ParseAcceptLanguage(r.Header["Accept-Language"][0])
+	localeTag, _, _ := localesMatcher.Match(localeTags...)
+	locale := localeTag.String()
+
+	// get messages for locale
+	messages, _ := zglob.Glob(filepath.Join(wwwDir(),"i18n", locale, "**", "*.json"))
+
+	var messagesMap []Message
+	for _, message := range messages {
+		file, _ := ioutil.ReadFile(message)
+		var messageJson Messages
+		_ = json.Unmarshal(file, &messageJson)
+		messagesMap = append(messagesMap, messageJson...)
+	}
+	messagesJson, _ := json.Marshal(messagesMap)
+	return  messagesJson, locale
+}
+
 func Index(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, filepath.Join(wwwDir(), "index.html"))
+	w.Header().Set("Content-Type", "text/html")
+	messagesJson, locale := GetLocaleInfo(r)
+
+	fp := filepath.Join(wwwDir(), "index.html")
+	tmpl, _ := template.ParseFiles(fp)
+
+	tmpl.ExecuteTemplate(w, "index", struct{
+		Messages template.JS
+		Locale string
+	}{
+		template.JS(messagesJson),
+		locale,
+	})
 }
 
 func GetFarms(w http.ResponseWriter, r *http.Request) {
@@ -66,23 +119,23 @@ func GetFarm(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func StaticFiles(w http.ResponseWriter, r *http.Request) {
+	dir := wwwDir()
+	http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
+}
+
 func Root(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, "/map") {
 		LegacyMap(w, r)
 		return
 	}
 	// Allow URLs such as http://stardew.farm/56f360131700d41646571433
-	if len(r.URL.Path) == 25 { // len("/56f360131700d41646571433")
+	if len(r.URL.Path) == 25 || len(r.URL.Path) == 1 { // len("/56f360131700d41646571433")
 		Index(w, r)
 		return
 	}
-	dir := wwwDir()
-	http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
-}
 
-func StaticFiles(w http.ResponseWriter, r *http.Request) {
-	dir := wwwDir()
-	http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
+	StaticFiles(w, r)
 }
 
 // SearchFarms searches for farms or farmers. It looks for a query paramater "q".
@@ -159,15 +212,10 @@ func main() {
 	//http.Handle("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))
 
 	// This is served by the web app.
-	http.Handle("/farm/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Index)))
 	http.Handle("/about/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Index)))
 
 	// This is served from the filesystem, but / goes to index.html which has our web app.
 	http.Handle("/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Root))))
-
-	// Useful during development.
-	http.Handle("/src/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(StaticFiles))))
-	http.Handle("/jspm_packages/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(StaticFiles))))
 
 	RunHTTPServer()
 }

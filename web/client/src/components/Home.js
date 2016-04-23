@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import Radium from 'radium';
+import {FormattedMessage} from 'react-intl';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import Waypoint from 'react-waypoint';
@@ -110,7 +111,11 @@ class Home extends React.Component {
                   className="home-error-no-farms"
                   style={this.styles().panel}
                 >
-                  No results found
+                  <FormattedMessage
+                    id="home.noResults"
+                    defaultMessage="No results found"
+                    description="shown when there are no resutls"
+                  />
                 </Paper>
               )
             }
