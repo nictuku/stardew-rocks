@@ -37,10 +37,8 @@ sed -e "s#assets/[0-9]\+/#assets/${ts}/#" \
 	/etc/apache2/sites-available/${release_env}.conf > "${tmp}"
 
 cp "${tmp}" /etc/apache2/sites-available/${release_env}.conf
-ln -s /home/stardew/www-${release_env}/assets/${ts} /home/stardew/www-{release_env}/current
 
-# do this once:
-# /home/stardew/www-prod/current /home/stardew/www
+cp ${dest}/index.html /home/stardew/www-${release_env}/index.html
 
 # Needs this in /etc/sudoers:
 # stardew   ALL=(ALL) NOPASSWD: /usr/sbin/apache2ctl
