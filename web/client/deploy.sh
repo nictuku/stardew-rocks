@@ -20,7 +20,7 @@ mkdir -p "${dest}"
 tmpdest="$(mktemp -d)"
 
 # "content" is currently using an absolute directory, so don't copy it.
-cp -R index.html bundle.js bundle.js.map favicon.ico favicon-152.png "${tmpdest}"
+cp -R index.html bundle.js bundle.js.map favicon.ico favicon-152.png i18n "${tmpdest}"
 
 # "content" is currently using an absolute directory
 # This changes the live stuff.
@@ -37,3 +37,11 @@ sed -e "s#assets/[0-9]\+/#assets/${ts}/#" \
 	/etc/apache2/sites-available/${release_env}.conf > "${tmp}"
 
 cp "${tmp}" /etc/apache2/sites-available/${release_env}.conf
+ln -s /home/stardew/www-${release_env}/assets/${ts} /home/stardew/www-{release_env}/current
+
+# do this once:
+# /home/stardew/www-prod/current /home/stardew/www
+
+# Needs this in /etc/sudoers:
+# stardew   ALL=(ALL) NOPASSWD: /usr/sbin/apache2ctl
+sudo apache2ctl graceful
