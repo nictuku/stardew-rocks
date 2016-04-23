@@ -6,30 +6,29 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
-	"encoding/json"
-  "io/ioutil"
-	"golang.org/x/text/language"
-
-	"github.com/nictuku/stardew-rocks/stardb"
-
-	logging "github.com/op/go-logging"
 
 	"github.com/NYTimes/gziphandler"
 	hs "github.com/gorilla/handlers"
+	zglob "github.com/mattn/go-zglob"
+	logging "github.com/op/go-logging"
+	"golang.org/x/text/language"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"github.com/mattn/go-zglob"
+
+	"github.com/nictuku/stardew-rocks/stardb"
 )
 
 var log = logging.MustGetLogger("stardew.rocks")
 
 type Message struct {
-	ID string `json:"id"`
-	Description string `json:"description"`
+	ID             string `json:"id"`
+	Description    string `json:"description"`
 	DefaultMessage string `json:"defaultMessage"`
 }
 
@@ -40,26 +39,26 @@ func wwwDir() string {
 	if home == "" {
 		home = string(filepath.Separator)
 	}
-	return filepath.Clean(filepath.Join(home, "www"))
+	base := "www"
+	if os.Getenv("STAGE") != "" {
+		base = "www-" + os.Getenv("STAGE")
+	}
+	return filepath.Clean(filepath.Join(home, base))
 }
 
-func GetLocaleInfo(r *http.Request) ([]byte, string) {
-	// get supported locales
-	localePaths, _ := filepath.Glob(filepath.Join(wwwDir(), "i18n", "*"))
-	var locales []language.Tag
-	for _, locale := range localePaths {
-		locales = append(locales, language.Make(filepath.Base(locale)))
-	}
-	localesMatcher := language.NewMatcher(locales)
+var localesMatcher language.Matcher
 
+func GetLocaleInfo(r *http.Request) ([]byte, string, error) {
 	// get best locale for client
-	localeTags, _, _ := language.ParseAcceptLanguage(r.Header["Accept-Language"][0])
+	localeTags, _, _ := language.ParseAcceptLanguage(r.Header.Get("Accept-Language"))
 	localeTag, _, _ := localesMatcher.Match(localeTags...)
 	locale := localeTag.String()
 
 	// get messages for locale
-	messages, _ := zglob.Glob(filepath.Join(wwwDir(),"i18n", locale, "**", "*.json"))
-
+	messages, err := zglob.Glob(filepath.Join(wwwDir(), "i18n", locale, "**", "*.json"))
+	if err != nil {
+		return nil, "", err
+	}
 	var messagesMap []Message
 	for _, message := range messages {
 		file, _ := ioutil.ReadFile(message)
@@ -67,20 +66,42 @@ func GetLocaleInfo(r *http.Request) ([]byte, string) {
 		_ = json.Unmarshal(file, &messageJson)
 		messagesMap = append(messagesMap, messageJson...)
 	}
-	messagesJson, _ := json.Marshal(messagesMap)
-	return  messagesJson, locale
+	messagesJson, err := json.Marshal(messagesMap)
+	return messagesJson, locale, err
+}
+
+var tmpl *template.Template
+
+func init() {
+	fp := filepath.Join(wwwDir(), "index.html")
+	var err error
+	tmpl, err = template.ParseFiles(fp)
+	if err != nil {
+		panic(err)
+	}
+	// get supported locales
+	localePaths, err := filepath.Glob(filepath.Join(wwwDir(), "i18n", "*"))
+	if err != nil {
+		panic(err)
+	}
+	var locales []language.Tag
+	for _, locale := range localePaths {
+		locales = append(locales, language.Make(filepath.Base(locale)))
+	}
+	localesMatcher = language.NewMatcher(locales)
+
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	messagesJson, locale := GetLocaleInfo(r)
-
-	fp := filepath.Join(wwwDir(), "index.html")
-	tmpl, _ := template.ParseFiles(fp)
-
-	tmpl.ExecuteTemplate(w, "index", struct{
+	messagesJson, locale, err := GetLocaleInfo(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	tmpl.ExecuteTemplate(w, "index", struct {
 		Messages template.JS
-		Locale string
+		Locale   string
 	}{
 		template.JS(messagesJson),
 		locale,
