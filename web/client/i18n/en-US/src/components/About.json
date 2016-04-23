@@ -1,0 +1,97 @@
+[
+  {
+    "id": "about.screenshotAlt",
+    "description": "alt text for taskbar screenshot",
+    "defaultMessage": "taskbar screenshot"
+  },
+  {
+    "id": "about.aboutHeader",
+    "description": "about header",
+    "defaultMessage": "About"
+  },
+  {
+    "id": "about.paragraph1",
+    "description": "summary of application",
+    "defaultMessage": "Stardew Farm is a tool for Stardew Valley that collects saved games and shares them with our community. We create and share screenshots of your game with everyone - no complicated setup needed!"
+  },
+  {
+    "id": "about.paragraph2",
+    "description": "summary of how to upload farms",
+    "defaultMessage": "Install the Stardew Farm client to share your farm state! Farm screenshots will automatically appear here every time your game is saved."
+  },
+  {
+    "id": "about.callToAction",
+    "description": "the link to download the desktop client",
+    "defaultMessage": "Download Stardew Farm!"
+  },
+  {
+    "id": "about.instructions1",
+    "description": "how to use desktop client primer",
+    "defaultMessage": "Just download the .exe file and run it. It stays on your system tray and looks like this:"
+  },
+  {
+    "id": "about.instructions2",
+    "description": "how to close desktop client",
+    "defaultMessage": "You can right click on that icon to close it."
+  },
+  {
+    "id": "about.instructions3",
+    "description": "how to make the app not run at startup",
+    "defaultMessage": "The app is configured to run on startup for you. If you don't want that, just rename the stardew_rocks.exe executable to something else and it won't start automatically anymore."
+  },
+  {
+    "id": "faq.faqHeader",
+    "description": "header for faq",
+    "defaultMessage": "FAQ"
+  },
+  {
+    "id": "faq.findFarmHeader",
+    "description": "header for how to find one's farm",
+    "defaultMessage": "How do I find my farm?"
+  },
+  {
+    "id": "faq.findFarm",
+    "description": "how to find one's farm",
+    "defaultMessage": "After you have slept one night in game with this service running, use the search bar at the top and enter your farm or farmer's name."
+  },
+  {
+    "id": "faq.findScreenshotHeader",
+    "description": "header for where's my screenshot",
+    "defaultMessage": "I don't see my screenshot. What happened?"
+  },
+  {
+    "id": "faq.findScreenshot",
+    "description": "where's my screenshot",
+    "defaultMessage": "The save files are only uploaded after the game is saved, which happens after each night in the game."
+  },
+  {
+    "id": "faq.missingItemsHeader",
+    "description": "header for missing items on farm",
+    "defaultMessage": "There's something missing on my farm :-("
+  },
+  {
+    "id": "faq.missingItems",
+    "description": "stuff is missing on my farm",
+    "defaultMessage": "We are still working on the tool and not everything is perfect yet. Check again in a few days :). Once we update the code, we go back and regenerate all screenshots, so nothing is lost."
+  },
+  {
+    "id": "faq.whatIsSavedHeader",
+    "description": "header for what is saved",
+    "defaultMessage": "So what do you save?"
+  },
+  {
+    "id": "faq.whatIsSaved",
+    "description": "what is uploaded to us",
+    "defaultMessage": "We save the save file for each and every day of your game, as long as the client is up and running. You can click on your farm on the site and look at it."
+  },
+  {
+    "id": "faq.needHelpHeader",
+    "description": "header for I need help",
+    "defaultMessage": "Something else is not working, I need help!"
+  },
+  {
+    "id": "faq.needHelp",
+    "description": "link to support discord channel",
+    "defaultMessage": "Just join our <a href='{discordLink}'>Discord server chat</a> and ask!"
+  }
+]
