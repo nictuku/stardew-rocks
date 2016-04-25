@@ -20,6 +20,7 @@ import (
 	logging "github.com/op/go-logging"
 	"golang.org/x/text/language"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"github.com/bmizerany/pat"
 
 	"github.com/nictuku/stardew-rocks/stardb"
 )
@@ -146,6 +147,8 @@ func StaticFiles(w http.ResponseWriter, r *http.Request) {
 }
 
 func Root(w http.ResponseWriter, r *http.Request) {
+	log.Infof("url: %v, query: %v", r.URL, r.URL.Query().Get(":id"))
+
 	if strings.HasPrefix(r.URL.Path, "/map") {
 		LegacyMap(w, r)
 		return
@@ -198,6 +201,7 @@ func RunHTTPServer() {
 }
 
 func main() {
+ 	r := pat.New()
 
 	serverlog := logging.NewBackendFormatter(logging.NewLogBackend(&lumberjack.Logger{
 		Filename:   "/var/log/stardew/server.log",
@@ -223,20 +227,25 @@ func main() {
 
 	dir := wwwDir()
 	log.Infof("Serving files from %v", dir)
-	http.Handle("/api/farms", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarms)))
-	http.Handle("/api/farm/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(GetFarm))))
-	http.Handle("/api/search/farm", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(SearchFarms)))
 
-	http.Handle("/screenshot/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeScreenshot)))
-	http.Handle("/history/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeAnimation)))
+	// Api
+	r.Get("/api/farms", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(GetFarms)))
+	r.Get("/api/farm/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(GetFarm))))
+	r.Get("/api/search/farm", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(SearchFarms)))
 
-	//http.Handle("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))
+	// Media
+	r.Get("/screenshot/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeScreenshot)))
+	r.Get("/history/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(ServeAnimation)))
 
-	// This is served by the web app.
-	http.Handle("/about/", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Index)))
+	//r.Get("/saveGames/", logHandler(http.HandlerFunc(ServeGFSFile)))
 
-	// This is served from the filesystem, but / goes to index.html which has our web app.
-	http.Handle("/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Root))))
+	// Webapp
+	r.Get("/content/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(StaticFiles))))
+	r.Get("/about", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Index)))
+	r.Get("/:id/stats", hs.CombinedLoggingHandler(combinedLog, http.HandlerFunc(Index)))
+	r.Get("/:id", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Root))))
+	r.Get("/", hs.CombinedLoggingHandler(combinedLog, gziphandler.GzipHandler(http.HandlerFunc(Index))))
 
+	http.Handle("/", r)
 	RunHTTPServer()
 }

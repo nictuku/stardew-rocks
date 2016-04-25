@@ -3,6 +3,9 @@ import Radium from 'radium';
 
 import colors from '../../colors';
 
+var Link = require('react-router').Link;
+Link = Radium(Link);
+
 @Radium
 class Header extends React.Component {
   static propTypes = {
@@ -28,6 +31,7 @@ class Header extends React.Component {
         position: 'relative'
       },
       nameWrapper: {
+        textDecoration: 'none',
         position: 'relative',
         display: 'inline-flex',
         padding: '.5rem 4rem .75rem 4rem'
@@ -75,17 +79,23 @@ class Header extends React.Component {
         this.styles().headerWrapper,
         this.props.isMobile && this.styles().headerWrapperMobile
       ]}>
-        <div style={[
-          this.styles().nameWrapper,
-          this.props.isMobile && this.styles().nameWrapperMobile
-        ]}>
+        <Link
+          to={this.props.farm.ID}
+          style={[
+            this.styles().nameWrapper,
+            this.props.isMobile && this.styles().nameWrapperMobile
+          ]}
+        >
           <div style={this.styles().nameBackground}></div>
           <div style={[
             this.styles().name,
             this.props.isMobile && this.styles().nameMobile
           ]}>{this.props.farm.Name}</div>
-        </div>
-        <span style={this.styles().tab}>STATS</span>
+        </Link>
+        <Link
+          to={`${this.props.farm.ID}/stats`}
+          style={this.styles().tab}
+        >STATS</Link>
       </div>
     );
   }

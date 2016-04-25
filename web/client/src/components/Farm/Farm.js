@@ -35,7 +35,8 @@ class Farm extends React.Component {
     clearFarm: PropTypes.func.isRequired,
     changeSeason: PropTypes.func.isRequired,
     changeSeasonDefault: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired
+    isMobile: PropTypes.bool.isRequired,
+    children: PropTypes.element.isRequired
   };
 
   static contextTypes = {
@@ -88,15 +89,15 @@ class Farm extends React.Component {
               isMobile={this.props.isMobile}
               farm={this.props.farm}
             />
-            <Summary
-              isMobile={this.props.isMobile}
-              farm={this.props.farm}
-              lightBox={this.props.lightBox}
-              nextSrc={this.props.nextSrc}
-              prevSrc={this.props.prevSrc}
-              openLightBox={this.props.openLightBox}
-              closeLightBox={this.props.closeLightBox}
-            />
+            {React.cloneElement(this.props.children, {
+              isMobile: this.props.isMobile,
+              farm: this.props.farm,
+              lightBox: this.props.lightBox,
+              nextSrc: this.props.nextSrc,
+              prevSrc: this.props.prevSrc,
+              openLightBox: this.props.openLightBox,
+              closeLightBox: this.props.closeLightBox
+            })}
           </div>
       : <LinearProgress mode="indeterminate" />}
       </div>
