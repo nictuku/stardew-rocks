@@ -5,6 +5,8 @@ import moment from 'moment';
 import d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 
+import {parseFarmDate} from '../../services/farm';
+
 class StatsEarningsChart extends React.Component {
   static propTypes = {
     farm: PropTypes.shape({
@@ -25,7 +27,7 @@ class StatsEarningsChart extends React.Component {
         id: moment.unix(history.Ts).toDate(),
         totalEarned: history.Player.TotalMoneyEarned,
         wealth: history.Player.Money,
-        date: history.Player.DateStringForSaveGame
+        date: parseFarmDate(history.Player.DateStringForSaveGame)
       }))
       .value();
 

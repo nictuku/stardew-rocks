@@ -16,3 +16,9 @@ export const searchFarms = (query) => {
       .then(res => resolve(res.json()));
   });
 };
+
+export const parseFarmDate = (farmDateStr) => {
+  const regex = /([0-9]{1,2})[a-z]{2}\sof\s([A-Za-z]*),\sYear\s([0-9]*)/;
+  var [, date, season, year] = farmDateStr.match(regex);
+  return {date, season, year};
+};
