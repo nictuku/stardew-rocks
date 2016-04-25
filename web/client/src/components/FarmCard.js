@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react';
+import {FormattedMessage} from 'react-intl';
 import Radium from 'radium';
 import _ from 'lodash';
 import {Link} from 'react-router';
@@ -66,7 +67,16 @@ class FarmCard extends React.Component {
           </div>
           <div style={this.styles().meta}>
             <div style={this.styles().title}>{this.props.farm.Name}</div>
-            <div>{`by ${this.props.farm.Farmer}`}</div>
+            <div>
+              <FormattedMessage
+                id="farmCard.farmer"
+                description="the farmer of the farm"
+                defaultMessage="by {farmer}"
+                values={{
+                  farmer: this.props.farm.Farmer
+                }}
+              />
+            </div>
           </div>
         </Link>
       </div>

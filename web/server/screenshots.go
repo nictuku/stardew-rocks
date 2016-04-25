@@ -91,7 +91,8 @@ func ServeScreenshot(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		if wid < 100 || wid > 500 {
+		// Avoid abusive large image width.
+		if wid < 100 || wid > 800 {
 			http.Error(w, "Invalid range", http.StatusBadRequest)
 			return
 		}

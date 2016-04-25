@@ -1,9 +1,20 @@
 import React, {PropTypes} from 'react';
 import Radium from 'radium';
+import {FormattedMessage, injectIntl, intlShape, defineMessages} from 'react-intl';
 import Lightbox from 'react-image-lightbox';
+import split from 'lodash/split';
 
 import colors from '../../colors';
 
+const messages = defineMessages({
+  indexDisplay: {
+    id: 'farm.indexDisplay',
+    description: 'the index display of what farm is shown',
+    defaultMessage: '{currentIndex} of {numberOfFarms}'
+  }
+});
+
+@injectIntl
 @Radium
 class FarmSlider extends React.Component {
   static propTypes = {
@@ -22,7 +33,8 @@ class FarmSlider extends React.Component {
     nextSrc: PropTypes.func.isRequired,
     prevSrc: PropTypes.func.isRequired,
     openLightBox: PropTypes.func.isRequired,
-    closeLightBox: PropTypes.func.isRequired
+    closeLightBox: PropTypes.func.isRequired,
+    intl: intlShape.isRequired
   };
 
   styles () {
@@ -77,6 +89,13 @@ class FarmSlider extends React.Component {
   }
 
   render () {
+    /* eslint-disable no-magic-numbers */
+    const indexDisplay = this.props.intl.formatMessage(messages.indexDisplay, {
+      currentIndex: this.props.lightBox.index + 1,
+      numberOfFarms: this.props.farm.History.length
+    });
+    const label = `${this.props.lightBox.currentDate} [${indexDisplay}]`;
+    const thumb = split(this.props.lightBox.mainSrc, '.');
     const farmDate = (
       <div
         style={[
@@ -84,7 +103,7 @@ class FarmSlider extends React.Component {
           this.props.isMobile && this.styles().farmDateMobile
         ]}
       >
-        {this.props.lightBox.currentDate}
+        {label}
       </div>
     );
     return (
@@ -94,18 +113,28 @@ class FarmSlider extends React.Component {
             onClick={this.props.prevSrc}
           >
             <i className="material-icons">fast_rewind</i>
-            &nbsp;Past
+            &nbsp;
+            <FormattedMessage
+              id="farm.past"
+              description="past button"
+              defaultMessage="Past"
+            />
           </div>
           {this.props.isMobile ? null : farmDate}
           <div style={this.styles().btn} key="slider-future"
             onClick={this.props.nextSrc}
           >
-            Future&nbsp;
+            <FormattedMessage
+              id="farm.future"
+              description="future button"
+              defaultMessage="Future"
+            />
+            &nbsp;
             <i className="material-icons">fast_forward</i>
           </div>
         </div>
         <img style={this.styles().image}
-          src={this.props.lightBox.mainSrc}
+          src={`${thumb[0]}w650.${thumb[1]}`}
           onClick={this.props.openLightBox}
         />
         {this.props.isMobile ? farmDate : null}
@@ -117,11 +146,12 @@ class FarmSlider extends React.Component {
             onCloseRequest={this.props.closeLightBox}
             onMovePrevRequest={this.props.prevSrc}
             onMoveNextRequest={this.props.nextSrc}
-            imageTitle={this.props.lightBox.currentDate}
+            imageTitle={label}
           />
         : null}
       </div>
     );
+    /* eslint-enable */
   }
 }
 

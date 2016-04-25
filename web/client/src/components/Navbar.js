@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import Radium, {Style} from 'radium';
+import {FormattedMessage} from 'react-intl';
 import IconButton from 'material-ui/lib/icon-button';
 import color from 'color';
 
@@ -141,7 +142,12 @@ class Navbar extends React.Component {
           >
             <Link to="about" className="btn">
               <i className="material-icons">question_answer</i>
-              &nbsp;About/FAQ
+              &nbsp;
+              <FormattedMessage
+                id="nav.about"
+                description="about/faq link"
+                defaultMessage="About/FAQ"
+              />
             </Link>
             <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
               <input type="hidden" name="cmd" value="_s-xclick" />
@@ -153,14 +159,24 @@ class Navbar extends React.Component {
                     <use xlinkHref="content/paypal.svg#paypal" />
                   </svg>
                 </span>
-                &nbsp;Support Us
+                &nbsp;
+                <FormattedMessage
+                  id="nav.donate"
+                  description="donate link"
+                  defaultMessage="Support Us"
+                />
               </button>
             </form>
             <a className="btn"  style={this.styles().clientBtn}
               href="https://github.com/nictuku/stardew-rocks"
             >
               <i className="material-icons">file_download</i>
-              &nbsp;Get the Client
+              &nbsp;
+              <FormattedMessage
+                id="nav.download"
+                description="download link"
+                defaultMessage="Get the Client"
+              />
             </a>
           </div>
         : null }
