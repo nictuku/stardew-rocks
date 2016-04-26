@@ -5,7 +5,7 @@ import moment from 'moment';
 import d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 
-import {parseFarmDate} from '../../services/farm';
+import {FarmDate} from '../../services/farm';
 
 class StatsEarningsChart extends React.Component {
   static propTypes = {
@@ -27,17 +27,15 @@ class StatsEarningsChart extends React.Component {
         id: moment.unix(history.Ts).toDate(),
         totalEarned: history.Player.TotalMoneyEarned,
         wealth: history.Player.Money,
-        date: parseFarmDate(history.Player.DateStringForSaveGame)
+        date: new FarmDate(history.Player.DateStringForSaveGame)
       }))
       .value();
 
-    console.log("days", earnings.map(earning => earning.date));
-
     const node = ReactFauxDOM.createElement('svg'),
-        margin = {top: 20, right: 20, bottom: 30, left: 70},
+        margin = {top: 20, right: 20, bottom: 120, left: 70},
         width = 800 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom,
-        x = d3.time.scale().range([0, width]),
+        x = d3.scale.linear().range([0, width]),
         y = d3.scale.linear().range([height, 0]);
 
     // make the container
@@ -47,13 +45,21 @@ class StatsEarningsChart extends React.Component {
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    x.domain(d3.extent(earnings, d => d.id));
+    x.domain(d3.extent(earnings, d => d.date));
     y.domain(d3.extent(earnings, d => d.totalEarned));
 
     // draw the dates axis
     svg.append('g')
       .attr('transform', `translate(0, ${height})`)
-      .call(d3.svg.axis().scale(x).orient('bottom'));
+      .call(d3.svg.axis()
+        .scale(x)
+        .tickFormat(FarmDate.daysToString)
+        .orient('bottom')
+      )
+      .selectAll('text')
+      .attr('x', 10)
+      .attr('transform', 'rotate(90)')
+      .style("text-anchor", "start");
 
     // draw the earnings axis
     svg.append('g')
@@ -68,7 +74,7 @@ class StatsEarningsChart extends React.Component {
         strokeWidth: '.25rem'
       })
       .attr('d', d3.svg.line()
-        .x(d => x(d.id))
+        .x(d => x(d.date))
         .y(d => y(d.totalEarned))
       );
 
