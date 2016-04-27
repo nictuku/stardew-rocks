@@ -28,3 +28,9 @@ export const UPDATE_AUTODOCK_DRAWER = "UPDATE_AUTODOCK_DRAWER";
 
 // discord
 export const UPDATE_DISCORD = "UPDATE_DISCORD";
+
+// charts
+export const CHART_MOUSE_OVER = "CHART_ON_MOUSE_OVER";
+export const CHART_MOUSE_OUT = "CHART_MOUSE_OUT";
+export const CHART_MOUSE_MOVE = "CHART_MOUSE_MOVE";
+export const CHART_SET_DATA = "CHART_SET_DATA";

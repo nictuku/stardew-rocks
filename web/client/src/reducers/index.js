@@ -6,6 +6,7 @@ import farmFilter from './farmFilter';
 import drawer from './drawer';
 import discord from './discord';
 import global from './global';
+import chart from './chart';
 
 const mainReducer = combineReducers({
   farms,
@@ -13,7 +14,8 @@ const mainReducer = combineReducers({
   farm,
   drawer,
   discord,
-  global
+  global,
+  chart
 });
 
 export default mainReducer;
