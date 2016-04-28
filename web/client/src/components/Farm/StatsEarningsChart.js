@@ -2,7 +2,7 @@
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
-import Radium from 'radium';
+import Radium, {Style} from 'radium';
 import _ from 'lodash';
 import moment from 'moment';
 import d3 from 'd3';
@@ -10,6 +10,7 @@ import numeral from 'numeral';
 
 import colors from '../../colors';
 import {FarmDate} from '../../services/farm';
+import ChartAxis from './ChartAxis';
 import * as chartActions from '../../actions/chartActions';
 
 @Radium
@@ -116,10 +117,10 @@ class StatsEarningsChart extends React.Component {
     const earnings = this.props.data,
         w = this.props.width,
         h = this.props.height,
-        margin = 30;
+        margin = {top: 10, right: 20, bottom: 30, left: 80};
 
-    const width = w - margin * 2,
-        height = h - margin * 2,
+    const width = w - margin.left - margin.right,
+        height = h - margin.top - margin.bottom,
         x = d3.scale.linear()
           .range([0, width]).domain(d3.extent(earnings, d => d.date)),
         y = d3.scale.linear()
@@ -131,23 +132,53 @@ class StatsEarningsChart extends React.Component {
 
     const yAxis = d3.svg.axis()
       .scale(y)
+      .ticks(5)
+      .tickFormat(d => numeral(d).format('0,0') + 'G')
       .orient('left');
 
     const xAxis = d3.svg.axis()
       .scale(x)
       .orient('bottom')
-      .tickFormat(d => FarmDate.daysToString(d.valueOf()));
+      .ticks(5);
+
+    const yGrid = d3.svg.axis()
+      .scale(7)
+      .orient('left')
+      .ticks(5)
+      .tickSize(-width, 0, 0)
+      .tickFormat('');
 
     return (
-      <div style={this.styles().wrapper}>
+      <div style={this.styles().wrapper} className="earnings-chart">
+        <Style
+          scopeSelector=".earnings-chart"
+          rules={{
+            '.axis': {
+              fill: colors.parchment
+            },
+            '.axis line, .axis path': {
+              fill: 'none'
+            }
+          }}
+        />
         <svg
           style={this.styles().chart}
           width={w}
           height={h}
         >
-          <g transform={`translate(${margin}, ${margin})`}
+          <g transform={`translate(${margin.left}, ${margin.top})`}
             style={this.styles().lineGroup}
           >
+            <ChartAxis
+              className="axis"
+              axisFunc={yAxis}
+            />
+            <ChartAxis
+              className="axis"
+              style={this.styles().xAxis}
+              axisFunc={xAxis}
+              transform={`translate(0, ${height})`}
+            />
             <path style={this.styles().line}
               d={line(earnings)}
               strokeLinecap="round"
