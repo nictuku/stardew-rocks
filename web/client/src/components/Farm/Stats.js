@@ -26,7 +26,9 @@ class Stats extends React.Component {
       <div>
         <Card isMobile={this.props.isMobile}>
           <h4>Stats</h4>
-          <StatsEarningsChart farm={this.props.farm} />
+          <div style={{height: '300px'}}>
+            <StatsEarningsChart farm={this.props.farm} />
+          </div>
         </Card>
       </div>
     );

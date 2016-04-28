@@ -5,7 +5,8 @@ import Radium from 'radium';
 class Card extends React.Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
-    children: PropTypes.object
+    children: PropTypes.element,
+    style: PropTypes.object
   };
 
   styles () {
@@ -14,12 +15,12 @@ class Card extends React.Component {
         margin: '2.5rem 1rem 1rem 1rem',
         position: 'relative',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        padding: '3rem'
       },
       cardMobile: {
         margin: 'initial',
-        order: 2,
-        display: 'initial'
+        display: 'block'
       },
       pageBackground: {
         position: 'absolute',
@@ -41,8 +42,9 @@ class Card extends React.Component {
         flex: '1',
         display: 'flex',
         position: 'relative',
-        flexDirection: 'column',
-        padding: '3rem'
+        flexDirection: 'column'
+      },
+      pageContentMobile: {
       }
     };
   }
@@ -51,13 +53,17 @@ class Card extends React.Component {
     return (
       <div style={[
         this.styles().card,
-        this.props.isMobile && this.styles().cardMobile
+        this.props.isMobile && this.styles().cardMobile,
+        this.props.style
       ]}>
         <div style={[
           this.styles().pageBackground,
           this.props.isMobile && this.styles().pageBackgroundMobile
         ]}></div>
-        <div style={this.styles().pageContent}>
+        <div style={[
+          this.styles().pageContent,
+          this.props.isMobile && this.styles().pageContentMobile
+        ]}>
           {this.props.children}
         </div>
       </div>

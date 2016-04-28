@@ -1,5 +1,4 @@
 /* eslint-disable no-magic-numbers */
-import $ from 'jquery';
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
@@ -41,7 +40,7 @@ class StatsEarningsChart extends React.Component {
   };
 
   componentWillMount () {
-    this.updateSize = _.bind(this.updateSize, this);
+    this.updateSize = _.debounce(_.bind(this.updateSize, this), 300);
     this.props.setData(_(this.props.farm.History)
       .map(history => ({
         id: moment.unix(history.Ts).toDate(),
@@ -51,11 +50,11 @@ class StatsEarningsChart extends React.Component {
       }))
       .value()
     );
-    $(window).on("resize", this.updateSize);
+    window.addEventListener("resize", this.updateSize);
   }
 
   componentWillUnmount () {
-    $(window).off("resize", this.updateSize);
+    window.removeEventListener("resize", this.updateSize);
   }
 
   componentDidMount () {
@@ -63,21 +62,25 @@ class StatsEarningsChart extends React.Component {
   }
 
   updateSize () {
-    let node = ReactDOM.findDOMNode(this),
-        parentWidth = $(node).width();
+    const node = ReactDOM.findDOMNode(this),
+        w = node.parentNode.offsetWidth,
+        h = node.parentNode.offsetHeight;
 
-    console.log("width", parentWidth);
-
-    this.props.changeSize(parentWidth, 300);
+    this.props.changeSize({
+      width: w,
+      height: h
+    });
   }
 
   styles () {
     return {
       wrapper: {
-        flex: '1',
-        backgroundColor: colors.dkBrown
+        position: 'absolute',
+        left: 0,
+        right: 0
       },
       chart: {
+        backgroundColor: colors.dkBrown
       },
       lineGroup: {
       },
@@ -181,14 +184,14 @@ export default connect(
     data: chart.data,
     isHover: chart.isHover,
     mouseLocation: chart.mouseLocation,
-    height: chart.size.y,
-    width: chart.size.x
+    height: chart.size.height,
+    width: chart.size.width
   }),
   dispatch => ({
     mouseOver: () => dispatch(chartActions.mouseOver()),
     mouseOut: () => dispatch(chartActions.mouseOut()),
     mouseMove: (coords) => dispatch(chartActions.mouseMove(coords)),
     setData: (data) => dispatch(chartActions.setData(data)),
-    changeSize: (x, y) => dispatch(chartActions.changeSize({x, y}))
+    changeSize: (size) => dispatch(chartActions.changeSize(size))
   })
 )(StatsEarningsChart);

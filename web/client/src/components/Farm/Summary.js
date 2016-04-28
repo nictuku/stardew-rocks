@@ -27,7 +27,9 @@ class Summary extends React.Component {
         width: '20%'
       },
       metaMobile: {
-        width: 'initial',
+        width: 'initial'
+      },
+      metaWrapperMobile: {
         order: 2
       },
       slider: {
@@ -53,13 +55,18 @@ class Summary extends React.Component {
   render () {
     return (
       <div style={this.styles().summary}>
-        <Card isMobile={this.props.isMobile}>
+        <Card
+          isMobile={this.props.isMobile}
+          style={[
+            this.props.isMobile && this.styles().metaWrapperMobile
+          ]}
+        >
           <SummaryMeta
-            farm={this.props.farm}
             style={[
               this.styles().meta,
               this.props.isMobile && this.styles().metaMobile
             ]}
+            farm={this.props.farm}
           />
         </Card>
         <SummarySlider

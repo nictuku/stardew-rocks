@@ -12,7 +12,7 @@ export const initialState = {
   data: [],
   isHover: false,
   mouseLocation: {x: 0, y: 0},
-  size: {x: 0, y: 0}
+  size: {width: 0, height: 0}
 };
 
 export default handleActions({
