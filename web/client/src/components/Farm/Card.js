@@ -38,8 +38,11 @@ class Card extends React.Component {
         right: '-3rem'
       },
       pageContent: {
+        flex: '1',
         display: 'flex',
-        position: 'relative'
+        position: 'relative',
+        flexDirection: 'column',
+        padding: '3rem'
       }
     };
   }

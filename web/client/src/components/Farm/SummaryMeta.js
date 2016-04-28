@@ -32,7 +32,6 @@ class FarmMeta extends React.Component {
         <Style
           scopeSelector=".farm-meta"
           rules={{
-            padding: '3rem',
             '.group': {
             },
             '.item': {

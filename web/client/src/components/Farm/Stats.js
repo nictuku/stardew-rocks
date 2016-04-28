@@ -14,7 +14,9 @@ class Stats extends React.Component {
   styles () {
     return {
       statsCard: {
-        padding: '3rem'
+        flex: '1',
+        display: 'flex',
+        flexDirection: 'column'
       }
     };
   }
@@ -23,10 +25,8 @@ class Stats extends React.Component {
     return (
       <div>
         <Card isMobile={this.props.isMobile}>
-          <div style={this.styles().statsCard}>
-            <h4>Stats</h4>
-            <StatsEarningsChart farm={this.props.farm} />
-          </div>
+          <h4>Stats</h4>
+          <StatsEarningsChart farm={this.props.farm} />
         </Card>
       </div>
     );

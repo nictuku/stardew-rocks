@@ -1,5 +1,7 @@
 /* eslint-disable no-magic-numbers */
+import $ from 'jquery';
 import React, {PropTypes} from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import Radium from 'radium';
 import _ from 'lodash';
@@ -32,10 +34,14 @@ class StatsEarningsChart extends React.Component {
     setData: PropTypes.func.isRequired,
     mouseOut: PropTypes.func.isRequired,
     mouseOver: PropTypes.func.isRequired,
-    mouseMove: PropTypes.func.isRequired
+    mouseMove: PropTypes.func.isRequired,
+    height: PropTypes.number,
+    width: PropTypes.number,
+    changeSize: PropTypes.func.isRequired
   };
 
   componentWillMount () {
+    this.updateSize = _.bind(this.updateSize, this);
     this.props.setData(_(this.props.farm.History)
       .map(history => ({
         id: moment.unix(history.Ts).toDate(),
@@ -45,19 +51,40 @@ class StatsEarningsChart extends React.Component {
       }))
       .value()
     );
+    $(window).on("resize", this.updateSize);
+  }
+
+  componentWillUnmount () {
+    $(window).off("resize", this.updateSize);
+  }
+
+  componentDidMount () {
+    this.updateSize();
+  }
+
+  updateSize () {
+    let node = ReactDOM.findDOMNode(this),
+        parentWidth = $(node).width();
+
+    console.log("width", parentWidth);
+
+    this.props.changeSize(parentWidth, 300);
   }
 
   styles () {
     return {
-      chart: {
+      wrapper: {
+        flex: '1',
         backgroundColor: colors.dkBrown
+      },
+      chart: {
       },
       lineGroup: {
       },
       line: {
         fill: 'none',
         stroke: colors.leather,
-        strokeWidth: '.5rem'
+        strokeWidth: '10px'
       },
       tooltipGroup: {
         display: 'none'
@@ -67,18 +94,21 @@ class StatsEarningsChart extends React.Component {
       },
       reticle: {
         fill: colors.parchment
+      },
+      overlay: {
+        fill: 'none',
+        pointerEvents: 'all'
       }
     };
   }
 
   render () {
-    const earnings = this.props.data;
+    const earnings = this.props.data,
+        w = this.props.width,
+        h = this.props.height,
+        margin = 10;
 
-    const
-        w = 800,
-        h = 500,
-        margin = 10,
-        width = w - margin * 2,
+    const width = w - margin * 2,
         height = h - margin * 2,
         x = d3.scale.linear()
           .range([0, width]).domain(d3.extent(earnings, d => d.date)),
@@ -91,33 +121,55 @@ class StatsEarningsChart extends React.Component {
 
 
     return (
-      <svg
-        style={this.styles().chart}
-        width={w}
-        height={h}
-        onMouseMove={e => this.props.mouseMove(e.clientX, e.clientY)}
-        onMouseOut={this.props.mouseOut}
-        onMouseOver={this.props.mouseOver}
-      >
-        <g transform={`translate(${margin}, ${margin})`}
-          style={this.styles().lineGroup}
+      <div style={this.styles().wrapper}>
+        <svg
+          style={this.styles().chart}
+          width={w}
+          height={h}
         >
-          <path style={this.styles().line}
-            d={line(earnings)}
-            strokeLinecap="round"
+          <g transform={`translate(${margin}, ${margin})`}
+            style={this.styles().lineGroup}
+          >
+            <path style={this.styles().line}
+              d={line(earnings)}
+              strokeLinecap="round"
+            />
+          </g>
+          <g
+            style={[
+              this.styles().tooltipGroup,
+              this.props.isHover && this.styles().tooltipGroupIsHover
+            ]}
+            transform={`translate(${this.props.mouseLocation.x}, ${this.props.mouseLocation.y + 15})`}
+          >
+            <circle
+              style={this.styles().reticle}
+              r="10"
+            />
+          </g>
+          <rect
+            width={w}
+            height={h}
+            style={this.styles().overlay}
+            onMouseMove={e => {
+              const bounds = e.target.getBoundingClientRect(),
+                  mouseLocation = {
+                    x: e.clientX - bounds.left,
+                    y: e.clientY - bounds.top
+                  },
+                  x0 = x.invert(mouseLocation.x),
+                  bisectDate = d3.bisector(d => d.date, 1).left,
+                  i = bisectDate(earnings, x0) - 1;
+              this.props.mouseMove({
+                x: x(earnings[i].date),
+                y: y(earnings[i].totalEarned)
+              });
+            }}
+            onMouseOut={this.props.mouseOut}
+            onMouseOver={this.props.mouseOver}
           />
-        </g>
-        <g style={[
-          this.styles().tooltipGroup,
-          this.props.isHover && this.styles().tooltipGroupIsHover
-        ]}>
-          <circle
-            style={this.styles().reticle}
-            r="10"
-            transform={`translate(${this.props.mouseLocation.x}, ${this.props.mouseLocation.y})`}
-          />
-        </g>
-      </svg>
+        </svg>
+      </div>
     );
   }
 }
@@ -128,12 +180,15 @@ export default connect(
   ({chart}) => ({
     data: chart.data,
     isHover: chart.isHover,
-    mouseLocation: chart.mouseLocation
+    mouseLocation: chart.mouseLocation,
+    height: chart.size.y,
+    width: chart.size.x
   }),
   dispatch => ({
     mouseOver: () => dispatch(chartActions.mouseOver()),
     mouseOut: () => dispatch(chartActions.mouseOut()),
-    mouseMove: (x, y) => dispatch(chartActions.mouseMove(x, y)),
-    setData: (data) => dispatch(chartActions.setData(data))
+    mouseMove: (coords) => dispatch(chartActions.mouseMove(coords)),
+    setData: (data) => dispatch(chartActions.setData(data)),
+    changeSize: (x, y) => dispatch(chartActions.changeSize({x, y}))
   })
 )(StatsEarningsChart);
