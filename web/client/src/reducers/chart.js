@@ -5,13 +5,15 @@ import {
   CHART_MOUSE_OUT,
   CHART_MOUSE_MOVE,
   CHART_SET_DATA,
-  CHART_CHANGE_SIZE
+  CHART_CHANGE_SIZE,
+  CHART_SET_TOOLTIP
 } from '../actionTypes';
 
 export const initialState = {
   data: [],
   isHover: false,
   mouseLocation: {x: 0, y: 0},
+  tooltip: {x: 0, y: 0, text: ""},
   size: {width: 0, height: 0}
 };
 
@@ -35,5 +37,9 @@ export default handleActions({
   [CHART_CHANGE_SIZE]: (state, {payload}) => ({
     ...state,
     size: payload
+  }),
+  [CHART_SET_TOOLTIP]: (state, {payload}) => ({
+    ...state,
+    tooltip: payload
   })
 }, initialState);

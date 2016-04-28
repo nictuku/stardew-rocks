@@ -6,6 +6,7 @@ import Radium from 'radium';
 import _ from 'lodash';
 import moment from 'moment';
 import d3 from 'd3';
+import numeral from 'numeral';
 
 import colors from '../../colors';
 import {FarmDate} from '../../services/farm';
@@ -24,16 +25,17 @@ class StatsEarningsChart extends React.Component {
         Ts: PropTypes.number.isRequired
       })).isRequired
     }).isRequired,
-    mouseLocation: PropTypes.shape({
+    tooltip: PropTypes.shape({
       x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired
+      y: PropTypes.number.isRequired,
+      object: PropTypes.object.isRequired
     }).isRequired,
     isHover: PropTypes.bool.isRequired,
     data: PropTypes.array.isRequired,
     setData: PropTypes.func.isRequired,
     mouseOut: PropTypes.func.isRequired,
     mouseOver: PropTypes.func.isRequired,
-    mouseMove: PropTypes.func.isRequired,
+    setTooltip: PropTypes.func.isRequired,
     height: PropTypes.number,
     width: PropTypes.number,
     changeSize: PropTypes.func.isRequired
@@ -95,8 +97,13 @@ class StatsEarningsChart extends React.Component {
       tooltipGroupIsHover: {
         display: 'initial'
       },
-      reticle: {
+      tooltipText: {
         fill: colors.parchment
+      },
+      reticle: {
+        fill: colors.leather,
+        stroke: colors.parchment,
+        strokeWidth: '3px'
       },
       overlay: {
         fill: 'none',
@@ -109,7 +116,7 @@ class StatsEarningsChart extends React.Component {
     const earnings = this.props.data,
         w = this.props.width,
         h = this.props.height,
-        margin = 10;
+        margin = 30;
 
     const width = w - margin * 2,
         height = h - margin * 2,
@@ -122,6 +129,14 @@ class StatsEarningsChart extends React.Component {
       .x(d => x(d.date))
       .y(d => y(d.totalEarned));
 
+    const yAxis = d3.svg.axis()
+      .scale(y)
+      .orient('left');
+
+    const xAxis = d3.svg.axis()
+      .scale(x)
+      .orient('bottom')
+      .tickFormat(d => FarmDate.daysToString(d.valueOf()));
 
     return (
       <div style={this.styles().wrapper}>
@@ -137,40 +152,55 @@ class StatsEarningsChart extends React.Component {
               d={line(earnings)}
               strokeLinecap="round"
             />
-          </g>
-          <g
-            style={[
-              this.styles().tooltipGroup,
-              this.props.isHover && this.styles().tooltipGroupIsHover
-            ]}
-            transform={`translate(${this.props.mouseLocation.x}, ${this.props.mouseLocation.y + 15})`}
-          >
-            <circle
-              style={this.styles().reticle}
-              r="10"
+            <g
+              style={[
+                this.styles().tooltipGroup,
+                this.props.isHover && this.styles().tooltipGroupIsHover
+              ]}
+              transform={`translate(${this.props.tooltip.x}, ${this.props.tooltip.y})`}
+            >
+              <circle
+                style={this.styles().reticle}
+                r="10"
+              />
+              <g
+                style={this.styles().tooltipText}
+                transform={`translate(15, 0)`}
+              >
+                <text>
+                  {numeral(_.get(this.props.tooltip.object, 'totalEarned', 0)).format('0,0') + 'G'}
+                </text>
+                <text dy="15">
+                  {_.get(this.props.tooltip.object, 'date.string', '')}
+                </text>
+              </g>
+            </g>
+            <rect
+              width={width}
+              height={height}
+              style={this.styles().overlay}
+              onMouseMove={e => {
+                const bounds = e.target.getBoundingClientRect(),
+                    mouseLocation = {
+                      x: e.clientX - bounds.left,
+                      y: e.clientY - bounds.top
+                    },
+                    x0 = x.invert(mouseLocation.x),
+                    bisectDate = d3.bisector(d => d.date, 1).left,
+                    i = bisectDate(earnings, x0, 1),
+                    d0 = earnings[i - 1],
+                    d1 = earnings[i],
+                    d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+                this.props.setTooltip({
+                  x: x(d.date),
+                  y: y(d.totalEarned),
+                  object: d
+                });
+              }}
+              onMouseOut={this.props.mouseOut}
+              onMouseOver={this.props.mouseOver}
             />
           </g>
-          <rect
-            width={w}
-            height={h}
-            style={this.styles().overlay}
-            onMouseMove={e => {
-              const bounds = e.target.getBoundingClientRect(),
-                  mouseLocation = {
-                    x: e.clientX - bounds.left,
-                    y: e.clientY - bounds.top
-                  },
-                  x0 = x.invert(mouseLocation.x),
-                  bisectDate = d3.bisector(d => d.date, 1).left,
-                  i = bisectDate(earnings, x0) - 1;
-              this.props.mouseMove({
-                x: x(earnings[i].date),
-                y: y(earnings[i].totalEarned)
-              });
-            }}
-            onMouseOut={this.props.mouseOut}
-            onMouseOver={this.props.mouseOver}
-          />
         </svg>
       </div>
     );
@@ -183,14 +213,14 @@ export default connect(
   ({chart}) => ({
     data: chart.data,
     isHover: chart.isHover,
-    mouseLocation: chart.mouseLocation,
+    tooltip: chart.tooltip,
     height: chart.size.height,
     width: chart.size.width
   }),
   dispatch => ({
     mouseOver: () => dispatch(chartActions.mouseOver()),
     mouseOut: () => dispatch(chartActions.mouseOut()),
-    mouseMove: (coords) => dispatch(chartActions.mouseMove(coords)),
+    setTooltip: (tooltip) => dispatch(chartActions.setTooltip(tooltip)),
     setData: (data) => dispatch(chartActions.setData(data)),
     changeSize: (size) => dispatch(chartActions.changeSize(size))
   })
