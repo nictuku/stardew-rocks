@@ -90,7 +90,7 @@ class StatsEarningsChart extends React.Component {
       line: {
         fill: 'none',
         stroke: colors.leather,
-        strokeWidth: '10px'
+        strokeWidth: '5px'
       },
       tooltipGroup: {
         display: 'none'
@@ -104,7 +104,7 @@ class StatsEarningsChart extends React.Component {
       reticle: {
         fill: colors.leather,
         stroke: colors.parchment,
-        strokeWidth: '3px'
+        strokeWidth: '2px'
       },
       overlay: {
         fill: 'none',
@@ -117,7 +117,7 @@ class StatsEarningsChart extends React.Component {
     const earnings = this.props.data,
         w = this.props.width,
         h = this.props.height,
-        margin = {top: 10, right: 20, bottom: 30, left: 80};
+        margin = {top: 20, right: 60, bottom: 30, left: 90};
 
     const width = w - margin.left - margin.right,
         height = h - margin.top - margin.bottom,
@@ -142,7 +142,7 @@ class StatsEarningsChart extends React.Component {
       .ticks(5);
 
     const yGrid = d3.svg.axis()
-      .scale(7)
+      .scale(y)
       .orient('left')
       .ticks(5)
       .tickSize(-width, 0, 0)
@@ -158,9 +158,13 @@ class StatsEarningsChart extends React.Component {
             },
             '.axis line, .axis path': {
               fill: 'none'
+            },
+            '.grid line': {
+              stroke: colors.brown
             }
           }}
         />
+        {this.props.width ?
         <svg
           style={this.styles().chart}
           width={w}
@@ -177,7 +181,21 @@ class StatsEarningsChart extends React.Component {
               className="axis"
               style={this.styles().xAxis}
               axisFunc={xAxis}
+              label={{
+                text: 'days',
+                props: {
+                  x: width + 50,
+                  y: 20,
+                  style: {
+                    textAnchor: 'end'
+                  }
+                }
+              }}
               transform={`translate(0, ${height})`}
+            />
+            <ChartAxis
+              className="grid"
+              axisFunc={yGrid}
             />
             <path style={this.styles().line}
               d={line(earnings)}
@@ -192,7 +210,7 @@ class StatsEarningsChart extends React.Component {
             >
               <circle
                 style={this.styles().reticle}
-                r="10"
+                r="5"
               />
               <g
                 style={this.styles().tooltipText}
@@ -233,6 +251,7 @@ class StatsEarningsChart extends React.Component {
             />
           </g>
         </svg>
+        : null}
       </div>
     );
   }
