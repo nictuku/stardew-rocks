@@ -30,6 +30,74 @@ func wwwDir() string {
 	}
 	return filepath.Clean(filepath.Join(home, "www"))
 }
+func handleMessage(d amqp.Delivery, farmMap *parser.Map) {
+	var reader io.Reader = bytes.NewReader(d.Body)
+	// The content is usually gzip encoded by we don't have to worry about that.
+	// Apparently rabbitMQ or the Go library will decompress it transparently.
+	// d.ContentEncoding == "gzip" {
+	saveGame, err := parser.ParseSaveGame(reader)
+	if err != nil {
+		log.Print("Error parsing saved game:", err)
+		return
+	}
+	if saveGame.Player.Name == "" {
+		log.Print("Ignoring save with blank player name")
+		return
+	}
+
+	ts := time.Now()
+	col, closer := stardb.FarmCollection()
+	defer closer()
+	farm, _, err := stardb.FindOrCreateFarm(col, saveGame.UniqueIDForThisGame, saveGame.Player.Name, saveGame.Player.FarmName)
+	if err != nil {
+		log.Print("Error fetching farm ID:", err)
+		return
+	}
+	farmid := farm.InternalID.Hex()
+	h := fmt.Sprintf("%x", md5.Sum(d.Body))
+	if stardb.IsSaveGameDupe(farmid, h) {
+		log.Println("Skipping dupe", farmid, h)
+		return
+	}
+
+	// GridFS XML save file write.
+	// TODO: broken saves (length 0)
+	if err := stardb.WriteSaveFile(farm, d.Body, ts); err != nil {
+		log.Print("write save file:", err)
+		return
+	}
+	// The save file is the most critical and it's been updated, so we should be fine.
+	if err := stardb.UpdateFarmTime(farm.InternalID, ts); err != nil {
+		log.Print("update farm time:", err)
+		return
+	}
+	if fi, err := stardb.FarmHistoryFromSaveGame(farm.InternalID, saveGame, int(ts.Unix())); err != nil {
+		log.Print("farm history from save game:", err)
+		return
+	} else {
+		if err := stardb.InsertFarmHistory(farm.InternalID, fi); err != nil {
+			log.Print("update farm history failed:", err)
+			return
+		}
+		log.Println("Updated farm history")
+	}
+
+	// GridFs screenshot write.
+	fs, err := stardb.NewScreenshotWriter(farm, ts)
+	if err != nil {
+		log.Print("Error writing grid screenshot:", err)
+		return
+	}
+
+	if err := view.WriteImage(farmMap, saveGame, fs); err != nil {
+		log.Print(err)
+		fs.Close()
+		return
+	}
+	fs.Close()
+	log.Printf("Wrote grid map file %v", farm.ScreenshotPath())
+
+}
 
 func main() {
 	conn, err := amqp.Dial("amqp://guest:guest@amqp.stardew.rocks:5672/")
@@ -88,71 +156,7 @@ func main() {
 	go func() {
 		for d := range msgs {
 			count++
-			var reader io.Reader = bytes.NewReader(d.Body)
-			// The content is usually gzip encoded by we don't have to worry about that.
-			// Apparently rabbitMQ or the Go library will decompress it transparently.
-			// d.ContentEncoding == "gzip" {
-			saveGame, err := parser.ParseSaveGame(reader)
-			if err != nil {
-				log.Print("Error parsing saved game:", err)
-				continue
-			}
-			if saveGame.Player.Name == "" {
-				log.Print("Ignoring save with blank player name")
-				continue
-			}
-
-			ts := time.Now()
-
-			farm, _, err := stardb.FindOrCreateFarm(stardb.FarmCollection, saveGame.UniqueIDForThisGame, saveGame.Player.Name, saveGame.Player.FarmName)
-			if err != nil {
-				log.Print("Error fetching farm ID:", err)
-				continue
-			}
-			farmid := farm.InternalID.Hex()
-			h := fmt.Sprintf("%x", md5.Sum(d.Body))
-			if stardb.IsSaveGameDupe(farmid, h) {
-				log.Println("Skipping dupe", farmid, h)
-				continue
-			}
-
-			// GridFS XML save file write.
-			// TODO: broken saves (length 0)
-			if err := stardb.WriteSaveFile(farm, d.Body, ts); err != nil {
-				log.Print("write save file:", err)
-				continue
-			}
-			// The save file is the most critical and it's been updated, so we should be fine.
-			if err := stardb.UpdateFarmTime(farm.InternalID, ts); err != nil {
-				log.Print("update farm time:", err)
-				continue
-			}
-			if fi, err := stardb.FarmHistoryFromSaveGame(farm.InternalID, saveGame, int(ts.Unix())); err != nil {
-				log.Print("farm history from save game:", err)
-				continue
-			} else {
-				if err := stardb.InsertFarmHistory(farm.InternalID, fi); err != nil {
-					log.Print("update farm history failed:", err)
-					continue
-				}
-				log.Println("Updated farm history")
-			}
-
-			// GridFs screenshot write.
-			fs, err := stardb.NewScreenshotWriter(farm, ts)
-			if err != nil {
-				log.Print("Error writing grid screenshot:", err)
-				continue
-			}
-
-			if err := view.WriteImage(farmMap, saveGame, fs); err != nil {
-				log.Print(err)
-				fs.Close()
-				continue
-			}
-			fs.Close()
-			log.Printf("Wrote grid map file %v", farm.ScreenshotPath())
-
+			handleMessage(d, farmMap)
 		}
 		log.Printf("Total messages so far: %d", count)
 

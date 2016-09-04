@@ -9,12 +9,16 @@ import (
 )
 
 var (
-	Session               *mgo.Session
-	DB                    *mgo.Database
-	FarmCollection        *mgo.Collection
+	initialSession        *mgo.Session
+	DB                    *mgo.Database // XXX Remove this
 	FarmHistoryCollection *mgo.Collection
 	GFS                   *mgo.GridFS
 )
+
+func FarmCollection() (col *mgo.Collection, close func()) {
+	session := initialSession.Clone()
+	return DB.C("farms"), session.Close
+}
 
 func dbName() string {
 	// The last bit of the Dial string is the database.
@@ -24,15 +28,13 @@ func dbName() string {
 
 func init() {
 	var err error
-	Session, err = mgo.Dial(mongoAddr)
+	initialSession, err = mgo.Dial(mongoAddr)
 	if err != nil {
 		log.Printf("Mongodb connection failure: %v", err)
 		os.Exit(1)
 	}
 	// Not relevant or possible.
-	// Session.Close()
-	DB = Session.DB(dbName())
-	FarmCollection = DB.C("farms")
+	DB = initialSession.DB(dbName())
 
 	// farmhistory is updated more often and has extended information about the farm.
 	// It has one entry for each save game of that farm.
@@ -40,15 +42,17 @@ func init() {
 
 	GFS = DB.GridFS("sdr")
 
-	if err := FarmCollection.EnsureIndexKey("name", "farmer"); err != nil {
+	farmCollection, closer := FarmCollection()
+	defer closer()
+	if err := farmCollection.EnsureIndexKey("name", "farmer"); err != nil {
 		log.Printf("Failed to create a FarmCollection index: %v", err)
 		os.Exit(1)
 	}
-	if err := FarmCollection.EnsureIndexKey("-likes"); err != nil {
+	if err := farmCollection.EnsureIndexKey("-likes"); err != nil {
 		log.Printf("Failed to create a FarmCollection index: %v", err)
 		os.Exit(1)
 	}
-	if err := FarmCollection.EnsureIndexKey("-lastupdate"); err != nil {
+	if err := farmCollection.EnsureIndexKey("-lastupdate"); err != nil {
 		log.Printf("Failed to create a FarmCollection index: %v", err)
 		os.Exit(1)
 	}

@@ -25,7 +25,7 @@ type Player struct {
 	FarmName          string   `xml:"farmName"`
 
 	DateStringForSaveGame string `xml:"dateStringForSaveGame"`
-	FavoriteThing           string `xml:"favoriteThing"`
+	FavoriteThing         string `xml:"favoriteThing"`
 	Shirt                 int    `xml:"shirt"`
 	Hair                  int    `xml:"hair"`
 	Skin                  int    `xml:"skin"`

@@ -95,7 +95,9 @@ func SaveGamePath(id string, ts time.Time) string {
 }
 
 func RecentFarm() (farm *Farm) {
-	err := FarmCollection.Find(nil).Sort("-lastupdate").One(&farm)
+	col, closer := FarmCollection()
+	defer closer()
+	err := col.Find(nil).Sort("-lastupdate").One(&farm)
 	if err != nil {
 		return nil
 	}
@@ -111,8 +113,9 @@ func AllFarms(farmerRE string) (c chan *Farm) {
 
 	go func() {
 		defer close(c)
-
-		iter := FarmCollection.Find(bson.M{"farmer": bson.M{"$regex": farmerRE}}).Sort("-lastupdate").Iter()
+		col, closer := FarmCollection()
+		defer closer()
+		iter := col.Find(bson.M{"farmer": bson.M{"$regex": farmerRE}}).Sort("-lastupdate").Iter()
 
 		for {
 			var next *Farm // Need a separate point for every farm.
@@ -132,7 +135,9 @@ func AllFarms(farmerRE string) (c chan *Farm) {
 func FarmsJSON() ([]byte, error) {
 	var farms []*Farm
 	// TODO: implement paging on the server side instead of returning a very large result.
-	if err := FarmCollection.Find(nil).Sort("-lastupdate").Limit(500).All(&farms); err != nil {
+	col, closer := FarmCollection()
+	defer closer()
+	if err := col.Find(nil).Sort("-lastupdate").Limit(500).All(&farms); err != nil {
 		return nil, err
 	}
 	for _, farm := range farms {
@@ -149,7 +154,7 @@ func IsSaveGameDupe(id string, md5 string) bool {
 	}
 	prefix := fmt.Sprintf("^/saveGames/%v", id)
 	n, err := DB.C("sdr.files").Find(bson.M{
-		"md5": md5,
+		"md5":      md5,
 		"filename": bson.M{"$regex": prefix},
 	}).Count()
 	if err != nil {
@@ -164,7 +169,9 @@ func FindFarm(id string) (*Farm, error) {
 		return nil, fmt.Errorf("invalid farm id")
 	}
 	var farm *Farm
-	err := FarmCollection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&farm)
+	col, closer := FarmCollection()
+	defer closer()
+	err := col.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&farm)
 	farm.ID = farm.InternalID.Hex()
 	return farm, err
 }
@@ -174,7 +181,9 @@ func FarmJSON(id string) ([]byte, error) {
 		return nil, fmt.Errorf("invalid farm id")
 	}
 	var farm *Farm
-	if err := FarmCollection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&farm); err != nil {
+	col, closer := FarmCollection()
+	defer closer()
+	if err := col.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&farm); err != nil {
 		return nil, err
 	}
 	farm.Thumbnail = farm.ScreenshotPath()
@@ -190,7 +199,9 @@ func FarmJSON(id string) ([]byte, error) {
 
 func LegacyMap(farmer string) (*Farm, error) {
 	var farm *Farm
-	if err := FarmCollection.Find(bson.M{"farmer": farmer}).One(&farm); err != nil {
+	col, closer := FarmCollection()
+	defer closer()
+	if err := col.Find(bson.M{"farmer": farmer}).One(&farm); err != nil {
 		return nil, fmt.Errorf("error finding farm: %v", err)
 	}
 	farm.ID = farm.InternalID.Hex()
@@ -200,7 +211,9 @@ func LegacyMap(farmer string) (*Farm, error) {
 func SearchFarmsJSON(query string) ([]byte, error) {
 	var farms []*Farm
 	re := bson.RegEx{query, "i"}
-	if err := FarmCollection.Find(
+	col, closer := FarmCollection()
+	defer closer()
+	if err := col.Find(
 		bson.M{"$or": []interface{}{
 			bson.M{"name": bson.M{"$regex": re}},
 			bson.M{"farmer": bson.M{"$regex": re}},
@@ -218,7 +231,9 @@ func SearchFarmsJSON(query string) ([]byte, error) {
 }
 
 func UpdateFarmTime(id bson.ObjectId, ts time.Time) error {
-	return FarmCollection.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"lastupdate": ts}})
+	col, closer := FarmCollection()
+	defer closer()
+	return col.Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"lastupdate": ts}})
 }
 
 func FindOrCreateFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, farmName string) (ret *Farm, existing bool, err error) {
