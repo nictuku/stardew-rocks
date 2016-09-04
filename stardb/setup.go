@@ -16,6 +16,24 @@ var (
 	GFS                   *mgo.GridFS
 )
 
+type CollectionsHolder struct {
+	Farm        *mgo.Collection
+	FarmHistory *mgo.Collection
+	Files       *mgo.Collection
+	GFS         *mgo.GridFS
+}
+
+func Collections() (col *CollectionsHolder, close func()) {
+	session := initialSession.Clone()
+	db := session.DB(dbName())
+	return &CollectionsHolder{
+		db.C("farms"),
+		db.C("XXX"),
+		db.C("sdr.files"),
+		db.GridFS("sdr"),
+	}, session.Close
+}
+
 func dbName() string {
 	// The last bit of the Dial string is the database.
 	spl := strings.Split(mongoAddr, "/")
@@ -34,19 +52,17 @@ func init() {
 	// It has one entry for each save game of that farm.
 	FarmHistoryCollection = db.C("farmhistory")
 
-	GFS = db.GridFS("sdr")
-
-	farmCollection, closer := FarmCollection()
+	cols, closer := Collections()
 	defer closer()
-	if err := farmCollection.EnsureIndexKey("name", "farmer"); err != nil {
+	if err := cols.Farm.EnsureIndexKey("name", "farmer"); err != nil {
 		log.Printf("Failed to create a FarmCollection index: %v", err)
 		os.Exit(1)
 	}
-	if err := farmCollection.EnsureIndexKey("-likes"); err != nil {
+	if err := cols.Farm.EnsureIndexKey("-likes"); err != nil {
 		log.Printf("Failed to create a FarmCollection index: %v", err)
 		os.Exit(1)
 	}
-	if err := farmCollection.EnsureIndexKey("-lastupdate"); err != nil {
+	if err := cols.Farm.EnsureIndexKey("-lastupdate"); err != nil {
 		log.Printf("Failed to create a FarmCollection index: %v", err)
 		os.Exit(1)
 	}
@@ -66,14 +82,4 @@ func init() {
 
 	//mgo.SetLogger(log.New(os.Stderr, "", log.LstdFlags))
 	//mgo.SetDebug(true)
-}
-
-func FarmCollection() (col *mgo.Collection, close func()) {
-	session := initialSession.Clone()
-	return session.DB(dbName()).C("farms"), session.Close
-}
-
-func Files() (col *mgo.Collection, closer func()) {
-	session := initialSession.Clone()
-	return session.DB(dbName()).C("sdr.files"), session.Close
 }

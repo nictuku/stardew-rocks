@@ -30,6 +30,7 @@ func wwwDir() string {
 	}
 	return filepath.Clean(filepath.Join(home, "www"))
 }
+
 func handleMessage(d amqp.Delivery, farmMap *parser.Map) {
 	var reader io.Reader = bytes.NewReader(d.Body)
 	// The content is usually gzip encoded by we don't have to worry about that.
@@ -46,9 +47,9 @@ func handleMessage(d amqp.Delivery, farmMap *parser.Map) {
 	}
 
 	ts := time.Now()
-	col, closer := stardb.FarmCollection()
+	cols, closer := stardb.Collections()
 	defer closer()
-	farm, _, err := stardb.FindOrCreateFarm(col, saveGame.UniqueIDForThisGame, saveGame.Player.Name, saveGame.Player.FarmName)
+	farm, _, err := stardb.FindOrCreateFarm(cols.Farm, saveGame.UniqueIDForThisGame, saveGame.Player.Name, saveGame.Player.FarmName)
 	if err != nil {
 		log.Print("Error fetching farm ID:", err)
 		return
