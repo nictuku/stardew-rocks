@@ -21,17 +21,17 @@ func FarmHistoryFromSaveGame(id bson.ObjectId, sg *parser.SaveGame, ts int) (*Fa
 	return &FarmHistory{id, ts, sg}, nil
 }
 
-func InsertFarmHistory(id bson.ObjectId, fi *FarmHistory) error {
-	_, err := FarmHistoryCollection.Upsert(bson.M{"farmid": id, "ts": fi.Ts}, fi)
+func InsertFarmHistory(cols *CollectionsHolder, id bson.ObjectId, fi *FarmHistory) error {
+	_, err := cols.FarmHistory.Upsert(bson.M{"farmid": id, "ts": fi.Ts}, fi)
 	// log.Printf("%v %v : inserted? %#v", id.Hex(), fi.Ts, changeInfo)
 	return err
 }
 
-func GetFarmHistory(id string) ([]*FarmHistory, error) {
+func GetFarmHistory(cols *CollectionsHolder, id string) ([]*FarmHistory, error) {
 	if !bson.IsObjectIdHex(id) {
 		return nil, fmt.Errorf("invalid farm id")
 	}
 	var fis []*FarmHistory
-	err := FarmHistoryCollection.Find(bson.M{"farmid": bson.ObjectIdHex(id)}).All(&fis)
+	err := cols.FarmHistory.Find(bson.M{"farmid": bson.ObjectIdHex(id)}).All(&fis)
 	return fis, err
 }

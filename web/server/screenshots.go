@@ -80,7 +80,10 @@ func ServeScreenshot(w http.ResponseWriter, r *http.Request) {
 		path = strings.Join(append(s[0:3], p), "/")
 	}
 
-	if f, err = stardb.GFS.Open(path); err != nil {
+	cols, closer := stardb.Collections()
+	defer closer()
+
+	if f, err = cols.GFS.Open(path); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

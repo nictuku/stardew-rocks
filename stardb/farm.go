@@ -190,7 +190,7 @@ func FarmJSON(id string) ([]byte, error) {
 	}
 	farm.Thumbnail = farm.ScreenshotPath()
 	farm.ID = farm.InternalID.Hex()
-	fh, err := GetFarmHistory(id)
+	fh, err := GetFarmHistory(cols, id)
 	if err != nil {
 		log.Println("Warning FarmJSON history:", err)
 	}
@@ -267,10 +267,10 @@ func FindOrCreateFarm(c *mgo.Collection, uniqueIDForThisGame int, playerName, fa
 	return ret, true, nil
 }
 
-func WriteSaveFile(farm *Farm, body []byte, ts time.Time) error {
+func WriteSaveFile(cols *CollectionsHolder, farm *Farm, body []byte, ts time.Time) error {
 	farm.LastUpdate = ts
 	saveFile := farm.saveGamePath()
-	g, err := GFS.Create(saveFile)
+	g, err := cols.GFS.Create(saveFile)
 	if err != nil {
 		return fmt.Errorf("Error opening grid saveGames %v: %v", saveFile, err)
 
@@ -286,11 +286,11 @@ func WriteSaveFile(farm *Farm, body []byte, ts time.Time) error {
 }
 
 // NewScreenshotWriter saves a screenshot in GFS at screenshots/<hexid>.png
-func NewScreenshotWriter(farm *Farm, ts time.Time) (io.WriteCloser, error) {
+func NewScreenshotWriter(cols *CollectionsHolder, farm *Farm, ts time.Time) (io.WriteCloser, error) {
 	if farm.LastUpdate.IsZero() {
 		return nil, fmt.Errorf("error writing screenshot: unexpected zero save time")
 	}
-	g, err := GFS.Create(farm.ScreenshotPath())
+	g, err := cols.GFS.Create(farm.ScreenshotPath())
 	if err != nil {
 		return nil, err
 	}

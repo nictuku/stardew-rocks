@@ -63,7 +63,7 @@ func handleMessage(d amqp.Delivery, farmMap *parser.Map) {
 
 	// GridFS XML save file write.
 	// TODO: broken saves (length 0)
-	if err := stardb.WriteSaveFile(farm, d.Body, ts); err != nil {
+	if err := stardb.WriteSaveFile(cols, farm, d.Body, ts); err != nil {
 		log.Print("write save file:", err)
 		return
 	}
@@ -76,7 +76,7 @@ func handleMessage(d amqp.Delivery, farmMap *parser.Map) {
 		log.Print("farm history from save game:", err)
 		return
 	} else {
-		if err := stardb.InsertFarmHistory(farm.InternalID, fi); err != nil {
+		if err := stardb.InsertFarmHistory(cols, farm.InternalID, fi); err != nil {
 			log.Print("update farm history failed:", err)
 			return
 		}
@@ -84,7 +84,7 @@ func handleMessage(d amqp.Delivery, farmMap *parser.Map) {
 	}
 
 	// GridFs screenshot write.
-	fs, err := stardb.NewScreenshotWriter(farm, ts)
+	fs, err := stardb.NewScreenshotWriter(cols, farm, ts)
 	if err != nil {
 		log.Print("Error writing grid screenshot:", err)
 		return

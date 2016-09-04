@@ -77,6 +77,9 @@ func ServeAnimation(w http.ResponseWriter, r *http.Request) {
 
 	dirCreated := false
 
+	cols, closer := stardb.Collections()
+	defer closer()
+
 	// ffmpeg for windows does not support glob patterns, so we use a simple sequence for the file names.
 	// http://stackoverflow.com/questions/31201164/ffmpeg-error-pattern-type-glob-was-selected-but-globbing-is-not-support-ed-by
 	i := 0
@@ -92,7 +95,7 @@ func ServeAnimation(w http.ResponseWriter, r *http.Request) {
 			dirCreated = true
 			log.Error("created dir", filepath.Dir(p))
 		}
-		sg, err := stardb.GFS.Open(ss)
+		sg, err := cols.GFS.Open(ss)
 		if err != nil {
 			log.Error("screen open warning:", err)
 			continue

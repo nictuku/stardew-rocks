@@ -10,14 +10,12 @@ import (
 
 var (
 	initialSession *mgo.Session
-
-	// TODO: Move this to request-bound sessions.
-	FarmHistoryCollection *mgo.Collection
-	GFS                   *mgo.GridFS
 )
 
 type CollectionsHolder struct {
-	Farm        *mgo.Collection
+	Farm *mgo.Collection
+	// Farmhistory is updated more often and has extended information about the farm.
+	// It has one entry for each save game of that farm.
 	FarmHistory *mgo.Collection
 	Files       *mgo.Collection
 	GFS         *mgo.GridFS
@@ -28,7 +26,7 @@ func Collections() (col *CollectionsHolder, close func()) {
 	db := session.DB(dbName())
 	return &CollectionsHolder{
 		db.C("farms"),
-		db.C("XXX"),
+		db.C("farmhistory"),
 		db.C("sdr.files"),
 		db.GridFS("sdr"),
 	}, session.Close
@@ -39,6 +37,7 @@ func dbName() string {
 	spl := strings.Split(mongoAddr, "/")
 	return spl[len(spl)-1]
 }
+
 func init() {
 	var err error
 	initialSession, err = mgo.Dial(mongoAddr)
@@ -47,10 +46,6 @@ func init() {
 		os.Exit(1)
 	}
 	db := initialSession.DB(dbName())
-
-	// farmhistory is updated more often and has extended information about the farm.
-	// It has one entry for each save game of that farm.
-	FarmHistoryCollection = db.C("farmhistory")
 
 	cols, closer := Collections()
 	defer closer()
@@ -75,7 +70,7 @@ func init() {
 		log.Printf("Failed to create a GFS md5 index: %v", err)
 		os.Exit(1)
 	}
-	if err := FarmHistoryCollection.EnsureIndexKey("farmid", "ts"); err != nil {
+	if err := cols.FarmHistory.EnsureIndexKey("farmid", "ts"); err != nil {
 		log.Printf("Failed to create a FarmHistoryCollection index: %v", err)
 		os.Exit(1)
 	}
