@@ -67,7 +67,9 @@ func (f *Farm) SaveTimes() []int {
 	var saveTimes []int
 
 	prefix := fmt.Sprintf("^/saveGames/%v", f.InternalID.Hex())
-	if err := DB.C("sdr.files").Find(bson.M{
+	col, closer := Files()
+	defer closer()
+	if err := col.Find(bson.M{
 		"filename": bson.M{"$regex": prefix}}).Sort("filename").Select(bson.M{"filename": 1}).All(&filenames); err != nil {
 		log.Printf("SaveTimes error: %v", err)
 		return nil
@@ -153,7 +155,9 @@ func IsSaveGameDupe(id string, md5 string) bool {
 		return false
 	}
 	prefix := fmt.Sprintf("^/saveGames/%v", id)
-	n, err := DB.C("sdr.files").Find(bson.M{
+	col, closer := Files()
+	defer closer()
+	n, err := col.Find(bson.M{
 		"md5":      md5,
 		"filename": bson.M{"$regex": prefix},
 	}).Count()
